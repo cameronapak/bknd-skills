@@ -1,449 +1,354 @@
-## Complete Schema Comparison
+# How Bknd ORM Works - Schema Prototype API
 
-### bknd Schema (Your Example)
+## The Schema Prototype Pattern
+
+Bknd's schema prototype API provides a **fluent, type-safe interface** for defining your data models. Think of it as a bridge between the declarative simplicity of Prisma and the flexibility of raw code.
+
+---
+
+## Core Building Blocks
+
+### 1. Field Prototypes
+
+Fields are created using factory functions that return prototype objects:
 
 ```typescript
-import { createApp, em, entity, text, number } from "bknd";
+import { text, number, boolean, date, enumm, json, media } from "bknd/data";
+
+// Optional field
+name: text()
+
+// Required field with chainable .required()
+email: text().required()
+
+// With configuration
+age: number({ default_value: 0 })
+bio: text({ description: "User biography" })
+isActive: boolean({ default_value: true })
+```
+
+Under the hood, these return a `FieldPrototype` object (see [prototype/index.ts#L71-L109](https://github.com/bknd-io/bknd/blob/main/app/src/data/prototype/index.ts#L71-L109)) that gets converted to actual `Field` instances when the entity is constructed.
+
+### 2. Entity Definition
+
+Define entities using the `entity()` function:
+
+```typescript
+import { entity } from "bknd/data";
+
+const users = entity("users", {
+  username: text().required(),
+  email: text().required(),
+  bio: text(),
+  age: number({ default_value: 0 }),
+  isActive: boolean({ default_value: true }),
+}, {
+  name_singular: "User",
+  description: "Registered users"
+});
+```
+
+The `entity()` function (see [prototype/index.ts#L182-L190](https://github.com/bknd-io/bknd/blob/main/app/src/data/prototype/index.ts#L182-L190)):
+1. Converts all field prototypes to actual `Field` instances
+2. Automatically adds a primary `id` field if not specified
+3. Creates an `Entity` object with type-safe field definitions
+
+### 3. The `em()` Function - Schema Builder
+
+The `em()` function is the schema orchestrator that brings everything together:
+
+```typescript
+import { em } from "bknd/data";
 
 const schema = em(
+  // Entities object
   {
+    users: entity("users", {
+      username: text().required(),
+      email: text().required(),
+    }),
     posts: entity("posts", {
       title: text().required(),
-      slug: text().required(),
       content: text(),
-      views: number(),
+      published: boolean({ default_value: false }),
     }),
-    comments: entity("comments", {
-      content: text(),
+    tags: entity("tags", {
+      name: text().required(),
     }),
   },
-  ({ relation, index }, { posts, comments }) => {
-    relation(comments).manyToOne(posts);
-    index(posts).on(["title"]).on(["slug"], true);
+  // Relations and indexes callback
+  ({ relation, index }, { users, posts, tags }) => {
+    // Define relationships
+    relation(posts).manyToOne(users);
+    relation(posts).manyToMany(tags);
+    
+    // Define indexes
+    index(users).on(["email"], true); // unique
+    index(users).on(["username"]);
+    index(posts).on(["author_id"]);
+    index(posts).on(["published"]);
+  }
+);
+```
+
+The `em()` function (see [prototype/index.ts#L309-L356](https://github.com/bknd-io/bknd/blob/main/app/src/data/prototype/index.ts#L309-L356)):
+
+1. **Creates Proxies** - Wraps `relation()` and `index()` functions in proxies that collect all definitions
+2. **Builds EntityManager** - Creates an `EntityManagerPrototype` with all entities, relations, and indices
+3. **Returns Type-Safe Schema** - Returns an object with:
+   - `DB` - Type-safe database schema for TypeScript
+   - `entities` - The entity definitions
+   - `relations` - Array of relationship objects
+   - `indices` - Array of index objects
+   - `proto` - The EntityManager instance
+   - `toJSON()` - Serializable schema for config
+
+### 4. Defining Relations
+
+Relations use a fluent, chained API:
+
+```typescript
+// Many-to-One (posts belong to users)
+relation(posts).manyToOne(users, {
+  local_key: "author_id",
+  foreign_key: "id",
+  cascade: ["delete"]
+});
+
+// One-to-One
+relation(users).oneToOne(profiles, {
+  local_key: "profile_id",
+  foreign_key: "id"
+});
+
+// Many-to-Many with additional fields
+relation(posts).manyToMany(tags, {
+  connectionTable: "post_tags"
+}, {
+  // Additional fields on connection table
+  pinnedAt: date()
+});
+
+// Polymorphic relations
+relation(comments).polyToMany([posts, videos], {
+  type_field: "commentable_type",
+  id_field: "commentable_id"
+});
+```
+
+See [prototype/index.ts#L217-L266](https://github.com/bknd-io/bknd/blob/main/app/src/data/prototype/index.ts#L217-L266) for all relation types.
+
+### 5. Defining Indexes
+
+Indexes are defined similarly:
+
+```typescript
+// Unique index
+index(users).on(["email"], true);
+
+// Composite index
+index(posts).on(["author_id", "published"]);
+
+// Multiple indexes
+index(users).on(["email"], true).on(["username"]);
+```
+
+See [prototype/index.ts#L266-L280](https://github.com/bknd-io/bknd/blob/main/app/src/data/prototype/index.ts#L266-L280).
+
+---
+
+## Type Inference & TypeScript Magic
+
+Bknd's schema prototype provides excellent type safety:
+
+```typescript
+// Infer entity field types
+type UserFields = InferEntityFields<typeof users>;
+// { username: string; email: string; bio?: string; ... }
+
+// Infer full schema (with auto-generated id)
+type DB = typeof schema.DB;
+// { users: { id: Generated<number>; username: string; ... }; ... }
+
+// Type-safe queries
+const userRepo = schema.proto.repository("users");
+const users = await userRepo.findMany({
+  where: { username: "john" } // Fully typed!
+});
+```
+
+The type system (see [prototype/index.ts#L357-L414](https://github.com/bknd-io/bknd/blob/main/app/src/data/prototype/index.ts#L357-L414)):
+- Infers field types from field prototypes
+- Marks optional fields as `undefined | T`
+- Auto-generates `id` field types
+- Creates complete database schema types
+
+---
+
+## Complete Example
+
+```typescript
+import { em, text, number, boolean, date, entity } from "bknd/data";
+
+// Define your schema
+const { DB, proto, entities } = em(
+  {
+    users: entity("users", {
+      username: text().required(),
+      email: text().required(),
+      bio: text(),
+      age: number({ default_value: 0 }),
+      isActive: boolean({ default_value: true }),
+      joinedAt: date({ default_value: () => new Date() }),
+    }),
+    posts: entity("posts", {
+      title: text().required(),
+      content: text(),
+      published: boolean({ default_value: false }),
+      authorId: number().required(), // Created automatically by relation
+    }),
+    tags: entity("tags", {
+      name: text().required(),
+    }),
   },
+  ({ relation, index }, { users, posts, tags }) => {
+    // Posts belong to users
+    relation(posts).manyToOne(users);
+    
+    // Posts have many tags
+    relation(posts).manyToMany(tags);
+    
+    // Indexes
+    index(users).on(["email"], true).on(["username"]);
+    index(posts).on(["author_id"]).on(["published"]);
+  }
 );
 
-type Database = (typeof schema)["DB"];
+// Use the schema
+const userRepo = proto.repository("users");
+const postRepo = proto.repository("posts");
+
+// Create a user
+const mutator = proto.mutator("users");
+await mutator.create({
+  username: "john_doe",
+  email: "john@example.com",
+});
+
+// Query with relations
+const posts = await postRepo.findMany({
+  with: ["author", "tags"],
+  where: { published: true },
+  order: { createdAt: "desc" }
+});
 ```
 
-### Prisma Schema
+---
 
+## Bknd vs Prisma vs Drizzle - Schema API Comparison
+
+| Aspect | **Bknd Schema Prototype** | **Prisma** | **Drizzle** |
+|--------|---------------------------|------------|-------------|
+| **Syntax Style** | Fluent function-based | Schema file | Object-based |
+| **Field Definition** | `text().required()` | `String @required` | `text().notNull()` |
+| **Relations** | `relation(posts).manyToOne(users)` | `User @relation` | Manual join definitions |
+| **Indexes** | `index(users).on(["email"])` | `@@index([email])` | `.index()` |
+| **Type Safety** | ✅ Full inference | ✅ Auto-generated | ✅ Manual but complete |
+| **Schema Location** | In code | Separate `.prisma` file | In code |
+| **Migrations** | SchemaManager auto | Prisma Migrate | Drizzle Kit |
+| **Runtime Flexibility** | ✅ High | ❌ Generated only | ✅ High |
+
+### Key Differences
+
+**Prisma:**
 ```prisma
-// schema.prisma
-
-model Post {
-  id        Int       @id @default(autoincrement())
-  title     String
-  slug      String    @unique
-  content   String?
-  views     Int       @default(0)
-  comments  Comment[]
-  
-  @@index([title])
-  @@unique([slug])
-}
-
-model Comment {
-  id        Int    @id @default(autoincrement())
-  content   String?
-  post      Post   @relation(fields: [postId], references: [id])
-  postId    Int
-  
-  @@index([postId])
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  email     String   @unique
+  posts     Post[]
+  @@index([username])
 }
 ```
-
-### Drizzle Schema
-
-```typescript
-import { pgTable, serial, text, integer, index, unique } from 'drizzle-orm/pg-core';
-import { relations } from 'drizzle-orm';
-
-export const posts = pgTable('posts', {
-  id: serial('id').primaryKey(),
-  title: text('title').notNull(),
-  slug: text('slug').notNull(),
-  content: text('content'),
-  views: integer('views').default(0),
-}, (table) => ({
-  titleIdx: index('title_idx').on(table.title),
-  slugUnique: unique('slug_unique').on(table.slug),
-}));
-
-export const comments = pgTable('comments', {
-  id: serial('id').primaryKey(),
-  content: text('content'),
-  postId: integer('post_id').references(() => posts.id),
-});
-
-export const postsRelations = relations(posts, ({ many }) => ({
-  comments: many(comments),
-}));
-
-export const commentsRelations = relations(comments, ({ one }) => ({
-  post: one(posts, { fields: [comments.postId], references: [posts.id] }),
-}));
-```
-
----
-
-## Feature-by-Feature Comparison
-
-### 1. Entity/Model Definition
-
-| Aspect | bknd | Prisma | Drizzle |
-|--------|------|--------|---------|
-| **Syntax** | Helper functions | Custom DSL | TypeScript objects |
-| **Primary Key** | Auto-added `id` | Explicit `@id` | Explicit `.primaryKey()` |
-| **Required Fields** | `.required()` chain | No `?` suffix | `.notNull()` |
-| **Optional Fields** | No `.required()` | `?` suffix | No `.notNull()` |
-| **Default Values** | Field config option | `@default(...)` | `.default(...)` |
-| **Field Types** | Functions (`text()`, `number()`) | Primitives (`String`, `Int`) | Functions (`text()`, `integer()`) |
-
-**Examples:**
-
-```typescript
-// bknd
-title: text().required()        // Required
-content: text()                 // Optional
-
-// Prisma
-title String                     // Required
-content String?                  // Optional
-
-// Drizzle
-title: text('title').notNull()  // Required
-content: text('content')         // Optional
-```
-
-### 2. Relations Definition
-
-| Aspect | bknd | Prisma | Drizzle |
-|--------|------|--------|---------|
-| **Location** | Separate callback | Embedded in models | Separate `relations()` calls |
-| **Syntax** | Fluent chained | Array notation | Fluent chained |
-| **Foreign Key** | Auto-generated | Explicit | Explicit |
-| **Cascade** | Via config | `@relation` options | Via references |
-
-**Examples:**
-
-```typescript
-// bknd
-relation(comments).manyToOne(posts)
-// Creates comments.post_id automatically
-
-// Prisma
-model Comment {
-  post  Post   @relation(fields: [postId], references: [id])
-  postId Int
-}
-
-// Drizzle
-postId: integer('post_id').references(() => posts.id)
-// Plus separate relations() definition
-```
-
-### 3. Indices Definition
-
-| Aspect | bknd | Prisma | Drizzle |
-|--------|------|--------|---------|
-| **Location** | Separate callback | In model block | In table function |
-| **Syntax** | Chained `.on()` | `@@index` | `index().on()` |
-| **Unique** | Boolean argument | `@@unique` | `unique().on()` |
-| **Composite** | Array argument | Array argument | Array argument |
-
-**Examples:**
-
-```typescript
-// bknd - Chained indices
-index(posts).on(["title"]).on(["slug"], true);
-// Unique index on slug
-
-// Prisma
-model Post {
-  @@index([title])
-  @@unique([slug])
-}
-
-// Drizzle - In table function
-pgTable('posts', {
-  // fields...
-}, (table) => ({
-  titleIdx: index('title_idx').on(table.title),
-  slugUnique: unique('slug_unique').on(table.slug),
-}));
-```
-
-### 4. Type Inference
-
-| Aspect | bknd | Prisma | Drizzle |
-|--------|------|--------|---------|
-| **Inference Method** | `["DB"]` property | Generated `PrismaClient` | Inferred from table objects |
-| **Types Generated** | TypeScript types | Full client + types | Table types |
-| **Setup Required** | Automatic | `prisma generate` | Automatic |
-
-**Examples:**
-
-```typescript
-// bknd
-type Database = (typeof schema)["DB"];
-// { posts: { id: number; title: string; ... }, ... }
-
-// Prisma
-// Generated automatically after running prisma generate
-// Types: Post, Comment, Prisma.PostCreateInput, etc.
-
-// Drizzle
-// Inferred from table objects
-type Post = typeof posts.$inferSelect;
-type NewPost = typeof posts.$inferInsert;
-```
-
-### 5. Schema Modification
-
-| Aspect | bknd | Prisma | Drizzle |
-|--------|------|--------|---------|
-| **Runtime Changes** | Yes (db mode) | No | No |
-| **Storage** | JSON in DB or code | Schema file | Code only |
-| **Hot Reload** | Yes | No | No |
-| **Versioning** | Built-in | Via migrations | Via migrations |
-
----
-
-## Syntax Verbosity Comparison
-
-### bknd
-```typescript
-const schema = em({
-  posts: entity("posts", {
-    title: text().required(),
-    slug: text().required(),
-    content: text(),
-    views: number(),
-  }),
-  comments: entity("comments", {
-    content: text(),
-  }),
-}, ({ relation, index }, { posts, comments }) => {
-  relation(comments).manyToOne(posts);
-  index(posts).on(["title"]).on(["slug"], true);
-});
-```
-**Characters:** ~280  
-**Lines:** 12
-
-### Prisma
-```prisma
-model Post {
-  id        Int       @id @default(autoincrement())
-  title     String
-  slug      String    @unique
-  content   String?
-  views     Int       @default(0)
-  comments  Comment[]
-  @@index([title])
-}
-
-model Comment {
-  id      Int    @id @default(autoincrement())
-  content String?
-  post    Post   @relation(fields: [postId], references: [id])
-  postId  Int
-  @@index([postId])
-}
-```
-**Characters:** ~260  
-**Lines:** 14
-
-### Drizzle
-```typescript
-export const posts = pgTable('posts', {
-  id: serial('id').primaryKey(),
-  title: text('title').notNull(),
-  slug: text('slug').notNull(),
-  content: text('content'),
-  views: integer('views').default(0),
-}, (table) => ({
-  titleIdx: index('title_idx').on(table.title),
-  slugUnique: unique('slug_unique').on(table.slug),
-}));
-
-export const comments = pgTable('comments', {
-  id: serial('id').primaryKey(),
-  content: text('content'),
-  postId: integer('post_id').references(() => posts.id),
-});
-
-export const postsRelations = relations(posts, ({ many }) => ({
-  comments: many(comments),
-}));
-
-export const commentsRelations = relations(comments, ({ one }) => ({
-  post: one(posts, { fields: [comments.postId], references: [posts.id] }),
-}));
-```
-**Characters:** ~490  
-**Lines:** 20
-
-**Winner for brevity:** Prisma ≈ bknd > Drizzle
-
----
-
-## Key Architectural Differences
-
-### 1. Relation Handling
-
-**bknd:**
-- Relations defined in separate callback
-- Foreign keys auto-generated
-- [`relation()`](app/src/data/prototype/index.ts#L217-L264) helper returns chained methods
-- Clean separation of concerns
-
-**Prisma:**
-- Relations embedded in models with `[]` syntax
-- Foreign keys explicit on the owning side
-- More intuitive for many-to-many
+- Separate file, declarative
+- Most beginner-friendly
+- Requires code generation step
+- Limited runtime flexibility
 
 **Drizzle:**
-- Relations defined separately via `relations()` function
-- Foreign keys explicit in table definition
-- Most verbose but most explicit
+```typescript
+export const users = pgTable("users", {
+  id: serial("id").primaryKey(),
+  username: text("username").notNull().unique(),
+  email: text("email").notNull().unique(),
+}, (table) => ({
+  usernameIdx: index("username_idx").on(table.username)
+}));
+```
+- Code-based, closest to SQL
+- Maximum control
+- More verbose
+- Manual relation management
 
-### 2. Index Handling
-
-**bknd:**
-- Chained `.on()` for multiple indices
-- Boolean flag for uniqueness
-- [`index()`](app/src/data/prototype/index.ts#L266-L279) helper returns chained methods
-- Can define multiple indices in one chain
-
-**Prisma:**
-- `@@index` and `@@unique` blocks
-- Very readable
-- Composite indices via arrays
-
-**Drizzle:**
-- Indices defined in table function's second parameter
-- Need to name each index
-- Most control but most verbose
-
-### 3. Type System
-
-**bknd:**
-- Types inferred from schema via `["DB"]` property
-- [InferEntityFields](app/src/data/prototype/index.ts#L357-L364) and [Schema](app/src/data/prototype/index.ts#L413-L413) types
-- No generation step needed
-- Clean and automatic
-
-**Prisma:**
-- Full type ecosystem generated
-- `Post`, `PostCreateInput`, `PostUpdateInput`, etc.
-- Requires CLI generation
-- Most comprehensive types
-
-**Drizzle:**
-- Inferred via `$inferSelect` and `$inferInsert`
-- No generation step
-- Good balance of inference and explicitness
+**Bknd:**
+```typescript
+const users = entity("users", {
+  username: text().required(),
+  email: text().required(),
+});
+// Relations defined separately in em()
+relation(posts).manyToOne(users);
+index(users).on(["username"], true);
+```
+- **Hybrid approach**: Best of both worlds
+- Fluent, readable syntax
+- Automatic id field generation
+- Built-in relation and index management
+- Full-stack features (auth, permissions, UI) included
 
 ---
 
-## Advantages and Disadvantages
+## Why Bknd's Schema Prototype?
 
-### bknd
+### Advantages
 
-**Advantages:**
-✅ Clean separation (entities, relations, indices)  
-✅ Auto-generated foreign keys  
-✅ Fluent chained API  
-✅ Type inference without generation  
-✅ Runtime schema modification (db mode)  
-✅ Field-level metadata (validation, UI hints)  
-✅ Chained definitions for relations/indices  
+1. **Developer Experience**
+   - Intuitive, readable syntax
+   - No separate files or generators
+   - Excellent IDE autocomplete
 
-**Disadvantages:**
-❌ Custom API to learn (not standard)  
-❌ Less tooling support than Prisma  
-❌ Requires understanding of helper functions  
+2. **Type Safety**
+   - Full TypeScript inference
+   - No manual type definitions
+   - Compile-time error checking
 
-### Prisma
+3. **Flexibility**
+   - Mix code and config
+   - Dynamic schema generation
+   - Runtime modifications
 
-**Advantages:**
-✅ Declarative and readable  
-✅ Excellent auto-completion  
-✅ Rich type ecosystem  
-✅ Mature tooling and ecosystem  
-✅ Migration system is excellent  
+4. **Full-Stack Ready**
+   - Auto-generates UI components
+   - Built-in permissions
+   - API endpoints auto-created
 
-**Disadvantages:**
-❌ Schema file format to learn  
-❌ No runtime schema changes  
-❌ Requires generation step  
-❌ Less explicit SQL control  
+5. **Zero-Config**
+   - Automatic migrations
+   - Default values and constraints
+   - Id field auto-generation
 
-### Drizzle
+### When to Use
 
-**Advantages:**
-✅ Pure TypeScript (no DSL)  
-✅ Maximum SQL control  
-✅ No generation step  
-✅ Multiple dialect support  
-✅ Excellent performance  
+✅ **Choose Bknd Schema Prototype when:**
+- Building full-stack applications
+- Need rapid development with type safety
+- Want auto-generated admin UI
+- Need built-in auth and permissions
+- Prefer code over configuration files
 
-**Disadvantages:**
-❌ Most verbose  
-❌ Relations defined separately  
-❌ Indices defined separately  
-❌ More boilerplate  
+❌ **Consider alternatives when:**
+- Need only a thin ORM layer
+- Want maximum SQL control (use Drizzle)
+- Separate teams handling schema vs app logic (Prisma)
 
----
-
-## Which Should You Choose?
-
-### Choose bknd if:
-- You want clean separation of concerns
-- You need runtime schema modification
-- You're building a platform where users define schemas
-- You like fluent chained APIs
-- You want field-level validation and UI metadata
-- You need multi-runtime support
-
-### Choose Prisma if:
-- You want the best developer experience
-- You don't need runtime schema changes
-- You prefer declarative syntax
-- You want comprehensive generated types
-- You value mature tooling and ecosystem
-
-### Choose Drizzle if:
-- You want maximum SQL control
-- You dislike DSLs and generated code
-- You prefer pure TypeScript
-- Performance is critical
-- You need multiple database dialects
-
----
-
-## Summary Table
-
-| Feature | bknd | Prisma | Drizzle |
-|---------|------|--------|---------|
-| **Primary Key** | Auto `id` | Explicit `@id` | Explicit `.primaryKey()` |
-| **Required Fields** | `.required()` | No `?` | `.notNull()` |
-| **Relations** | Separate callback | Embedded models | Separate `relations()` |
-| **Foreign Keys** | Auto-generated | Explicit | Explicit |
-| **Indices** | Chained `.on()` | `@@index` | Table function parameter |
-| **Type Inference** | `["DB"]` property | Generated | `$inferSelect` |
-| **Runtime Changes** | ✅ Yes | ❌ No | ❌ No |
-| **Syntax Verbosity** | Low | Low | High |
-| **Learning Curve** | Medium | Low | Medium |
-
----
-
-## Next Steps
-
-Explore more aspects of each:
-
-[Entity Relationships](15-entity-relationships)
-[Database Indices](16-database-indices)
-[Schema Constructor and Validation](17-schema-constructor-and-validation)
+The Bknd schema prototype API gives you the elegance of Prisma with the power of Drizzle, plus full-stack capabilities that neither provides. It's designed for modern developers who want type safety without sacrificing flexibility.
