@@ -10,5 +10,5 @@ That's why I'm taking it upon myself to create some docs in hopes that it helps 
 
 ## Docs
 
-- [Teach me about Bknd schema](./schema.md)
-- [What is Bknd ORM?](./orm.md)
+- [Teach me about Bknd schema](./docs/schema.md)
+- [What is Bknd ORM?](./docs/orm.md)
