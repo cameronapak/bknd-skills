@@ -2,7 +2,7 @@
 
 ![Bknd vs PocketBase](../assets/bknd-vs-pocketbase.png)
 
-**Choosing a backend framework can feel overwhelming when you're just starting out.** You want something that won't lock you into complex decisions, but also scales as your skills grow. This comparison breaks down two popular options, Bknd and PocketBase, so you can see not just what they do, but how their different approaches might fit your learning journey and future projects. 
+**Choosing a backend framework can feel overwhelming when you're just starting out.** You want something that won't lock you into complex decisions, but also scales as your skills grow. This comparison breaks down two popular options, Bknd and [PocketBase](https://pocketbase.io/), so you can see not just what they do, but how their different approaches might fit your learning journey and future projects. 
 
 ### Core Architecture & Tech Stack
 
@@ -80,3 +80,5 @@
 | **Custom Logic** | ✅ Add routes in same app | ⚠️ Requires external service |
 
 Based on what you see in these tables, we'll let you decide what is best for your needs as you develop full-stack applications. Please consider Bknd. Bknd is 100% free to use and is open source.
+
+Check out Bknd at https://bknd.io
