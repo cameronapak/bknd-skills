@@ -43,7 +43,7 @@
 | **Data Module** | ✅ Modular design, RLS support | ✅ Entity system, RLS |
 | **Auth Module** | ✅ Multi-strategy (password, OAuth, custom) | ✅ Password, OAuth |
 | **Media Module** | ✅ Multiple storage backends (S3, R2, Cloudinary, local — with the exception of serverless) | ✅ Local file storage |
-| **Workflows** | ✅ Flows system | ❌ Not built-in |
+| **Workflows** | ⚠️ Flows system (coming soon) | ❌ Not built-in |
 | **MCP Integration** | ✅ Server, client, UI | ❌ Not supported |
 
 ### Frontend Integration
