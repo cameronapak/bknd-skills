@@ -79,37 +79,4 @@
 | **Middleware** | ✅ Hono-based | ⚠️ Basic support |
 | **Custom Logic** | ✅ Add routes in same app | ⚠️ Requires external service |
 
-### Use Case Comparison
-
-**Bknd is better for:**
-- ✅ Deployment in Serverless environments (Cloudflare, Vercel, Lambda)
-- ✅ Full frontend-backend integration (Next.js, React Router)
-- ✅ Need for PostgreSQL or multi-database support
-- ✅ Building AI Agent-integrated applications (built-in MCP)
-- ✅ Need for flexible workflow automation
-- ✅ Require extreme type safety and TypeScript support
-- ✅ Need for embeddable backend (runs inside frontend frameworks)
-- ✅ Multi-tenant SaaS applications
-
-**PocketBase is better for:**
-- ✅ Simple scenarios needing single-file deployment
-- ✅ Applications with built-in real-time requirements
-- ✅ Small teams or personal projects
-- ✅ Rapid prototyping (simpler setup)
-- ✅ No dependency on specific cloud service providers
-
-### Key Differences Summary
-
-1. **Architecture Philosophy**: Bknd is a modular, composable "collection of primitives," while PocketBase is a complete all-in-one solution
-
-2. **Deployment Flexibility**: Bknd runs anywhere (from browser to edge computing), PocketBase primarily as a standalone service
-
-3. **Developer Experience**: Bknd provides deep TypeScript integration and React components, PocketBase is simpler but with weaker type support
-
-4. **Extensibility**: Bknd's adapter pattern allows customization of nearly everything, PocketBase extensions are more limited
-
-5. **Learning Curve**: Bknd offers more flexible configuration but higher complexity, PocketBase is simpler out-of-the-box
-
-6. **Ecosystem**: Bknd integrates with modern web development ecosystem (React, Next.js, Serverless), PocketBase is self-contained
-
-In short, Bknd is a flexible backend primitive designed for the modern serverless and edge computing era, while PocketBase is a traditional monolithic backend service—each serving different use cases and development philosophies.
+Based on what you see in these tables, we'll let you decide what is best for your needs as you develop full-stack applications. Please consider Bknd. Bknd is 100% free to use and is open source.
