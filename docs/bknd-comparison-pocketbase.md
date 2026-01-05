@@ -41,10 +41,19 @@
 | Dimension | Bknd | PocketBase |
 |-----------|------|------------|
 | **Data Module** | ✅ Modular design, RLS support | ✅ Entity system, RLS |
-| **Auth Module** | ✅ Multi-strategy (password, OAuth, custom) | ✅ Password, OAuth |
-| **Media Module** | ✅ Multiple storage backends (S3, R2, Cloudinary, local — with the exception of serverless) | ✅ Local file storage |
+| **Auth Module** | ✅ Email/Password (SHA-256), OAuth/OIDC, JWT, session management | ✅ Email/Password, OAuth2 (6+ providers), OTP via email, MFA (2 methods required), email verification, password reset, user impersonation |
+| **Media Module** | ✅ Multiple storage backends (S3, R2, Cloudinary, local) | ✅ Local file storage |
 | **Workflows** | ⚠️ Flows system (coming soon) | ❌ Not built-in |
 | **MCP Integration** | ✅ Server, client, UI | ❌ Not supported |
+
+### Admin & Management Features
+
+| Dimension | Bknd | PocketBase |
+|-----------|------|------------|
+| **Admin Dashboard** | ✅ Embedded Admin UI (visual + code modes) | ✅ Built-in admin interface |
+| **Cron Jobs** | ❌ Not available | ✅ Built-in cron service |
+| **Backup/Restore** | ❌ Not available | ✅ Built-in backup service |
+| **Log Management** | ❌ Not available | ✅ Built-in log service |
 
 ### Frontend Integration
 
@@ -54,7 +63,8 @@
 | **Next.js** | ✅ Full integration | ❌ Requires separate deployment |
 | **React Router** | ✅ Full integration | ❌ Requires separate deployment |
 | **Astro** | ✅ Full integration | ❌ Requires separate deployment |
-| **TypeScript SDK** | ✅ Type-safe, SWR integrated | ⚠️ JavaScript SDK |
+| **TypeScript SDK** | ✅ Auto-generated from schema with full type inference | ✅ TypeScript with manual generic type definitions |
+| **Caching & State Management** | ✅ Built-in SWR with auto-invalidation | ❌ Manual cache management |
 | **React Hooks** | ✅ useApi, useEntity, useApiQuery, useEntityQuery | ⚠️ Basic SDK |
 | **Auto-config Components** | ✅ Media.Dropzone, login/register forms | ❌ Manual build required |
 
@@ -63,10 +73,10 @@
 | Dimension | Bknd | PocketBase |
 |-----------|------|------------|
 | **REST API** | ✅ Complete OpenAPI spec | ✅ REST API |
-| **Real-time Features** | ⚠️ Requires custom implementation (event-based) | ✅ Built-in realtime subscriptions |
-| **Type Safety** | ✅ Full TypeScript support | ⚠️ JavaScript SDK only |
+| **Real-time Features** | ⚠️ Custom implementation (event-based) | ✅ Built-in Server-Sent Events (SSE), robust realtime subscriptions |
+| **Type Safety** | ✅ Full TypeScript support | ✅ TypeScript with manual generic definitions |
 | **Database Migrations** | ✅ Schema builder, version management | ✅ Built-in migrations |
-| **Query Language** | ✅ EntityManager, chainable API | ✅ Concise query syntax |
+| **Query Language** | ✅ SQL-based with chainable API (e.g., `.where({ views: { $gt: 100 } })`) | ✅ Custom query syntax (e.g., `title ~ 'text'`, `created > '2022-01-01'`) |
 | **Permissions System** | ✅ RLS + RBAC + custom permissions | ✅ RLS |
 
 ### Extensibility & Flexibility
@@ -78,6 +88,25 @@
 | **Custom Adapters** | ✅ Database, storage, runtime adapters | ⚠️ Limited extension |
 | **Middleware** | ✅ Hono-based | ⚠️ Basic support |
 | **Custom Logic** | ✅ Add routes in same app | ⚠️ Requires external service |
+
+### When to Choose Bknd
+
+Here's the thing — both are great, but they solve different problems. Let me break it down honestly:
+
+**Choose Bknd if you're:**
+- Wanting **first-class TypeScript support** with auto-generated types from your schema
+- Deploying to **multiple environments** — serverless (Vercel, Netlify, Cloudflare Workers), edge, or traditional hosting
+- Working with **PostgreSQL or want database flexibility** (not locked into SQLite)
+- Wanting **seamless React integration** with hooks like `useAuth`, `useEntity`, `useApiQuery` — and automatic cache management
+- Preferring to **embed your backend** directly into your Next.js, Astro, React Router app, or other server-rendering environment
+- Building for **edge** and need your backend to run everywhere JavaScript does
+
+**Choose PocketBase if you're:**
+- Looking for **built-in realtime** out of the box without custom implementation
+- Need **admin tools** like cron jobs, backups, and log management included
+- Happy with **SQLite-only** databases and don't need PostgreSQL support
+
+Both are open source and community-driven, so you really can't go wrong. Bknd leans into modern web development (TypeScript, React, edge), while PocketBase offers a more traditional, feature-complete backend package.
 
 Based on what you see in these tables, we'll let you decide what is best for your needs as you develop full-stack applications. Please consider Bknd. Bknd is 100% free to use and is open source.
 
