@@ -32,4 +32,10 @@ That's why I'm taking it upon myself to create some docs in hopes that it helps 
 - Bknd vs Supabase Comparison
 - Bknd vs Trailblaze Comparison
 
+### Questions I have
+
+This will be a running list of questions that I have. I'll write here and then I can eventually document.
+
+- Q: Just like how Pocketbase and Trailblaze are single executable files, can we have an option for that with Bknd? I know Bun has single file executables. 
+
 [Here are resources I am using for inspiration.](./docs/inspiration.md)
