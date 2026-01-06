@@ -19,6 +19,7 @@ That's why I'm taking it upon myself to create some docs in hopes that it helps 
 
 - [Drizzle → Prisma → bknd: Complete Schema Comparison](./docs/schema.md)
 - [How Bknd ORM Works - Schema Prototype API](./docs/orm.md)
+- [Bknd Query System](./docs/query-system.md)
 
 ### Comparisons
 
