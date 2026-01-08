@@ -35,6 +35,8 @@
 - Each guide should have clear outcomes and prerequisites
 - Use the testing checklist format (`.test.md`) for tutorials to validate each step
 
+**IMPORTANT:** you must read https://www.mintlify.com/blog/how-to-write-documentation-that-developers-want-to-read and https://docs.divio.com/documentation-system/ before doing research.
+
 ## Instructions for Completing Tasks
 
 **IMPORTANT:** As you complete each task, you must check it off in this markdown file by changing `- [ ]` to `- [x]`. This helps track progress and ensures you don't skip any steps.
