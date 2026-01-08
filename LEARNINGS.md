@@ -61,9 +61,76 @@ Three levels of programmatic control:
    ```
 
 3. **EntityManager** (full control, but requires manual password hashing):
-   ```typescript
-   em.repo("users").insertOne({ email, strategy, strategy_value })
-   ```
+    ```typescript
+    em.repo("users").insertOne({ email, strategy, strategy_value })
+    ```
+
+### OAuth User Creation (Automatic via Callback)
+
+OAuth users are created automatically when they first authenticate through an OAuth provider.
+
+**Flow:**
+1. User initiates OAuth login → Redirects to provider
+2. Provider redirects back with authorization code → Bknd exchanges code for access token
+3. Bknd fetches user profile from provider → Extracts `email` and `sub` (unique identifier)
+4. **Login flow**: Authenticator looks up user by `email` in UserPool via `auth.resolveLogin()`
+5. **Register flow**: Authenticator creates new user automatically via `auth.resolveRegister()`
+
+**Callback handler in `OAuthStrategy.ts` (lines 242-262):**
+```typescript
+hono.get("/callback", async (c) => {
+  const profile = await this.callback(params, {
+    redirect_uri,
+    state: state.state,
+  });
+
+  const safeProfile = {
+    email: profile.email,         // Extracted from provider profile
+    strategy_value: profile.sub,  // Provider's unique user ID
+  } as const;
+
+  const verify = async (user) => {
+    if (user.strategy_value !== profile.sub) {
+      throw new Exception("Invalid credentials");
+    }
+  };
+
+  switch (state.action) {
+    case "login":
+      return auth.resolveLogin(c, this, safeProfile, verify, opts);
+    case "register":
+      return auth.resolveRegister(c, this, safeProfile, verify, opts);
+  }
+});
+```
+
+**Key Differences from Password Users:**
+- **strategy_value**: Stores provider's unique user ID (the `sub` claim from JWT/ID token), not a hashed password
+- **Password field**: Not used for OAuth users
+- **Automatic creation**: No manual user creation needed - happens on first OAuth callback
+- **Profile extraction**: `profile()` function in OAuth strategy config transforms provider-specific user data into standardized format
+
+**UserPool.create() for OAuth Users:**
+- Called by `Authenticator.resolveRegister()` (line 97-114 of `Authenticator.ts`)
+- Temporarily exposes hidden fields (`strategy`, `strategy_value`) for insertion
+- Inserts user record with: `email`, `strategy` (provider name), `strategy_value` (provider's user ID), and any additional profile fields
+- Automatically assigns default role from configuration
+
+**Built-in Providers:**
+- **Google**: OIDC provider
+- **GitHub**: OAuth2 provider
+
+**Custom OAuth Providers:**
+Extend `CustomOAuthStrategy` with:
+- `as`: Authorization server endpoints
+- `profile`: Async function to transform provider user data → `{ email, sub, ... }`
+- Scopes and client credentials
+
+**Security Considerations:**
+1. Email addresses verified by OAuth providers
+2. `sub` claim uniquely identifies users across providers
+3. Users cannot switch strategies once created (validation check prevents this)
+4. `strategy` and `strategy_value` fields are hidden from normal API queries
 
 ### Important Implementation Details
 
@@ -83,7 +150,7 @@ For user creation to work, auth module needs:
 
 1. **Admin UI user creation**: Exact workflow unclear - need to test actual UI to document properly
 2. **Custom user fields**: How to add custom fields to user entity (beyond default email/role)
-3. **OAuth user creation**: How users are created through OAuth providers
+3. ~~**OAuth user creation**: How users are created through OAuth providers~~ - **RESOLVED** ✅
 4. **Password validation**: Production-ready password requirements (CLI only validates length >= 3)
 
 ### Documentation Pattern: Be Explicit About Unknowns

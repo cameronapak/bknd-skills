@@ -164,7 +164,7 @@ const user = await usersRepo.insertOne({
 console.log(user);
 ```
 
-**Important**: When using EntityManager directly, you must hash passwords using the configured strategy:
+**Important**: When using EntityManager directly, you must hash passwords using configured strategy:
 
 ```typescript
 import { PasswordStrategy } from "bknd/auth";
@@ -177,6 +177,185 @@ const hashedPassword = await strategy.hash("plaintext_password");
 
 // Then use hashedPassword in your user creation
 ```
+
+## Method 4: OAuth Users (Automatic Creation)
+
+OAuth users are created automatically when they first authenticate through an OAuth provider (Google, GitHub, etc.). This process is handled by the OAuth strategy's callback handler.
+
+### How OAuth User Creation Works
+
+**Flow:**
+1. User initiates OAuth login → Redirects to provider
+2. Provider redirects back with authorization code → Bknd exchanges code for access token
+3. Bknd fetches user profile from provider → Extracts `email` and `sub` (unique identifier)
+4. **Login flow**: Authenticator looks up user by `email` in UserPool
+5. **Register flow**: Authenticator creates new user automatically via UserPool
+
+### Automatic User Creation Details
+
+**What happens during OAuth callback (from `OAuthStrategy.ts`):**
+
+```typescript
+// Lines 242-262 in app/src/auth/authenticate/strategies/oauth/OAuthStrategy.ts
+hono.get("/callback", async (c) => {
+  const profile = await this.callback(params, {
+    redirect_uri,
+    state: state.state,
+  });
+
+  const safeProfile = {
+    email: profile.email,         // Extracted from provider profile
+    strategy_value: profile.sub,  // Provider's unique user ID
+  } as const;
+
+  const verify = async (user) => {
+    if (user.strategy_value !== profile.sub) {
+      throw new Exception("Invalid credentials");
+    }
+  };
+
+  switch (state.action) {
+    case "login":
+      return auth.resolveLogin(c, this, safeProfile, verify, opts);
+    case "register":
+      return auth.resolveRegister(c, this, safeProfile, verify, opts);
+  }
+});
+```
+
+**UserPool.create() process (from `AppUserPool.ts`):**
+
+```typescript
+// Lines 24-42 in app/src/auth/AppUserPool.ts
+async create(strategy: string, payload: CreateUser & Partial<Omit<User, "id">>) {
+  const fields = this.users.getSelect(undefined, "create");
+  const safeProfile = pick(payload, fields) as any;
+  const createPayload: Omit<User, "id"> = {
+    ...safeProfile,
+    strategy,
+  };
+
+  const mutator = this.em.mutator(this.users);
+  mutator.__unstable_toggleSystemEntityCreation(false);
+  this.toggleStrategyValueVisibility(true); // Temporarily expose hidden fields
+  const createResult = await mutator.insertOne(createPayload);
+  mutator.__unstable_toggleSystemEntityCreation(true);
+  this.toggleStrategyValueVisibility(false);
+
+  return createResult.data;
+}
+```
+
+### What Gets Stored in Database
+
+OAuth user records contain:
+- `email`: User's email from OAuth provider
+- `strategy`: OAuth strategy name (e.g., "google", "github")
+- `strategy_value`: Provider's unique user ID (the `sub` claim from JWT/ID token)
+- `role`: Default role assigned by your configuration
+
+**Note**: Passwords are not stored for OAuth users (`strategy_value` holds the provider's user ID instead).
+
+### Built-in OAuth Providers
+
+Bknd provides pre-configured support for:
+- **Google**: OIDC provider with standard scopes
+- **GitHub**: OAuth2 provider
+
+Configuration example:
+```typescript
+export default {
+  config: {
+    auth: {
+      strategies: {
+        google: {
+          type: "oidc",
+          enabled: true,
+          config: {
+            client: {
+              client_id: process.env.GOOGLE_CLIENT_ID,
+              client_secret: process.env.GOOGLE_CLIENT_SECRET,
+            },
+          },
+        },
+        github: {
+          type: "oauth2",
+          enabled: true,
+          config: {
+            client: {
+              client_id: process.env.GITHUB_CLIENT_ID,
+              client_secret: process.env.GITHUB_CLIENT_SECRET,
+            },
+          },
+        },
+      },
+    },
+  },
+} satisfies BkndConfig;
+```
+
+### Custom OAuth Providers
+
+For providers not in the built-in list, create a custom OAuth strategy:
+
+```typescript
+import { CustomOAuthStrategy } from "bknd/auth";
+
+const customStrategy = new CustomOAuthStrategy({
+  name: "my-provider",
+  type: "oauth2", // or "oidc"
+  client: {
+    client_id: process.env.PROVIDER_CLIENT_ID,
+    client_secret: process.env.PROVIDER_CLIENT_SECRET,
+    token_endpoint_auth_method: "client_secret_basic",
+  },
+  as: {
+    issuer: "https://provider.com",
+    authorization_endpoint: "https://provider.com/oauth/authorize",
+    token_endpoint: "https://provider.com/oauth/token",
+    userinfo_endpoint: "https://provider.com/oauth/userinfo",
+    scopes_supported: ["openid", "profile", "email"],
+  },
+  profile: async (userInfo, config, tokenResponse) => {
+    return {
+      email: userInfo.email,
+      sub: userInfo.id, // or userInfo.sub for OIDC
+    };
+  },
+});
+```
+
+### User Creation vs Login Behavior
+
+**Login action (`/api/auth/{strategy}/login`):**
+- Looks for existing user with matching `email` and `strategy`
+- If found: Authenticates and returns JWT
+- If not found: Returns "User not found" error
+
+**Register action (`/api/auth/{strategy}/register`):**
+- Always creates a new user (if email doesn't exist)
+- Requires user to be authenticated with the provider
+- Automatically assigns default role
+
+### Security Considerations
+
+1. **Email verification**: OAuth providers typically verify email addresses, so you can trust the email
+2. **Unique identifiers**: The `sub` (subject) claim uniquely identifies users across providers
+3. **Strategy switching**: Users cannot authenticate with a different strategy once created (validation check in line 252 of `OAuthStrategy.ts`)
+4. **Hidden fields**: `strategy` and `strategy_value` are hidden from normal API queries for security
+
+### Troubleshooting OAuth User Creation
+
+**"User not found" on login:**
+- The user needs to register first (use `/register` endpoint instead of `/login`)
+- Email might be different from what's stored in database
+
+**"Invalid credentials":**
+- User exists but `strategy_value` doesn't match the provider's user ID
+- Possible cause: User was created with a different OAuth account
+
+**"Callback URL mismatch":**
+- Ensure `redirect_uri` matches your application's URL in OAuth provider settings
 
 ## Troubleshooting
 
