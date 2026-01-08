@@ -52,6 +52,7 @@ The current Bknd documentation is **technically accurate and comprehensive**, bu
    - **Issue:** CodeMode vs HybridMode vs UIMode - when to use which?
    - **User Quote:** "There's different modes of backend: CodeMode, HybridMode, UIMode. How do I approach it?"
    - **Fix Needed:** Decision tree and use case scenarios
+   - **✅ STATUS: RESOLVED** - Verified with official docs at https://docs.bknd.io/usage/introduction/. Roadmap decision tree and guidance are accurate and comprehensive.
 
 3. **Auth/Permissions Complexity**
    - **Issue:** How auth/permissions work compared to Firebase
