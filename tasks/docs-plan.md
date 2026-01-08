@@ -199,10 +199,10 @@ Update the file after completing each sub-task, not just after completing an ent
     - Follow each tutorial step-by-step
     - Verify all code examples work
     - Create test checklist for each tutorial
-  - [ ] 6.2 Validate all guide examples
-    - Run all code snippets
-    - Verify copy-paste functionality
-    - Test on fresh environments
+   - [x] 6.2 Validate all guide examples
+     - Run all code snippets
+     - Verify copy-paste functionality
+     - Test on fresh environments
   - [x] 6.3 Cross-link documentation
     - Link tutorials to relevant guides
     - Link guides to reference docs

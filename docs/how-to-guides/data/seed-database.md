@@ -96,7 +96,7 @@ const app = createApp({
   options: {
     async onBuilt(app) {
       app.emgr.onEvent(app.constructor.Events.AppFirstBoot, async ({ app }) => {
-        await app.module.data.posts.insertMany([
+        await app.modules.ctx().em.mutator("posts").insertMany([
           { title: "Auto-seeded post" },
         ]);
       }, "sync");

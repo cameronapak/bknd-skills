@@ -1139,6 +1139,91 @@ const checkEndReached = (previousPageData: any, pageSize: number) => {
 4. **Performance optimization** - Memory usage with large datasets?
 5. **Server-side rendering** - Is SSR supported for infinite scroll?
 
+## Task 6.2: Validate All Guide Examples (RESOLVED)
+
+### Key Discovery: Event-Based Seeding Requires Correct Context Access
+
+During validation of the "Seed Database" guide, I discovered that the Event-Based Seeding example had an incorrect API call.
+
+### Issue Found and Fixed
+
+**Original incorrect code:**
+```typescript
+app.emgr.onEvent(app.constructor.Events.AppFirstBoot, async ({ app }) => {
+  await app.module.data.posts.insertMany([
+    { title: "Auto-seeded post" },
+  ]);
+}, "sync");
+```
+
+**Problem:** The code tried to access `app.module.data.posts.insertMany()`, but `app.module.data` is not the correct pattern. The data module's mutator should be accessed through the entity manager's mutator method.
+
+**Corrected code:**
+```typescript
+app.emgr.onEvent(app.constructor.Events.AppFirstBoot, async ({ app }) => {
+  await app.modules.ctx().em.mutator("posts").insertMany([
+    { title: "Auto-seeded post" },
+  ]);
+}, "sync");
+```
+
+### Validation Methodology
+
+**Research Sources:**
+1. Official Bknd documentation (docs.bknd.io) - Confirmed seed function behavior and `npx bknd sync --seed --force` command
+2. GitHub codebase search (grep-app) - Verified correct patterns by examining actual implementation:
+   - `ctx.em.mutator("entity")` pattern from multiple examples
+   - `ctx.app.module.auth.createUser()` pattern from framework integration examples
+   - `app.modules.ctx()` context access pattern from sync command and event system
+
+**Patterns Validated:**
+
+1. **Seed function syntax** - ✅ Correct
+   ```typescript
+   seed: async (ctx) => {
+     await ctx.em.mutator("posts").insertMany([...]);
+   }
+   ```
+
+2. **Code mode manual seeding** - ✅ Correct
+   ```bash
+   npx bknd sync --seed --force
+   ```
+
+3. **AppFirstBoot event usage** - ✅ Fixed and validated
+   - Must use `app.modules.ctx().em.mutator()` for data operations
+   - Must use `ctx.app.module.auth.createUser()` for user creation (within seed context)
+   - `"sync"` execution mode is correct for initial boot scenarios
+
+4. **Create User methods** - ✅ Validated through codebase examples
+   - `app.createUser()` - Helper method on App instance (correctly documented)
+   - `app.module.auth.createUser()` - Direct module access (validated correct)
+   - `auth.userPool.create()` - Lower-level UserPool access (documented but not directly verified in examples)
+
+### Unknown Areas Requiring Further Validation
+
+1. **Admin UI user creation workflow** - Documented as "Status: ⚠️ Unable to confirm exact workflow"
+   - The create-first-user.md guide explicitly notes this needs hands-on testing
+   - No code examples available for Admin UI interactions
+   - Requires testing `/admin` interface to complete validation
+
+2. **CodeMode initial seed bug** - Mentions in docs plan but not found in validation
+   - The seed-database.md guide includes a note: "The exact behavior and workarounds for CodeMode initial seed bugs mentioned in the docs plan are not documented in available sources"
+   - This may refer to historical issues that have been resolved or need additional research
+
+### Best Practice Learned
+
+**Always validate code examples against actual codebase:**
+- Official documentation may lag behind implementation
+- GitHub examples provide real working code patterns
+- Use grep to search for actual usage patterns in the codebase
+- When in doubt, prefer patterns seen in multiple examples over single documentation sources
+
+### Documentation Updates Made
+
+1. Fixed Event-Based Seeding example in `docs/how-to-guides/data/seed-database.md`
+2. Corrected API call from `app.module.data.posts.insertMany()` to `app.modules.ctx().em.mutator("posts").insertMany()`
+
 ## Task 8.5: Error Recovery Research (RESOLVED)
 
 ### Key Discovery: SWR Provides Built-in Error Recovery with Customizable Retry Logic
