@@ -65,7 +65,7 @@ Update the file after completing each sub-task, not just after completing an ent
     - Clarify "embeddable" architecture (server-side, not client-side)
     - Create architecture diagram
     - Explain when to use Bknd vs alternatives
-  - [ ] 1.3 Write "Choose Your Mode" decision tree (P1)
+  - [x] 1.3 Write "Choose Your Mode" decision tree (P1)
     - Create decision tree for configuration modes (db mode vs code mode vs ui mode) https://docs.bknd.io/usage/introduction/#modes
     - Document deployment approaches (CLI standalone, Framework Embedded, Serverless/Edge)
     - Provide code examples for each approach

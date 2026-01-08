@@ -9,31 +9,25 @@ Bknd offers two key decisions to make when setting up your project:
 
 Configuration modes determine where and how your Bknd app's configuration (entity schemas, auth settings, media config, etc.) is stored and managed.
 
-### db mode (Default)
+### UI-only Mode (Default)
 
-Configuration is stored in the database and can be modified at runtime through the Admin UI.
+Configuration is stored in the database (`__bknd` config table) and can be modified at runtime through the Admin UI. This is the default mode when no mode is specified.
 
-**When to use db mode:**
+**When to use UI-only mode:**
 - **Development**: Rapid prototyping and iteration
 - **Content management**: When you want non-technical users to manage schemas
 - **Quick starts**: When you don't need strict version control on configuration
 
 **Setup:**
 ```typescript
-import { createApp } from "bknd/adapter";
+import type { BkndConfig } from "bknd";
 
-const app = await createApp({
-  connection: { url: "file:data.db" },
-  config: {
-    data: {
-      entities: {/* ... */}
-    },
-    auth: { enabled: true }
-  },
+export default {
+  config: { /* ... */ },  // Only applied if database is empty
   options: {
     mode: "db"  // This is the default
   }
-});
+} satisfies BkndConfig;
 ```
 
 **Benefits:**
@@ -47,11 +41,11 @@ const app = await createApp({
 - Can lead to configuration drift between environments
 - Harder to audit changes over time
 
-### code mode
+### Code-only Mode
 
-Configuration is loaded from your initial config object and treated as immutable. The app runs in read-only mode.
+Configuration is loaded from your initial config object and treated as immutable. The app runs in read-only mode by default.
 
-**When to use code mode:**
+**When to use Code-only mode:**
 - **Production**: Enforce strict version control
 - **Serverless/Edge**: When database writes are restricted
 - **Multi-tenant SaaS**: When you need predictable, auditable configuration
@@ -59,21 +53,30 @@ Configuration is loaded from your initial config object and treated as immutable
 
 **Setup:**
 ```typescript
-import { createApp } from "bknd/adapter";
+import type { BkndConfig, em, entity, text, boolean } from "bknd";
+import { secureRandomString } from "bknd/utils";
 
-const app = await createApp({
-  connection: { url: "file:data.db" },
+const schema = em({
+  todos: entity("todos", {
+    title: text(),
+    done: boolean(),
+  }),
+});
+
+export default {
   config: {
-    data: {
-      entities: {/* ... */}
-    },
-    auth: { enabled: true }
+    data: schema.toJSON(),
+    auth: {
+      enabled: true,
+      jwt: {
+        secret: secureRandomString(64),
+      },
+    }
   },
   options: {
-    mode: "code",
-    readonly: true  // Optional: explicitly set to read-only
+    mode: "code",  // Configuration is always applied
   }
-});
+} satisfies BkndConfig;
 ```
 
 **Benefits:**
@@ -86,6 +89,37 @@ const app = await createApp({
 - No runtime configuration changes
 - Requires deployment for configuration updates
 - Admin UI becomes read-only for configuration
+- Must manually sync schema changes with `npx bknd sync --force`
+
+### Hybrid Mode
+
+This mode allows you to configure your backend visually while in development, and uses the produced configuration in a Code-only mode for maximum performance.
+
+**Setup:**
+```typescript
+import type { BkndConfig } from "bknd";
+import appConfig from "./appconfig.json" with { type: "json" };
+
+export default {
+  config: appConfig,
+  options: {
+    mode: process.env.NODE_ENV === "development" ? "db" : "code",
+    manager: {
+      secrets: process.env
+    }
+  }
+} satisfies BkndConfig;
+```
+
+**Benefits:**
+- Best of both worlds: visual development + code-controlled production
+- Automatic mode switching based on environment
+- Built-in syncing tools for config, secrets, and types
+
+**Trade-offs:**
+- More complex setup
+- Requires exporting configuration from development
+- Needs sync tools for config/secrets/types
 
 ## Deployment Approaches
 
@@ -175,9 +209,9 @@ export default {
 
 ## Recommended Workflow: Mode Switching
 
-A common pattern is to use **db mode in development** and **code mode in production**:
+A common pattern is to use **UI-only mode in development** and **Code-only mode in production** (Hybrid mode).
 
-### Development (db mode)
+### Development (UI-only mode)
 
 ```bash
 # Start with Admin UI and runtime configuration
@@ -189,30 +223,100 @@ npx bknd run
 2. Test different configurations
 3. Export configuration when ready for production
 
-### Production (code mode)
+### Production (Code-only mode)
 
 1. **Export configuration** from development:
 ```bash
-npx bknd config export > appconfig.json
+npx bknd config --out appconfig.json
 ```
 
-2. **Generate environment file**:
+2. **Export secrets** to environment file:
 ```bash
-npx bknd config env > .env.example
+npx bknd secrets --out .env.local --format env
 ```
 
-3. **Deploy with code mode**:
+3. **Generate types** for your schema:
+```bash
+npx bknd types --out bknd-types.d.ts
+```
+
+4. **Deploy with Code-only mode**:
 ```typescript
-const app = await createApp({
-  connection: { url: process.env.DATABASE_URL },
-  config: require('./appconfig.json'),
+import appConfig from "./appconfig.json" with { type: "json" };
+
+export default {
+  config: appConfig,
   options: {
-    mode: "code"
+    mode: "code",
+    manager: {
+      secrets: process.env
+    }
   }
-});
+} satisfies BkndConfig;
+```
+
+5. **Sync database** if needed:
+```bash
+npx bknd sync --force
 ```
 
 This gives you the flexibility of UI-driven development with the safety and auditability of code-controlled production.
+
+### Using Mode Helpers
+
+Bknd provides mode helpers for `code` and `hybrid` modes that automate syncing:
+
+**Code mode helper:**
+```typescript
+import { code, type CodeMode } from "bknd/modes";
+import { type BunBkndConfig, writer } from "bknd/adapter/bun";
+
+const config = {
+  connection: { url: "file:test.db" },
+  writer,  // Required for type syncing
+  isProduction: Bun.env.NODE_ENV === "production",
+  typesFilePath: "bknd-types.d.ts",
+  syncSchema: {
+    force: true,
+    drop: true,
+  }
+} satisfies CodeMode<BunBkndConfig>;
+
+export default code(config);
+```
+
+**Hybrid mode helper:**
+```typescript
+import { hybrid, type HybridMode } from "bknd/modes";
+import { type BunBkndConfig, writer, reader } from "bknd/adapter/bun";
+
+const config = {
+  connection: { url: "file:test.db" },
+  writer,  // Required for type/config syncing
+  reader,  // Required for reading config
+  secrets: await Bun.file(".env.local").json(),
+  isProduction: Bun.env.NODE_ENV === "production",
+  typesFilePath: "bknd-types.d.ts",
+  configFilePath: "bknd-config.json",
+  syncSecrets: {
+    outFile: ".env.local",
+    format: "env",
+    includeSecrets: true,
+  },
+  syncSchema: {
+    force: true,
+    drop: true,
+  },
+} satisfies HybridMode<BunBkndConfig>;
+
+export default hybrid(config);
+```
+
+Mode helpers provide:
+- Built-in syncing of config, types, and secrets
+- Automatic schema syncing in development
+- Automatic mode switching in hybrid (db → code)
+- Automatic config validation skip in production for performance
 
 ## Decision Tree
 
@@ -220,13 +324,16 @@ Use this flow to decide on your configuration mode:
 
 ```
 Need runtime configuration changes?
-├─ Yes → Use db mode
+├─ Yes → Use UI-only mode
 │   └─ Development or content-managed apps
 └─ No → Need strict version control?
-    ├─ Yes → Use code mode
+    ├─ Yes → Use Code-only mode
     │   └─ Production or compliant environments
-    └─ No → Use db mode (default)
-        └─ Simple prototypes
+    └─ No → Want best of both worlds?
+        ├─ Yes → Use Hybrid mode
+        │   └─ Visual dev + code production
+        └─ No → Use UI-only mode (default)
+            └─ Simple prototypes
 ```
 
 Use this flow to decide on your deployment approach:
