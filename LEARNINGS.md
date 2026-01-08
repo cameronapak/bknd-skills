@@ -998,3 +998,193 @@ Good documentation organization follows:
 - **User-centric:** Organize by how users look for information, not by implementation details
 
 This mirrors the Mintlify structure principles where content is organized by documentation type (Divio's Four Documentation Types).
+
+## Task 2.4: "Add Authentication with Permissions" Tutorial
+
+### Key Discovery: Auth Tutorial Requires Multiple Documentation Sources
+
+Creating a comprehensive authentication tutorial revealed that Bknd's documentation is spread across multiple locations, requiring research from:
+
+1. **Zread MCP server** - Code-level documentation (Guard, Permission, Role implementations)
+2. **Official docs** - High-level concepts and configuration examples
+3. **Source code** - Concrete examples (DataController, permission middleware)
+4. **Example projects** - Working patterns (Next.js example with seed function)
+
+### Password Strategy Configuration
+
+**What I know:**
+- Password strategy is configured under `config.auth.strategies.password`
+- Requires `type: "password"`, `enabled: true`, and `config.hashing: "sha256"` (or "bcrypt")
+- Automatically registers endpoints: `/api/auth/password/login` and `/api/auth/password/register`
+- User creation stores `strategy: "password"` and `strategy_value: <hashed_password>`
+- JWT tokens generated with HS256 algorithm using configured `secret`
+
+**What I don't know:**
+- Whether bcrypt is fully implemented (docs mention it as "planned")
+- Exact password validation rules (beyond CLI minimum 3 characters)
+- How to configure custom password requirements (length, complexity, etc.)
+- Password reset/verification flow details
+
+### Role-Based Access Control (RBAC) Configuration
+
+**What I know:**
+- Roles configured in `config.auth.roles` array
+- Each role has: `name`, `is_default`, `implicit_allow`, `permissions`
+- Permissions are strings (e.g., `"data.entity.read"`) or objects with `permission` + `policies`
+- Three built-in data permissions: `entityRead`, `entityCreate`, `entityUpdate`, `entityDelete`
+- Wildcard `"*"` grants all permissions
+- Default role (`is_default: true`) assigned to users without explicit roles
+
+**What I don't know:**
+- How to register **custom permissions** beyond built-in data/auth permissions
+- Whether custom permissions require plugin `onBoot` hook registration
+- Permission naming conventions (e.g., `"posts.publish"` vs `"posts.publish"`)
+- Policy variable substitution details (`$user.id`, `$ctx.prop`)
+- Whether permissions can be scoped to specific entity instances (not just entity types)
+
+### Protecting Endpoints
+
+**What I know:**
+- Built-in data endpoints are automatically protected via `permission()` middleware
+- DataController shows how permissions applied: `permission(DataPermissions.entityRead, { context: (c) => ... })`
+- Middleware throws `GuardPermissionsException` (403) on denied access
+- Guard automatically extracts user from `c.get("auth")?.user`
+
+**What I don't know:**
+- How to protect **custom routes** created via plugins
+- Exact syntax for using `permission()` middleware in custom controllers
+- Whether custom routes need manual Guard setup or inherit it automatically
+- How to access `ctx.guard` in custom controllers
+- Whether there's a `useGuard()` hook or similar pattern
+
+### Client-Side Authentication (Api Class)
+
+**What I know:**
+- `Api` class from `bknd/client` provides `api.auth.login({ email, password })`
+- Login endpoint: `/api/auth/password/login`
+- Logout endpoint: `/api/auth/password/logout`
+- Api automatically manages JWT storage in cookies
+- `api.auth.me()` retrieves current user profile
+
+**What I don't know:**
+- Cookie configuration details (httpOnly, secure, sameSite)
+- Token refresh behavior and timing
+- How to handle expired tokens
+- Error handling for invalid credentials
+- How to access raw JWT tokens if needed
+
+### Permission Evaluation Flow
+
+From Guard.ts source code, evaluation order is:
+1. Check if Guard is enabled (`config.enabled: true`)
+2. Extract user from context (Hono `c.get("auth")?.user`)
+3. Get user role:
+   - If `user.role` is string → find role by name
+   - If no role → find default role (`is_default: true`)
+   - If no default role → return undefined
+4. Check permission exists in Guard
+5. Check role has permission
+6. If no permission and `implicit_allow: false` → throw exception
+7. If no permission and `implicit_allow: true` → allow
+8. If permission exists → evaluate all policies
+9. Deny policy (effect: "deny") takes precedence and stops evaluation
+10. Allow policies and filter policies evaluated, continue if no deny
+
+**Critical insight:** `implicit_allow: true` is dangerous for security-sensitive roles. Always use `implicit_allow: false` for guest/untrusted roles.
+
+### Documentation Pattern: Honest About Unknowns
+
+For authentication tutorial, used three "UNKNOWN" sections:
+
+1. **Admin UI user creation** - Workflow unclear, referenced `create-first-user.md`
+2. **Protecting custom routes** - Syntax for plugin-created routes unknown
+3. **Custom permission registration** - How to register non-built-in permissions unclear
+
+This pattern:
+- Provides working code for what we DO know
+- Clearly marks what needs more research
+- Offers workarounds when possible (e.g., seed function for user creation)
+- Doesn't mislead users with guesses
+- Encourages community contributions
+
+### Testing Checklist Pattern
+
+Created comprehensive checklist covering:
+- Auth module configuration
+- Role and permission setup
+- User creation (via seed)
+- Login/register endpoints working
+- Permission matrix verification (guest, user, admin)
+- Cookie storage verification
+- Logout functionality
+
+This pattern ensures:
+- Users can verify their setup step-by-step
+- Clear indication of what should work vs what's experimental
+- Separation of backend setup vs client integration
+- Security considerations (permissions tested from each role level)
+
+### Cross-References Work Well
+
+Tutorial effectively cross-references:
+- `/getting-started/build-your-first-api` - Prerequisite
+- `/how-to-guides/auth/create-first-user.md` - User creation details
+- `/how-to-guides/permissions/public-access-guard.md` - Guest access patterns
+- `/reference/auth-module` - Complete reference (placeholder updated to specific sections)
+- `/getting-started/deploy-to-production` - Next steps
+
+This creates a clear learning path where users can dive deeper into specific topics as needed.
+
+### Key Gap: Custom Route Protection Pattern
+
+This is the most significant unknown area. Based on ModuleManager docs:
+- Plugins can register custom controllers: `this.ctx.server.route('/api/custom', controller)`
+- DataController uses `permission()` middleware from `auth/middlewares/permission.middleware.ts`
+- BUT: No documentation shows how custom controllers use this middleware
+
+**Hypothesis (unverified):**
+```typescript
+import { permission } from "auth/middlewares/permission.middleware";
+import * as DataPermissions from "data/permissions";
+
+class CustomController extends Controller {
+  getController() {
+    const hono = this.create();
+    
+    hono.get(
+      "/custom",
+      permission(DataPermissions.entityRead, { context: (c) => ... }),
+      (c) => c.json({ data: "protected" })
+    );
+    
+    return hono;
+  }
+}
+```
+
+This needs to be tested against actual implementation.
+
+### Next Steps for Complete Auth Documentation
+
+1. **Test custom route protection** - Create a plugin with protected custom endpoint
+2. **Document custom permission registration** - How to add permissions beyond built-in data/auth
+3. **Verify Admin UI user creation** - Test actual workflow in live instance
+4. **Explore password strategy internals** - Validation, hashing, reset flows
+5. **Document OAuth integration** - How OAuth users are created and managed
+6. **Add advanced patterns** - Multi-factor auth, session management, rate limiting
+
+### Source Code Locations
+
+Key files for authentication understanding:
+- `app/src/auth/auth-schema.ts` - Auth configuration schema (roles, strategies, jwt)
+- `app/src/auth/AppAuth.ts` - Auth module implementation
+- `app/src/auth/AppUserPool.ts` - User pool and CRUD operations
+- `app/src/auth/Authenticator.ts` - JWT generation and coordination
+- `app/src/auth/authenticate/strategies/PasswordStrategy.ts` - Password strategy implementation
+- `app/src/auth/authorize/Guard.ts` - Permission enforcement engine
+- `app/src/auth/authorize/Role.ts` - Role implementation
+- `app/src/auth/authorize/Permission.ts` - Permission definition
+- `app/src/auth/middlewares/permission.middleware.ts` - Permission middleware for Hono
+- `app/src/auth/api/AuthController.ts` - Auth endpoint handlers
+- `app/src/data/api/DataController.ts` - Data endpoint protection examples
+- `app/src/modules/ModuleManager.ts` - Plugin system and controller registration

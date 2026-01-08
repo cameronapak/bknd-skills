@@ -29,6 +29,8 @@ We are improving the documentation for bknd-io/bknd: https://github.com/bknd-io/
 - `docs/reference/data-module.md` - Complete Data module documentation
 - `docs/architecture-and-concepts/how-bknd-works.md` - Request lifecycle and architecture
 
+**IMPORTANT:** YOU MUST READ LEARNINGS.md to get caught up before doing any work.
+
 ### Notes
 
 - Use Mintlify format for all documentation files
@@ -103,11 +105,11 @@ Update the file after completing each sub-task, not just after completing an ent
     - Explain when to use each type
     - Provide configuration examples
     - Document trade-offs
-  - [ ] 2.4 Write "Add Auth with Permissions" tutorial (P2)
-    - Set up email/password auth (20 min)
-    - Create roles (admin, user, guest)
-    - Assign permissions
-    - Protect endpoints
+   - [x] 2.4 Write "Add Auth with Permissions" tutorial (P2)
+     - Set up email/password auth (20 min)
+     - Create roles (admin, user, guest)
+     - Assign permissions
+     - Protect endpoints
   - [x] 2.5 Write "Request Lifecycle" explanation (P2)
     - Document how requests flow through Bknd
     - Explain database interaction
