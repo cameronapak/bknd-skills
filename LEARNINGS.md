@@ -1088,11 +1088,49 @@ await db.transaction().execute(async (trx) => {
 
 The following aspects are still not documented:
 
-1. **SQLite WAL mode configuration** - How to enable WAL mode in Bknd config or connection initialization?
+1. ~~**SQLite WAL mode configuration** - How to enable WAL mode in Bknd config or connection initialization?~~ - **RESOLVED** ✅
 2. **PostgreSQL connection pool tuning** - How to configure pool size, timeout, and max connections?
 3. **Isolation level customization** - How to override default isolation levels per database?
 4. **Transaction timeout behavior** - What happens on long-running transactions?
 5. **Nested transaction support** - Does Bknd/Kysely support savepoints?
+
+### SQLite WAL Mode Configuration (RESOLVED)
+
+WAL mode can be enabled using the `onCreateConnection` callback in the connection configuration.
+
+**Node.js SQLite:**
+```typescript
+import { nodeSqlite, type NodeBkndConfig } from "bknd/adapter/node";
+
+export default {
+  connection: nodeSqlite({
+    url: "file:data.db",
+    onCreateConnection: (db) => {
+      db.exec("PRAGMA journal_mode = WAL;");
+    },
+  }),
+} satisfies NodeBkndConfig;
+```
+
+**Bun SQLite:**
+```typescript
+import { bunSqlite, type BunBkndConfig } from "bknd/adapter/bun";
+
+export default {
+  connection: bunSqlite({
+    url: "file:data.db",
+    onCreateConnection: (db) => {
+      db.run("PRAGMA journal_mode = WAL;");
+    },
+  }),
+} satisfies BunBkndConfig;
+```
+
+**Key Benefits:**
+- Concurrent reads and writes
+- Snapshot isolation for readers
+- Better performance with reduced disk I/O
+- Persistent setting (unlike other journal modes)
 
 ### Documentation Update
 

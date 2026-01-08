@@ -2,7 +2,6 @@
 
 Understanding how requests flow through Bknd is essential for building efficient applications and troubleshooting issues effectively. This document explains the complete request lifecycle, from initialization to response.
 
-## Application Lifecycle
 
 Before processing requests, Bknd goes through several initialization phases:
 
@@ -291,7 +290,51 @@ async executeQueries<O extends ConnQuery[]>(...qbs: O): Promise<ConnQueryResults
 - SERIALIZABLE isolation by default (highest level)
 - In rollback mode (default): Exclusive lock during writes blocks all reads
 - In WAL mode: Snapshot isolation with concurrent reads/writes
-- Enable WAL mode with: `PRAGMA journal_mode=WAL`
+
+### SQLite WAL Mode Configuration
+
+SQLite's **Write-Ahead Logging (WAL)** mode provides significant performance benefits by allowing concurrent reads and writes.
+
+**How to enable WAL mode:**
+
+**Node.js SQLite:**
+```typescript
+import { nodeSqlite, type NodeBkndConfig } from "bknd/adapter/node";
+
+export default {
+  connection: nodeSqlite({
+    url: "file:data.db",
+    onCreateConnection: (db) => {
+      db.exec("PRAGMA journal_mode = WAL;");
+    },
+  }),
+} satisfies NodeBkndConfig;
+```
+
+**Bun SQLite:**
+```typescript
+import { bunSqlite, type BunBkndConfig } from "bknd/adapter/bun";
+
+export default {
+  connection: bunSqlite({
+    url: "file:data.db",
+    onCreateConnection: (db) => {
+      db.run("PRAGMA journal_mode = WAL;");
+    },
+  }),
+} satisfies BunBkndConfig;
+```
+
+**WAL mode benefits:**
+- **Concurrent reads and writes** - Multiple readers can access database while writer writes
+- **Snapshot isolation** - Readers see consistent snapshot from start of transaction
+- **Better performance** - Reduces disk I/O by appending changes to WAL file
+- **Persistent** - Unlike other journal modes, WAL mode setting persists in database
+
+**Trade-offs:**
+- Slightly more complex file management (WAL + .db-wal + .db-shm files)
+- Requires file locking support (works on most modern file systems)
+- Not supported in all SQLite configurations (edge runtimes, some constraints)
 
 **For reads:**
 1. Open connection
@@ -396,7 +439,6 @@ The following aspects are not fully documented in available resources:
 2. **Event propagation order** - What is the guaranteed order of event handler execution?
 3. **Error propagation** - How do errors flow through the middleware chain?
 4. **Caching strategies** - Are there any built-in caching mechanisms for frequently accessed data?
-5. **SQLite WAL mode configuration** - How to enable and configure WAL mode in Bknd?
 6. **PostgreSQL connection pool tuning** - How to configure pool size and timeout settings?
 
 For detailed implementation questions, refer to the source code or consult the Bknd community.
