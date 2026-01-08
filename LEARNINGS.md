@@ -1151,6 +1151,185 @@ Key files for understanding transaction handling:
 - SQLite isolation docs: https://sqlite.org/isolation.html
 - Kysely transaction docs: https://kysely.dev/docs/examples/transactions/simple-transaction
 
+## Task 4.4: AWS Lambda Integration Guide
+
+### Key Discovery: AWS Lambda Adapter with Hono Handler
+
+Bknd provides a dedicated AWS Lambda adapter that converts Lambda events to Hono requests, using `hono/aws-lambda` handler under the hood.
+
+### Adapter Implementation
+
+From `app/src/adapter/aws/aws-lambda.adapter.ts`:
+
+```typescript
+import type { App } from "bknd";
+import { handle } from "hono/aws-lambda";
+
+export function serve<Env extends AwsLambdaEnv = AwsLambdaEnv>(
+   config: AwsLambdaBkndConfig<Env> = {},
+   args: Env = {} as Env,
+) {
+   return async (event) => {
+      const app = await createApp(config, args);
+      return await handle(app.server)(event);
+   };
+}
+```
+
+**Key characteristics:**
+- Returns a Lambda handler function that accepts AWS events
+- Creates Bknd app on each invocation (cold starts)
+- Uses `hono/aws-lambda` for event transformation
+- Supports both local and URL-based asset serving
+
+### Asset Serving Modes
+
+Bknd Lambda adapter supports two asset serving strategies:
+
+**Local Mode:**
+```javascript
+assets: {
+   mode: "local",
+   root: "./static",
+}
+```
+- Assets bundled with Lambda function
+- Served via `@hono/node-server/serve-static`
+- Adds cache headers (`Cache-Control: public, max-age=31536000`)
+- Requires `npx bknd copy-assets --out=static` before deployment
+
+**URL Mode:**
+```javascript
+assets: {
+   mode: "url",
+   url: "https://cdn.example.com/assets",
+}
+```
+- Assets hosted externally (CDN)
+- Admin UI configured to use external URL
+- Smaller Lambda bundle size
+- Better for frequent deployments
+
+### Deployment Architecture
+
+The deployment script (`examples/aws-lambda/deploy.sh`) provides a complete deployment workflow:
+
+**Build Step:**
+1. Create `dist/` directory
+2. Copy Admin UI assets: `npx bknd copy-assets --out=dist/static`
+3. Bundle with esbuild: `--bundle --format=cjs --platform=browser --external:fs`
+4. Package into ZIP
+
+**Important:** `--platform=browser` is required for LibSQL compatibility (avoids need to bundle node_modules)
+
+**AWS Infrastructure:**
+1. Create IAM role with Lambda execution permissions
+2. Attach `AWSLambdaBasicExecutionRole` policy
+3. Create/update Lambda function with code and configuration
+4. Set environment variables from `.env` file
+5. Create Function URL for HTTP access
+
+**Configuration:**
+- Runtime: `nodejs22.x`
+- Architecture: `arm64` (or `x86_64`)
+- Memory: `1024` MB
+- Timeout: `30` seconds
+- Handler: `index.handler`
+
+### Lambda-Specific Configuration
+
+**Environment Variables:**
+- Must be defined in `.env` file for deployment script
+- Script reads and exports them automatically
+- Includes database URLs, tokens, and other secrets
+
+**Function URL:**
+- Created automatically by deployment script
+- Auth type: `NONE` (public access)
+- Direct HTTP endpoint without API Gateway
+- More cost-effective than API Gateway for simple backends
+
+### Critical Unknowns Requiring Research
+
+1. **RDS Proxy Integration**: How to configure RDS Proxy with Bknd's connection pooling to prevent connection exhaustion
+2. **Provisioned Concurrency**: How to enable and configure provisioned concurrency to reduce cold starts
+3. **Custom Lambda Authorizers**: How to integrate AWS Lambda authorizers with Bknd's Guard authentication system
+4. **Lambda SnapStart Compatibility**: Whether SnapStart (sub-second cold starts) works with Bknd's initialization process
+5. **Multi-Region Deployment**: Best practices for deploying Bknd Lambda across multiple AWS regions
+6. **VPC Configuration**: Detailed steps for configuring VPC, subnets, and security groups for private database access
+
+### Database Connection Strategy
+
+**Lambda-specific challenges:**
+- Each invocation may create new connections
+- Serverless scaling can exhaust connection limits
+- Cold starts increase latency
+
+**Recommended databases:**
+- **RDS PostgreSQL** - Use RDS Proxy for connection pooling
+- **Turso/LibSQL** - HTTP-based connections scale better
+- **Avoid**: File-based SQLite (Lambda file system is ephemeral)
+
+### Production Considerations
+
+**Cold Start Optimization:**
+- Use `arm64` architecture (faster initialization)
+- Optimize bundle size (remove unused dependencies)
+- Enable provisioned concurrency for consistent performance
+- Consider Lambda SnapStart (if compatible)
+
+**Security:**
+- Replace `--auth-type NONE` with custom authorization
+- Use IAM-based Function URLs
+- Store secrets in AWS Secrets Manager
+- Implement VPC for private database access
+- Use KMS encryption for environment variables
+
+**Monitoring:**
+- CloudWatch Logs for debugging
+- X-Ray for distributed tracing
+- CloudWatch Alarms for errors and throttling
+- Monitor cold start frequency
+
+### Documentation Pattern: "What We Don't Know" Sections
+
+For platform-specific integrations with incomplete knowledge:
+
+```markdown
+**UNKNOWN AREAS:**
+
+**What we don't know:**
+- Critical missing detail 1
+- Critical missing detail 2
+
+**Workaround:** If available, provide alternative approach
+**TODO:** What needs to be researched next
+```
+
+This pattern:
+- Is honest about documentation gaps
+- Provides workarounds when possible
+- Encourages community contributions
+- Sets clear research priorities
+
+### Source Code Locations
+
+Key files for understanding AWS Lambda integration:
+- `app/src/adapter/aws/aws-lambda.adapter.ts` - Lambda adapter implementation
+- `examples/aws-lambda/deploy.sh` - Complete deployment script
+- `examples/aws-lambda/index.mjs` - Lambda entry point example
+- `examples/aws-lambda/package.json` - Build configuration
+
+### Next Steps for Better Documentation
+
+1. Test RDS Proxy configuration with Bknd
+2. Document provisioned concurrency setup
+3. Provide custom Lambda authorizer examples
+4. Test Lambda SnapStart compatibility
+5. Create multi-region deployment guide
+6. Add VPC configuration examples
+7. Document monitoring and alerting setup
+
 
 
 ### Key Discovery: Request Lifecycle is Multi-Layered

@@ -162,9 +162,9 @@ Update the file after completing each sub-task, not just after completing an ent
    - [x] 4.3 Write Cloudflare Workers guide (P3)
      - Edge deployment setup
      - D1 database configuration
-   - [ ] 4.4 Write AWS Lambda guide (P3)
-    - Serverless deployment
-    - Environment configuration
+   - [x] 4.4 Write AWS Lambda guide (P3)
+     - Serverless deployment
+     - Environment configuration
   - [ ] 4.5 Write Docker guide (P3)
     - Container setup
     - Database configuration
