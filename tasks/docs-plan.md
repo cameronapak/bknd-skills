@@ -95,7 +95,7 @@ Update the file after completing each sub-task, not just after completing an ent
     - Configure guest access
     - Test permission rules
     - Include Firebase comparison
-  - [ ] 2.2 Write "Entity-Media Relationships" guide (P1)
+  - [x] 2.2 Write "Entity-Media Relationships" guide (P1)
     - Document one-to-many relationships
     - Document many-to-many relationships
     - Provide complete code examples
