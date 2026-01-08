@@ -981,6 +981,140 @@ Key files for understanding primary key configuration:
 
 ## Task 2.5: "Request Lifecycle" Explanation
 
+### Key Discovery: Transaction Handling is Database-Dependent
+
+Bknd's transaction behavior varies significantly between PostgreSQL and SQLite connections due to different connection implementations.
+
+### PostgreSQL Transactions
+
+PostgreSQL connections (`PostgresConnection`) override `executeQueries()` to automatically wrap batched queries in a transaction:
+
+**From `packages/postgres/src/PostgresConnection.ts`:**
+```typescript
+override async executeQueries<O extends ConnQuery[]>(...qbs: O): Promise<ConnQueryResults<O>> {
+   return this.kysely.transaction().execute(async (trx) => {
+      return Promise.all(qbs.map((q) => trx.executeQuery(q)));
+   }) as any;
+}
+```
+
+**Key characteristics:**
+- **Batching enabled by default** (`supported.batching: true`)
+- Automatic transaction wrapping for `executeQueries()` calls
+- Atomic execution: all queries succeed or all fail with rollback
+- Uses `postgres-js` driver with automatic connection pooling
+- Supports Kysely's `.setIsolationLevel()` API
+- Uses PostgreSQL's default isolation level (Read Committed)
+
+### SQLite Transactions
+
+SQLite connections (`SqliteConnection`) do NOT override `executeQueries()`, so they use the base class implementation:
+
+**From `app/src/data/connection/Connection.ts`:**
+```typescript
+async executeQueries<O extends ConnQuery[]>(...qbs: O): Promise<ConnQueryResults<O>> {
+   return Promise.all(qbs.map(async (q) => await this.kysely.executeQuery(q)));
+}
+```
+
+**Key characteristics:**
+- **Batching disabled by default** (`supported.batching: false`)
+- Each query executes independently (no implicit transaction wrapping)
+- SERIALIZABLE isolation by default (highest SQL isolation level)
+- Connection behavior depends on journal mode:
+  - **Rollback mode** (default): Exclusive lock during writes, blocks all reads
+  - **WAL mode** (Write-Ahead Log): Snapshot isolation, concurrent reads/writes
+- Enable WAL mode: `PRAGMA journal_mode=WAL`
+
+### SQLite Isolation Levels (From SQLite.org)
+
+**SERIALIZABLE by default:**
+- SQLite implements serializable by actually serializing writes
+- Only one writer at a time to an SQLite database
+- Multiple readers possible in WAL mode
+- Writers take turns using locks (automatic, application doesn't worry)
+
+**Snapshot Isolation in WAL Mode:**
+- Reader sees unchanging snapshot from start of transaction
+- Write transactions that commit during read are invisible to reader
+- Must end read transaction and start new one to see changes
+- Concurrent readers and writers possible (WAL mode only)
+
+### Transaction Rollback Behavior
+
+**From Kysely documentation:**
+- If exception is thrown inside transaction callback:
+  1. Exception is caught
+  2. Transaction is rolled back
+  3. Exception is thrown again
+- Otherwise: Transaction is committed
+
+This means Bknd provides automatic rollback on errors for both PostgreSQL and SQLite transactions.
+
+### Manual Transaction Control
+
+Developers can explicitly control transactions using Kysely's transaction API:
+
+```typescript
+await db.transaction().execute(async (trx) => {
+  const user = await trx.insertInto('users')
+    .values({ email, password })
+    .returning('id')
+    .executeTakeFirst();
+  
+  const profile = await trx.insertInto('profiles')
+    .values({ userId: user.id, name })
+    .execute();
+  
+  // Both inserts succeed or both fail (atomic)
+});
+```
+
+### Connection Pooling
+
+**PostgreSQL:**
+- Automatic pooling via `postgres-js` driver
+- Connections returned to pool after query completes
+- Configurable via connection string parameters
+- Multiple concurrent queries possible
+
+**SQLite:**
+- No explicit pooling (single file, single connection process)
+- One writer at a time (serialized by locks)
+- Multiple readers in WAL mode
+- Shared cache mode can enable more concurrent readers
+
+### Critical Unknowns Requiring Research
+
+The following aspects are still not documented:
+
+1. **SQLite WAL mode configuration** - How to enable WAL mode in Bknd config or connection initialization?
+2. **PostgreSQL connection pool tuning** - How to configure pool size, timeout, and max connections?
+3. **Isolation level customization** - How to override default isolation levels per database?
+4. **Transaction timeout behavior** - What happens on long-running transactions?
+5. **Nested transaction support** - Does Bknd/Kysely support savepoints?
+
+### Documentation Update
+
+Updated `docs/architecture-and-concepts/how-bknd-works.md` to:
+- Document connection-specific transaction behavior
+- Add comparison table for PostgreSQL vs SQLite
+- Explain batching differences
+- Document isolation levels (SERIALIZABLE for SQLite, Read Committed for PostgreSQL)
+- Provide manual transaction examples
+- Document connection pooling differences
+
+### Source Code Locations
+
+Key files for understanding transaction handling:
+- `packages/postgres/src/PostgresConnection.ts` - PostgreSQL transaction implementation
+- `app/src/data/connection/sqlite/SqliteConnection.ts` - SQLite connection base
+- `app/src/data/connection/Connection.ts` - Base connection class
+- SQLite isolation docs: https://sqlite.org/isolation.html
+- Kysely transaction docs: https://kysely.dev/docs/examples/transactions/simple-transaction
+
+
+
 ### Key Discovery: Request Lifecycle is Multi-Layered
 
 Bknd's request processing flows through several distinct layers, each with specific responsibilities. Understanding this flow is critical for debugging, performance optimization, and customizing behavior.

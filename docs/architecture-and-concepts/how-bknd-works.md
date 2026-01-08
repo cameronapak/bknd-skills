@@ -249,6 +249,50 @@ Bknd supports multiple database backends through adapters:
 
 ### Transaction Handling
 
+**Connection-dependent behavior:**
+
+| Database | Batching | Transaction Behavior | Isolation Level |
+|----------|------------|---------------------|------------------|
+| PostgreSQL | Enabled by default | All queries in `executeQueries()` wrapped in single transaction | Uses PostgreSQL's default (Read Committed) |
+| SQLite | Disabled by default | No automatic transactions for batched queries | SERIALIZABLE |
+
+**PostgreSQL transactions:**
+
+PostgreSQL connections override `executeQueries()` to wrap multiple queries in a transaction:
+
+```typescript
+// From PostgresConnection.ts
+override async executeQueries<O extends ConnQuery[]>(...qbs: O): Promise<ConnQueryResults<O>> {
+   return this.kysely.transaction().execute(async (trx) => {
+      return Promise.all(qbs.map((q) => trx.executeQuery(q)));
+   }) as any;
+}
+```
+
+**Key characteristics:**
+- Atomic execution of batched queries with automatic rollback on errors
+- Uses database connection pooling via `postgres-js`
+- Supports Kysely's `.setIsolationLevel()` API (if you override method)
+- Batching improves performance for multiple operations
+
+**SQLite transactions:**
+
+SQLite connections do NOT override `executeQueries()`, meaning batched queries execute independently:
+
+```typescript
+// From Connection.ts (base class)
+async executeQueries<O extends ConnQuery[]>(...qbs: O): Promise<ConnQueryResults<O>> {
+   return Promise.all(qbs.map(async (q) => await this.kysely.executeQuery(q)));
+}
+```
+
+**Key characteristics:**
+- Each query executes independently (no implicit transaction wrapping)
+- SERIALIZABLE isolation by default (highest level)
+- In rollback mode (default): Exclusive lock during writes blocks all reads
+- In WAL mode: Snapshot isolation with concurrent reads/writes
+- Enable WAL mode with: `PRAGMA journal_mode=WAL`
+
 **For reads:**
 1. Open connection
 2. Execute query with applied filters (RLS)
@@ -256,14 +300,39 @@ Bknd supports multiple database backends through adapters:
 4. Close connection
 
 **For writes:**
-1. Open transaction
+1. Open transaction (automatic for single operations, manual for multi-step)
 2. Validate request against schema
 3. Execute mutation
 4. Emit `EntityChanged` event
-5. Commit transaction
+5. Commit transaction (automatic on success, rollback on error)
 6. Close connection
 
-**Note:** The specific transaction isolation levels and rollback behavior are not documented in available resources.
+**Manual transactions:**
+
+You can explicitly control transactions using Kysely's transaction API:
+
+```typescript
+await db.transaction().execute(async (trx) => {
+  const user = await trx.insertInto('users')
+    .values({ email, password })
+    .returning('id')
+    .executeTakeFirst();
+  
+  const profile = await trx.insertInto('profiles')
+    .values({ userId: user.id, name })
+    .execute();
+  
+  // Both inserts succeed or both fail (atomic)
+});
+```
+
+**PostgreSQL connection pooling:**
+
+PostgreSQL connections (via `postgres-js`) maintain a pool of connections:
+- Automatically managed by `postgres-js` driver
+- Connection returned to pool after query completes
+- Configurable via connection string parameters
+- No explicit pooling for SQLite (single file, single connection process)
 
 ## Event System
 
@@ -323,12 +392,12 @@ app.on('user-created', async (event) => {
 
 The following aspects are not fully documented in available resources:
 
-1. **Specific transaction isolation levels** - How are read/write transactions isolated?
-2. **Connection pooling behavior** - How does Bknd manage database connections under load?
-3. **Query optimization internals** - How does the query builder optimize SQL generation?
-4. **Event propagation order** - What is the guaranteed order of event handler execution?
-5. **Error propagation** - How do errors flow through the middleware chain?
-6. **Caching strategies** - Are there any built-in caching mechanisms for frequently accessed data?
+1. **Query optimization internals** - How does the query builder optimize SQL generation?
+2. **Event propagation order** - What is the guaranteed order of event handler execution?
+3. **Error propagation** - How do errors flow through the middleware chain?
+4. **Caching strategies** - Are there any built-in caching mechanisms for frequently accessed data?
+5. **SQLite WAL mode configuration** - How to enable and configure WAL mode in Bknd?
+6. **PostgreSQL connection pool tuning** - How to configure pool size and timeout settings?
 
 For detailed implementation questions, refer to the source code or consult the Bknd community.
 
