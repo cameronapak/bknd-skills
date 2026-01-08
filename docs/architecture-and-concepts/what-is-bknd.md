@@ -6,7 +6,7 @@
 
 Bknd solves five key problems with traditional backend systems:
 
-1. **Database lock-in** - Uses SQLite as the base, treating it as a data store with schema enforcement at the application layer
+1. **Database lock-in** - Uses SQLite, LibSQL, or even Postgres as the base, treating it as a data store with schema enforcement at the application layer
 2. **Environment and framework lock-in** - Works with any JavaScript framework by strictly using Web APIs
 3. **Deviation from standards** - Adheres to web standards for authentication headers and query parameters
 4. **Wrong-for-your-use-case implementations** - Uses an event system instead of hardcoding features like email verification
