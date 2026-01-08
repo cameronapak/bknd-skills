@@ -2393,6 +2393,107 @@ Each relation type supports specific mutation operators:
 Note: OneToOne $set is disabled to maintain exclusivity.
 ```
 
+## Task 7.1: Create Documentation Index (RESOLVED)
+
+### Key Discovery: Mintlify Home Page Uses index.md and MDX Components
+
+Mintlify uses `index.md` (or `index.mdx`) as the home page of documentation. This file supports standard frontmatter and can use Mintlify's built-in MDX components for rich formatting.
+
+### Home Page Best Practices
+
+1. **Quick Start Cards** - Use grid layout with cards linking to main tutorials
+2. **What Is Section** - Brief overview linking to detailed concept page
+3. **Popular Resources** - Categorized lists of commonly accessed guides and reference docs
+4. **Next Steps** - Progressive onboarding path based on user intent
+
+### Mintlify MDX Components
+
+From Mintlify docs research:
+
+**Grid Component:**
+```mdx
+<div className="grid gap-4 grid-cols-1 md:grid-cols-3">
+  <!-- Cards -->
+</div>
+```
+
+**Card Component:**
+```mdx
+<div className="flex flex-col gap-2 p-4 rounded-lg border border-border">
+  ### [Link Title](path)
+  Description text
+</div>
+```
+
+**Note:** Use `border-border` for theme-aware borders.
+
+### Navigation Configuration
+
+Home page must be added to `docs.json` navigation. For index page:
+```json
+{
+  "group": "Getting Started",
+  "pages": [
+    "index",  // <-- This references index.md
+    "other-pages"
+  ]
+}
+```
+
+### Content Strategy
+
+**Quick Start Section:**
+- 3 cards linking to main tutorials (Build API, Add Auth, Deploy)
+- Each card includes time estimate and brief description
+- Uses grid layout for visual hierarchy
+
+**What Is Bknd Section:**
+- High-level feature overview
+- Links to "What is Bknd?" for detailed explanation
+- Key selling points (embeddable, type-safe, zero-config, built-in auth)
+
+**Popular Resources:**
+- Categorized by topic (Core Concepts, Integrations, Auth, Data)
+- Each item has brief description
+- Includes reference docs alongside how-to guides
+
+**Getting Help:**
+- Links to community resources (GitHub, Discussions)
+- Links to official docs and repository
+- Search tip (Ctrl/Cmd + K)
+
+**Next Steps:**
+- Progressive learning path
+- Based on user intent (new, exploring, integrating, auth, deploying)
+- Short, actionable items with links
+
+### Unknown Areas
+
+1. **Search optimization** - Task 7.2 will cover meta descriptions and keywords
+2. **Onboarding flow** - Task 7.3 will refine progressive disclosure
+3. **Custom components** - Can we add React components to index.mdx?
+4. **Analytics** - How to track which resources are most popular?
+
+### Documentation Created
+
+**docs/index.md:**
+- Complete home page with Quick Start, What Is Bknd, Popular Resources, Getting Help, and Next Steps sections
+- Uses Mintlify grid component for responsive layout
+- Follows Divio's documentation types (tutorial links, guide links, reference links)
+
+**docs.json:**
+- Added "index" to Getting Started navigation
+- Maintains alphabetical ordering within group
+
+### Best Practices for Home Pages
+
+1. **Clear hierarchy** - Use grid layout for visual grouping
+2. **Multiple entry points** - Support different user intents (new vs experienced)
+3. **Brief descriptions** - Each link should explain value proposition
+4. **Progressive disclosure** - Start with essentials, link to deeper content
+5. **Theme-aware styling** - Use Mintlify classes like `border-border`
+6. **Searchable** - Include keywords in descriptions for search optimization
+
 ## Summary of Unknown Areas (All Now Resolved)
 
 1. ~~**Transaction management**~~ - **RESOLVED** ❌ No transaction API, use Kysely directly

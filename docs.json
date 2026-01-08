@@ -24,6 +24,7 @@
       {
         "group": "Getting Started",
         "pages": [
+          "index",
           "architecture-and-concepts/what-is-bknd",
           "getting-started/build-your-first-api",
           "getting-started/add-authentication",

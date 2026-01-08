@@ -213,7 +213,7 @@ Update the file after completing each sub-task, not just after completing an ent
     - Check for dead links
 
 - [ ] 7.0 Launch Preparation
-  - [ ] 7.1 Create documentation index
+  - [x] 7.1 Create documentation index
     - Quick start links
     - Popular resources
     - Getting help section
