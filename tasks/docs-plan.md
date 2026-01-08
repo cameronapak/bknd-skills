@@ -117,7 +117,7 @@ Update the file after completing each sub-task, not just after completing an ent
     - Explain auth flow (JWT, sessions)
     - Explain permission evaluation (RLS + RBAC)
 
-  - [ ] 3.0 Phase 3: Integration Guides (Week 5-6)
+  - [x] 3.0 Phase 3: Integration Guides (Week 5-6)
    - [x] 3.1 Write Next.js integration guide (P2)
      - Complete working example
      - Server component integration
@@ -194,7 +194,7 @@ Update the file after completing each sub-task, not just after completing an ent
      - Media.Dropzone documentation
      - Auto-config forms documentation
 
- - [ ] 6.0 Testing & Validation
+  - [x] 6.0 Testing & Validation
    - [x] 6.1 Test all tutorials end-to-end
     - Follow each tutorial step-by-step
     - Verify all code examples work
