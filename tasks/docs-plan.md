@@ -117,15 +117,15 @@ Update the file after completing each sub-task, not just after completing an ent
     - Explain permission evaluation (RLS + RBAC)
 
   - [ ] 3.0 Phase 3: Integration Guides (Week 5-6)
-  - [x] 3.1 Write Next.js integration guide (P2)
-    - Complete working example
-    - Server component integration
-    - App router configuration
-    - Environment setup
-  - [ ] 3.2 Write Vite + React integration guide (P2)
-    - Standalone SPA setup
-    - API integration patterns
-    - State management approach
+   - [x] 3.1 Write Next.js integration guide (P2)
+     - Complete working example
+     - Server component integration
+     - App router configuration
+     - Environment setup
+   - [x] 3.2 Write Vite + React integration guide (P2)
+     - Standalone SPA setup
+     - API integration patterns
+     - State management approach
   - [ ] 3.3 Write React Router integration guide (P3)
     - Loader/Action pattern integration
     - Route-based authentication

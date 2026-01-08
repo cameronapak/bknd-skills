@@ -1093,6 +1093,316 @@ Key files for Next.js integration:
 5. **Use code fences with language** - Highlight syntax correctly
 6. **Include troubleshooting** - Common issues and their fixes
 
+## Task 3.2: Vite + React Integration Guide
+
+### Key Discovery: Vite + React Integration is Simple and Well-Documented
+
+The Vite + React integration provides a straightforward setup for standalone SPA applications with:
+- Hono server integration via `@hono/vite-dev-server`
+- Hot Module Replacement (HMR) out of the box
+- API routes at `/api/*` prefix
+- Admin UI available at root `/` by default
+
+### Integration Components
+
+**What I know:**
+
+1. **Core files needed:**
+   - `bknd.config.ts` - Bknd configuration with `ViteBkndConfig` type
+   - `server.ts` - Server entry point using `serve()` from `bknd/adapter/vite`
+   - `vite.config.ts` - Vite configuration with `devServer()` plugin
+
+2. **Dependencies:**
+   - `bknd` - Core Bknd package
+   - `@hono/vite-dev-server` - Hono dev server integration
+   - Optional: `@bknd/plasmic` for Plasmic integration
+
+3. **Configuration:**
+   - `serve()` function accepts `ViteBkndConfig` which extends `RuntimeBkndConfig`
+   - Optional `adminOptions.forceDev.mainPath` for admin UI entry
+   - Optional `serveStatic` configuration for static file serving
+   - Default port is 5174 (Vite default)
+
+4. **API patterns:**
+   - Client-side `Api` class from `bknd/client`
+   - React SDK with `ClientProvider` and hooks like `useAuth()`
+   - Type generation via `npx bknd types`
+
+5. **Deployment:**
+   - Build with `npm run build`
+   - Preview with `npm run preview`
+   - Can deploy to Vercel, Netlify, or Node.js server
+   - Production bundle in `dist/` directory
+
+**What I don't know:**
+
+1. **Server-side rendering support:** Does Vite + React integration support SSR?
+2. **Edge runtime compatibility:** Can this run on Cloudflare Workers or other edge runtimes?
+3. **Advanced dev server configuration:** What other options does `devServer()` support?
+4. **Performance characteristics:** How does HMR performance compare to other integrations?
+5. **Custom middleware:** How to add custom middleware to the dev server?
+
+### Vite Plugin Configuration
+
+The `devServer()` plugin from `bknd/adapter/vite`:
+- Integrates with Vite's plugin system
+- Provides HMR via `@hono/vite-dev-server`
+- Requires `entry` parameter pointing to `server.ts`
+- Handles React HMR injection automatically
+
+### Server Setup Pattern
+
+```typescript
+// server.ts
+import { serve } from "bknd/adapter/vite";
+import config from "./bknd.config";
+
+export default serve(config);
+```
+
+The `serve()` function:
+- Creates an async function that accepts Request, env, and ExecutionContext
+- Builds the Bknd app on first request (cached)
+- Returns a Fetch-compatible handler
+- Works with any Fetch-based runtime (Node.js, Cloudflare, etc.)
+
+### Client-Side Integration Patterns
+
+**Simple API usage:**
+```typescript
+import { Api } from "bknd/client";
+
+const api = new Api();
+
+const { data } = await api.data.readMany("todos");
+```
+
+**React SDK with auth:**
+```typescript
+import { ClientProvider, useAuth } from "bknd/client";
+
+function Root() {
+  return (
+    <ClientProvider>
+      <App />
+    </ClientProvider>
+  );
+}
+
+function App() {
+  const { user, login, logout } = useAuth();
+  // ... auth logic
+}
+```
+
+**State management with Zustand:**
+```typescript
+import { create } from "zustand";
+import { api } from "./api";
+
+const useStore = create((set) => ({
+  todos: [],
+  fetchTodos: async () => {
+    const { data } = await api.data.readMany("todos");
+    set({ todos: data });
+  },
+}));
+```
+
+### Comparison with Next.js Integration
+
+| Aspect | Vite + React | Next.js |
+|--------|--------------|---------|
+| **Type** | SPA | Full-stack |
+| **SSR** | No | Yes |
+| **File routing** | No | Yes |
+| **API routes** | `/api/*` | `/api/*` |
+| **Deployment** | Static + Server | Vercel/Edge |
+| **HMR** | ✅ | ✅ |
+| **Setup complexity** | Simple | Moderate |
+
+### Documentation Pattern: Integration Guide Structure
+
+This guide follows a consistent structure:
+1. Overview - What and why
+2. Prerequisites - What you need
+3. Installation - Manual and CLI options
+4. Configuration - Core setup files
+5. Running - Development and production
+6. Client-Side Integration - SDK usage
+7. Common Patterns - Reusable patterns
+8. Configuration Options - Advanced setup
+9. Deployment - Production deployment
+10. Troubleshooting - Common issues and fixes
+11. Best Practices - Recommendations
+12. Differences - Comparison with other integrations
+
+### Source Code Locations
+
+Key files for Vite + React integration:
+- `app/src/adapter/vite/vite.adapter.ts` - Main adapter implementation
+- `app/src/adapter/vite/dev-server-config.ts` - Dev server configuration
+- `examples/plasmic/src/server.ts` - Complete working example
+- `examples/plasmic/vite.config.ts` - Vite configuration example
+- `examples/react/vite.config.ts` - React-specific configuration
+
+### Best Practices Documented
+
+1. **Generate types regularly** after schema changes
+2. **Use environment variables** for configuration secrets
+3. **Optimize bundle size** with code splitting
+4. **Enable compression** in production
+5. **Monitor performance** with Vite's analyzer
+
+### Unknown Areas Requiring Research
+
+1. **SSR support:** Is server-side rendering possible with Vite + React integration?
+2. **Edge runtime:** Does this work on Cloudflare Workers or Deno Deploy?
+3. **Custom middleware:** How to add custom middleware to the dev server?
+4. **Performance benchmarks:** How does this compare to Next.js or Bun performance?
+5. **Advanced dev server options:** What other configuration options are available?
+
+### Next Steps for Better Documentation
+
+1. Test actual deployment to Vercel/Netlify
+2. Document SSR capabilities (if any)
+3. Add performance comparison benchmarks
+4. Create example with custom middleware
+5. Document edge runtime compatibility
+
+### Key Discovery: Next.js Integration is Well-Documented
+
+Bknd's official Next.js documentation is comprehensive and accurate. This task required:
+- Reading official docs at docs.bknd.io/integration/nextjs/
+- Cross-referencing React SDK documentation at docs.bknd.io/usage/react/
+- Verifying configuration patterns with Zread MCP server
+
+### Next.js Integration Components
+
+**What I know:**
+
+1. **Installation methods:**
+   - CLI starter: `npx bknd create -i nextjs` (recommended)
+   - Manual: `npm create next-app` + `npm install bknd`
+
+2. **Configuration:**
+   - `bknd.config.ts` with `NextjsBkndConfig` type
+   - Database connection via `connection.url` property
+   - Optional `cleanRequest.searchParams` for catch-all route
+
+3. **API setup:**
+   - Helper file pattern (`src/bknd.ts`) with `getApp()` and `getApi()` functions
+   - Catch-all route at `src/app/api/[[...bknd]]/route.ts`
+   - Uses `serve()` from `bknd/adapter/nextjs`
+   - Optional edge runtime support for performance
+
+4. **Server-side data fetching:**
+   - Direct API access in server components via `getApi()`
+   - Full type safety with TypeScript
+   - Auth verification with `getApi({ verify: true })`
+
+5. **Admin UI:**
+   - Server component at `src/app/admin/[[...admin]]/page.tsx`
+   - Uses `<Admin>` component from `bknd/ui`
+   - Requires auth verification and `bknd/dist/styles.css`
+
+6. **Client-side React SDK:**
+   - Wrap app with `<ClientProvider>` in layout
+   - `useAuth()` hook for authentication
+   - `useEntityQuery()` for data fetching with SWR caching
+   - `useApiQuery()` for custom API queries
+
+**What I don't know:**
+
+1. **Edge runtime limitations:** What features don't work with edge runtime?
+2. **Custom route protection:** How to protect plugin-created routes in Next.js?
+3. **Middleware patterns:** How to use Next.js middleware with Bknd?
+4. **Static generation:** How does Bknd work with `getStaticProps`/ISR?
+
+### React SDK Hook Patterns
+
+**useAuth hook:**
+```typescript
+const { user, login, logout, verified } = useAuth();
+```
+- Returns user object (null if unauthenticated)
+- Provides login/logout/register functions
+- Tracks verification state
+
+**useEntityQuery hook:**
+```typescript
+const { data, create, update, _delete, isLoading } = useEntityQuery("todos");
+```
+- Auto-fetches data with SWR caching
+- CRUD actions automatically revalidate cache
+- Supports query options (limit, sort, where, with)
+- Different behavior with/without ID parameter
+
+**useApiQuery hook:**
+```typescript
+const { data, mutate } = useApiQuery((api) => api.data.readMany("posts"));
+```
+- Flexible - can query any API endpoint
+- SWR-based caching and revalidation
+- Supports `refine` function to filter response
+- Manual `mutate()` for optimistic updates
+
+### Documentation Pattern: Official Docs as Primary Source
+
+This task revealed that Bknd's official documentation is high-quality and accurate. For integration guides:
+
+1. **Start with official docs** - docs.bknd.io has comprehensive integration guides
+2. **Cross-reference Zread** - For code-level details and implementation specifics
+3. **Add practical examples** - Official docs sometimes lack concrete usage patterns
+4. **Document unknowns explicitly** - When something isn't clear, mark it as unknown
+
+### Guide Structure Strategy
+
+Created Next.js integration guide with:
+1. Overview - What Bknd provides for Next.js
+2. Installation - CLI vs manual setup
+3. Configuration - Config file options
+4. API Setup - Helper file and catch-all route
+5. Server-Side Fetching - Server component examples
+6. Admin UI - Setup and configuration
+7. Client-Side SDK - React hooks usage
+8. Deployment - Environment variables and production tips
+9. Common Patterns - Authentication, type-safe queries
+10. Troubleshooting - Common issues and fixes
+
+### Key Learnings
+
+1. **Next.js + Bknd is a strong combination** - The integration is seamless with type safety throughout
+2. **Edge runtime support is a bonus** - Better performance for global deployments
+3. **React SDK is mature** - SWR integration provides excellent caching and revalidation
+4. **Authentication is flexible** - Works with localStorage, cookies, or server-side (embedded mode)
+5. **Type safety is pervasive** - From config to API calls to client components
+
+### Unknown Areas Requiring Research
+
+1. **Edge runtime limitations** - Which Bknd features don't work with edge runtime?
+2. **Middleware integration** - How to use Next.js middleware with Bknd auth?
+3. **Static generation support** - How does Bknd work with SSG/ISR?
+4. **Custom route protection** - How to protect plugin-created routes in Next.js context?
+5. **API route optimization** - Best practices for caching and performance?
+
+### Source Code Locations
+
+Key files for Next.js integration:
+- `app/src/adapter/nextjs/index.ts` - Next.js adapter implementation
+- `app/src/adapter/nextjs/types.ts` - NextjsBkndConfig type definition
+- `app/src/client/index.ts` - Client-side SDK (React hooks)
+- `app/src/ui/admin/` - Admin UI React components
+
+### Documentation Best Practices
+
+1. **Provide multiple examples** - Show simple, intermediate, and advanced usage
+2. **Include type annotations** - TypeScript users benefit from seeing types
+3. **Document unknowns clearly** - Don't guess; mark what needs more research
+4. **Cross-reference other guides** - Link to related documentation
+5. **Use code fences with language** - Highlight syntax correctly
+6. **Include troubleshooting** - Common issues and their fixes
+
 ## Task 1.7: Organize Docs into Correct Folders
 
 ### Documentation Organization Strategy
