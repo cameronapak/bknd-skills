@@ -12,6 +12,7 @@ description: "Resources and documentation that inspired Bknd's design and philos
 - [Laravel Docs](https://laravel.com/docs/master)
 - [Wasp Docs](https://wasp.sh/docs)
 - [Redwood SDK Docs](https://docs.rwsdk.com)
+- [Instant DB](https://www.instantdb.com/)
 
 ### ORM's
 
