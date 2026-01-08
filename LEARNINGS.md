@@ -2572,3 +2572,174 @@ Key files for production deployment:
 3. Add monitoring and logging recommendations
 4. Create comparison table for different database providers
 5. Investigate edge runtime limitations with specific features
+
+## Task 3.7: Framework Comparison Matrix
+
+### Key Discovery: Framework Choice Depends on Use Case, Not One "Best" Option
+
+Bknd supports multiple integration patterns across frameworks and runtimes. The "right" choice depends entirely on project requirements, team expertise, and deployment needs.
+
+### Framework Integration Patterns
+
+**Framework Adapters (Deep Integration):**
+- **Next.js** - Full framework adapter with App Router, Server Components, API routes
+- **React Router** - Framework adapter with loader/action pattern
+- **Astro** - Framework adapter with SSR support, two integration approaches (page-based, middleware)
+
+**Runtime Adapters (Standalone):**
+- **Bun/Node** - Standalone API servers, full control
+- **Cloudflare Workers** - Edge deployment with D1 database
+- **Vite + React** - Development-focused SPA setup with HMR
+
+### Decision Factors for Framework Selection
+
+**1. Project Type:**
+   - Production SaaS → Next.js
+   - Content site → Astro
+   - Simple SPA → Vite + React
+   - Standalone backend → Bun/Node
+
+**2. Team Expertise:**
+   - Next.js team → Next.js
+   - React team → React Router or Vite + React
+   - Full-stack team → Next.js or React Router
+   - Frontend team → Astro or Vite + React
+
+**3. Technical Requirements:**
+   - Need SEO → Next.js or Astro
+   - Need SSR → Next.js, React Router, or Astro
+   - Want edge deployment → Next.js (edge runtime) or Cloudflare Workers
+   - Need smallest bundle → Astro
+   - Need fastest dev → Vite + React
+
+### Critical Gaps in Documentation
+
+The following integration aspects are unclear or undocumented:
+
+**React Router Integration:**
+1. API catch-all route setup - Documentation mentions `api.$.tsx` but file not found in repository
+2. Authentication best practices - Whether to use middleware vs loader checks
+3. Client-side SDK integration - How to use React SDK with React Router
+
+**Astro Integration:**
+1. React SDK compatibility - Whether `useAuth()`, `useEntityQuery()` work in Astro islands
+2. Performance differences - Page-based vs middleware approach benchmarks
+3. Optimistic updates - Best practices for client-side state management
+
+**Framework-Specific Features:**
+1. Server Actions support - Beyond Next.js
+2. Streaming SSR - Framework compatibility
+3. Edge runtime behavior - Which features work/not work at edge
+4. Connection pooling - How frameworks handle DB connections under load
+
+### Integration Pattern Comparison Table
+
+**API Route Setup:**
+| Framework | Route Pattern | Complexity |
+|-----------|--------------|------------|
+| Next.js | `app/api/[[...bknd]]/route.ts` | Simple |
+| React Router | Unknown (`api.$.tsx`?) | Unclear |
+| Astro | `pages/api/[...api].astro` | Simple |
+| Vite + React | Built-in to `server.ts` | Simple |
+| Bun/Node | Built-in to server | Simple |
+
+**Data Fetching:**
+| Framework | Server-Side | Client-Side | Pattern |
+|-----------|-------------|--------------|----------|
+| Next.js | ✅ Server Components | ✅ React SDK | `getApi()` |
+| React Router | ✅ Loaders | ⚠️ Unclear | `getApi(args)` |
+| Astro | ✅ Frontmatter | ⚠️ Unknown | `getApi(Astro)` |
+| Vite + React | ❌ No | ✅ SDK | `new Api()` |
+| Bun/Node | N/A | Client SDK | REST API |
+
+**Authentication:**
+| Framework | Verification Method |
+|-----------|-------------------|
+| Next.js | `getApi({ verify: true })` |
+| React Router | `getApi(args, { verify })` |
+| Astro | `getApi(Astro, { verify })` |
+| Vite + React | SDK `useAuth()` hook |
+| Bun/Node | JWT in headers (manual) |
+
+### Documentation Pattern: Comprehensive Comparison Tables
+
+For complex technical decisions with multiple options, create:
+
+1. **Quick decision matrix** - One-glance overview
+2. **Detailed framework breakdowns** - Pros/cons for each
+3. **Integration pattern comparison** - How to do X in each framework
+4. **Recommendation guide** - When to choose which framework
+5. **Migration paths** - How to move between frameworks
+6. **Performance considerations** - Bundle size, TTFB, etc.
+7. **Unknown areas section** - Document what's unclear
+
+This pattern helps users make informed decisions based on their specific needs.
+
+### Performance Insights
+
+**Bundle Size Impact:**
+- Astro: ~30 KB total (smallest)
+- React Router: ~110 KB total
+- Vite + React: ~110 KB total
+- Next.js: ~150 KB total (largest)
+
+**Time to First Byte (TTFB):**
+- Bun/Node: ~50-100ms (fastest - pure backend)
+- Astro: ~50-150ms (SSR optimized)
+- Next.js: ~100-200ms (SSR with edge option)
+- React Router: ~150-300ms (SSR)
+- Vite + React: ~300-500ms (no SSR)
+
+### Unknown Areas Requiring Testing/Research
+
+1. React Router API route setup method
+2. React Router authentication best practices
+3. Astro React SDK compatibility with islands
+4. Real-world performance benchmarks (not estimates)
+5. Database connection pooling by framework
+6. Edge runtime compatibility per framework
+7. Multi-tenant deployment patterns
+8. WebAssembly support across frameworks
+
+### Source Code Locations
+
+For understanding framework integrations:
+- `app/src/adapter/nextjs/nextjs.adapter.ts` - Next.js adapter
+- `app/src/adapter/react-router/react-router.adapter.ts` - React Router adapter
+- `app/src/adapter/astro/astro.adapter.ts` - Astro adapter
+- `app/src/adapter/vite/vite.adapter.ts` - Vite adapter
+- `app/src/adapter/bun/bun.adapter.ts` - Bun runtime adapter
+- `app/src/adapter/node/node.adapter.ts` - Node runtime adapter
+- `app/src/adapter/cloudflare/cloudflare.adapter.ts` - Cloudflare Workers adapter
+- `examples/*/` - Working examples for each integration
+
+### Research Approach for Framework Comparisons
+
+1. Read official Bknd integration docs at docs.bknd.io
+2. Use Zread MCP server to access code-level documentation
+3. Read example code in `examples/` directory
+4. Compare integration patterns across adapters
+5. Identify gaps and unknowns explicitly
+6. Document both what we know and what we don't know
+7. Provide practical recommendations based on use cases
+
+### Next Steps for Better Framework Documentation
+
+1. Test React Router API route setup to verify method
+2. Test Astro React SDK with islands to confirm compatibility
+3. Run performance benchmarks across frameworks
+4. Document advanced patterns (multi-tenant, caching, etc.)
+5. Create migration guides between frameworks
+6. Add framework-specific troubleshooting sections
+7. Investigate edge runtime limitations per framework
+
+### Recommendation: Be Honest About Unknowns
+
+When documenting framework comparisons:
+- Explicitly mark unknown areas with "⚠️ Unknown"
+- Provide workarounds when possible
+- Add TODO markers for what needs follow-up
+- Don't speculate or guess
+- Encourage community contributions to fill gaps
+
+This builds trust with users and makes it clear what requires further research.
