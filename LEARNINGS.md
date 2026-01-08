@@ -124,3 +124,139 @@ Key files for understanding user creation:
 3. Add examples for OAuth user creation
 4. Document password validation best practices for production
 5. Create comparison table showing when to use each user creation method
+
+## Task 1.1: "Build Your First API" Tutorial
+
+### Critical Gap: Admin UI Entity Creation Workflow
+
+The most significant finding is that the official documentation does not provide clear steps for creating entities in the Admin UI. The `/extending/admin` documentation focuses on **customizing** the Admin UI (headers, footers, actions, field rendering) but not on the **basic workflow** of creating entities and fields.
+
+### What We Know
+
+1. **Vite Integration Setup**: Complete and documented
+   - `bknd.config.ts` configuration for Vite
+   - `server.ts` with `serve()` from `bknd/adapter/vite`
+   - `vite.config.ts` with `devServer()` plugin
+   - Adding `<Admin withProvider />` to render the UI
+
+2. **SDK Usage**: Well-documented at `/usage/sdk`
+   - `Api` class initialization
+   - `api.data.readMany`, `createOne`, `updateOne`, `deleteOne`
+   - `api.auth.login`, `register`, `logout`, `me`
+   - `api.media.upload`, `download`, `listFiles`
+
+3. **CLI Commands**: Well-documented at `/usage/cli`
+   - `npx bknd run` - start instance
+   - `npx bknd types` - generate types
+   - `npx bknd config --out file.json` - export config
+   - `npx bknd user create` - create users (see Task 1.5 learnings)
+
+4. **Auth Module Configuration**: Partially documented
+   - Enable auth in `bknd.config.ts`:
+     ```typescript
+     config: {
+       auth: {
+         enabled: true,
+         jwt: { issuer: "app-name" }
+       }
+     }
+     ```
+   - User creation methods documented in Task 1.5
+
+### What We Don't Know (Critical Gaps)
+
+1. **Admin UI Entity Creation Workflow**:
+   - Where is the "Create Entity" button/menu?
+   - What field types are available in the UI? (Text, Number, Boolean, Date, Enum, JSON, JSONSchema)
+   - How do you set field properties (required, unique, default value)?
+   - How do you create relationships between entities in the UI?
+   - Is there a schema preview or validation before saving?
+
+2. **Admin UI User Management**:
+   - How do you create the first admin user through the Admin UI (not CLI)?
+   - Is there a special "Setup" flow for initial user creation?
+   - What permissions/roles can you assign through the UI?
+
+3. **Initial Setup Flow**:
+   - Does the Admin UI guide you through first-time setup?
+   - Is there a "Getting Started" wizard in the UI?
+
+### Documentation Pattern: "What We Don't Know" Sections
+
+For complex topics where official documentation is incomplete, use this structure:
+
+```markdown
+## Step X: [Topic]
+
+**UNKNOWN: This section requires more research.**
+
+**What I know:**
+- Fact 1 with source
+- Fact 2 with source
+
+**What I don't know:**
+- Critical missing detail 1
+- Critical missing detail 2
+
+**Workaround:** If available, provide alternative approach
+**TODO:** What needs to be researched next
+```
+
+This pattern:
+- Is honest about documentation gaps
+- Provides the information we do have
+- Makes it clear what's missing
+- Doesn't mislead users
+- Encourages community contributions
+
+### Vite + React Integration Details
+
+The Vite integration is well-documented at `/integration/vite`:
+- Requires `@hono/vite-dev-server` dependency
+- Node.js 22+ required
+- Uses custom dev server plugin for hot reloading
+- Default port is 5174 (not 5173)
+- API available at `/api/*` routes
+- Admin UI available at root `/`
+
+### Type Generation
+
+CLI command `npx bknd types` generates `bknd-types.d.ts` with:
+- `BkndEntity<T>` - Selectable (read)
+- `BkndEntityCreate<T>` - Insertable (create)
+- `BkndEntityUpdate<T>` - Updateable (update)
+- Global module augmentation for type safety
+
+Must include in `tsconfig.json`:
+```json
+{
+  "include": ["bknd-types.d.ts"]
+}
+```
+
+### Test Checklist Pattern
+
+Create `.test.md` files alongside tutorials to validate each step. The checklist should:
+- Mark testable steps with checkboxes
+- Clearly mark "CANNOT TEST" sections where we don't know the workflow
+- Include "Known Issues" section
+- Note what prevents complete testing
+
+### Source Code Locations for Future Research
+
+To fill the gaps, investigate these files:
+- `app/src/ui/admin/` - Admin UI React components (look for entity creation)
+- `app/src/ui/components/` - Reusable UI components
+- `examples/` - Integration examples (may have workflows)
+- `app/src/modules/ModuleManager.ts` - Module system understanding
+
+### Recommendation: Test-Driven Documentation
+
+For the next tutorial iteration:
+1. Run `npx bknd run` to start actual instance
+2. Follow the tutorial steps in a fresh environment
+3. Document what actually works vs what the docs say
+4. Update tutorial with verified steps
+5. Identify where docs need improvement upstream
+
+This approach ensures accuracy and reveals gaps that pure documentation reading cannot.

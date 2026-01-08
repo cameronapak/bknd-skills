@@ -54,7 +54,7 @@ Update the file after completing each sub-task, not just after completing an ent
 ## Tasks
 
 - [ ] 1.0 Phase 1: Critical Foundation (Week 1-2)
-  - [ ] 1.1 Write "Build Your First API" tutorial (P0)
+  - [x] 1.1 Write "Build Your First API" tutorial (P0)
     - Create complete Vite + React tutorial from scratch (15 min)
     - Define entities in Admin UI
     - Enable Auth module and create admin user
