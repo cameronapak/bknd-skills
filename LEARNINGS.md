@@ -646,8 +646,9 @@ const query = filters.merge({}); // Merge with user's query
 
 ### Unknown Areas Requiring Research
 
-1. **Firebase Rule Translation**: Complete mapping of Firebase security rules to Bknd Guard policies
-2. **Policy Variable Substitution**: How `$user.id`, `$ctx.prop` variable substitution works in filter policies
+1. ~~**Policy Variable Substitution**~~ - **RESOLVED** ✅
+   - ~~How `$user.id`, `$ctx.prop` variable substitution works in filter policies~~ → Uses `@variable` syntax, not `$variable`
+2. **Firebase Rule Translation**: Complete mapping of Firebase security rules to Bknd Guard policies
 3. **Multi-Entity Policies**: Whether policies can span multiple entities or are entity-scoped
 4. **Performance Impact**: Performance characteristics of policy evaluation vs Firebase rules
 5. **Policy Debugging**: Tools or methods for debugging why policies match/don't match
@@ -678,6 +679,133 @@ Key files for understanding Guard and RBAC:
 - `app/src/auth/authorize/Policy.ts` - Policy implementation
 - `app/src/auth/auth-schema.ts` - Auth module configuration schema
 - `app/src/auth/auth-permissions.ts` - Built-in permissions
+
+## Task 2.1: Policy Variable Substitution Resolution
+
+### Key Discovery: Correct Variable Syntax is `@variable`, Not `$variable`
+
+The documentation now correctly reflects that Bknd's policy variable substitution uses the `@variable` syntax, not `$variable`.
+
+### Variable Substitution Implementation
+
+From `app/src/auth/authorize/Policy.ts`:
+
+```typescript
+replace(context: object, vars?: Record<string, any>, fallback?: any) {
+  return vars
+    ? recursivelyReplacePlaceholders(context, /^@([a-zA-Z_\\.]+)$/, vars, fallback)
+    : context;
+}
+```
+
+The `recursivelyReplacePlaceholders` utility uses a regex pattern `/^@([a-zA-Z_\\.]+)$/` to match and replace variables.
+
+### Available Context Variables
+
+The context is built in `Guard.collect()` method from three sources:
+
+```typescript
+const ctx = {
+  ...((context ?? {}) as any),  // Permission context (lowest priority)
+  ...this.config?.context,     // Guard config context (middle priority)
+  user,                        // Auth user context (highest priority)
+};
+```
+
+**Variable Categories:**
+
+1. **User variables** (`@user.*`):
+   - `@user.id` - Authenticated user's ID
+   - `@user.role` - User's role name
+   - `@user.email` - User's email (if in user object)
+   - `@user.tenant_id` - Custom tenant field example
+
+2. **Context variables** (`@ctx.*`):
+   - `@ctx.app` - Application name (from guard config)
+   - `@ctx.version` - App version (from guard config)
+   - `@ctx.now` - Current timestamp (if provided)
+
+3. **Permission context variables** (`@ctx.*`):
+   - Variables passed when checking permissions
+   - `@ctx.entity`, `@ctx.action`, etc.
+
+### How Variable Replacement Works
+
+1. **Policy definition** uses `@variable` syntax:
+   ```typescript
+   {
+     filter: {
+       author_id: "@user.id",
+       tenant_id: "@user.tenant_id",
+     },
+   }
+   ```
+
+2. **Runtime evaluation** replaces variables with actual values:
+   ```typescript
+   // In Policy.getReplacedFilter() method
+   return this.replace(this.content.filter!, context, fallback);
+   ```
+
+3. **Final filter** has actual values:
+   ```typescript
+   {
+     author_id: 123,  // Actual user ID
+     tenant_id: "tenant-abc",  // Actual tenant ID
+   }
+   ```
+
+### Common Use Cases
+
+**User-owned resources:**
+```typescript
+filter: { author_id: "@user.id" }
+```
+
+**Tenant isolation:**
+```typescript
+filter: { tenant_id: "@user.tenant_id" }
+```
+
+**Complex conditions:**
+```typescript
+filter: {
+  $or: [
+    { published: true },
+    { tenant_id: "@user.tenant_id" },
+  ],
+}
+```
+
+### Important Implementation Details
+
+1. **Regex pattern**: `/^@([a-zA-Z_\\.]+)$/` matches:
+   - Starts with `@`
+   - Alphanumeric characters, underscores, dots
+   - Must match entire string value (not partial)
+
+2. **Recursive replacement**: Variables are replaced recursively in nested objects
+
+3. **Fallback values**: If variable not found in context, fallback value is used
+
+4. **Null handling**: If `@user.id` is null (unauthenticated user), comparison will fail
+
+### Documentation Update
+
+Updated `docs/how-to-guides/permissions/public-access-guard.md` to:
+1. Correct all `$variable` references to `@variable`
+2. Add comprehensive "Policy Variable Substitution" section
+3. Document available context variables with table
+4. Show practical examples of variable usage
+5. Explain how context is built (three-source merge)
+
+### Future Research Needs
+
+1. **Custom context variables**: How to add custom variables to guard config context
+2. **Variable scoping**: Whether nested variables work (e.g., `@user.profile.id`)
+3. **Type safety**: Whether variable syntax can be validated at compile time
+4. **Performance**: Cost of recursive variable replacement in large filters
+5. **Debugging**: Tools to trace variable replacement for troubleshooting
 
 ## Task 2.3: "Schema IDs vs UUIDs" Guide
 

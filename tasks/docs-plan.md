@@ -231,4 +231,4 @@ Update the file after completing each sub-task, not just after completing an ent
     - Navigation tested
     - Examples verified
 
-- [ ] 8.0 Find answers to `LEARNINGS.md` and see if we can update any docs
+- [x] 8.0 Find answers to `LEARNINGS.md` and see if we can update any docs

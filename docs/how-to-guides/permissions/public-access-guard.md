@@ -232,6 +232,103 @@ roles: [
 ]
 ```
 
+## Policy Variable Substitution
+
+Policies support dynamic variable substitution using `@variable` syntax. This enables you to create context-aware access rules.
+
+### Variable Syntax
+
+Variables are replaced at runtime from the authorization context:
+
+```typescript
+filter: {
+  author_id: "@user.id",  // Current user's ID
+  tenant_id: "@user.tenant_id",  // User's tenant
+}
+```
+
+### Available Context Variables
+
+The authorization context includes:
+
+| Variable | Source | Example |
+|----------|--------|---------|
+| `@user.id` | Authenticated user's ID | `@user.id` |
+| `@user.role` | User's role name | `@user.role` |
+| `@user.*` | Any user property | `@user.email`, `@user.tenant_id` |
+| `@ctx.*` | Guard config context | Custom context variables |
+
+### How Context Is Built
+
+The context is constructed from three sources (in order of precedence):
+
+1. **User context** - From authentication (`c.get("auth")?.user`)
+2. **Permission context** - From permission definition
+3. **Guard config context** - From `guard.config.context`
+
+```typescript
+// In Guard.collect() method (app/src/auth/authorize/Guard.ts)
+const ctx = {
+  ...((context ?? {}) as any),  // Permission context
+  ...this.config?.context,     // Guard config context
+  user,                        // Auth user context
+};
+```
+
+### Practical Examples
+
+**User-owned data:**
+```typescript
+filter: {
+  author_id: "@user.id",  // Only user's own posts
+}
+```
+
+**Tenant isolation:**
+```typescript
+filter: {
+  tenant_id: "@user.tenant_id",  // Only user's tenant
+}
+```
+
+**Multi-tenant with public content:**
+```typescript
+filter: {
+  $or: [
+    { published: true },  // Public content
+    { tenant_id: "@user.tenant_id" },  // User's tenant
+  ],
+}
+```
+
+**Custom context variables:**
+```typescript
+// Guard initialization with custom context
+const guard = new Guard(
+  permissions,
+  roles,
+  {
+    context: {
+      app: "myapp",
+      version: "1.0",
+    },
+  },
+);
+
+// Policy using custom context
+filter: {
+  app_name: "@ctx.app",  // "myapp"
+}
+```
+
+**Time-based conditions:**
+```typescript
+filter: {
+  start_date: { $lte: "@ctx.now" },
+  end_date: { $gte: "@ctx.now" },
+}
+```
+
 ## Common Patterns
 
 ### Public Read, Private Write
@@ -274,7 +371,8 @@ roles: [
           filter: {
             $or: [
               { published: true },
-              { tenant_id: "$user.id" }, // Won't match for guests
+              // Note: @user.id will be null for guests, so this won't match
+              { tenant_id: "@user.id" },
             ],
           },
         },
