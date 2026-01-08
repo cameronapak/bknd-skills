@@ -77,29 +77,30 @@
           "architecture-and-concepts/how-bknd-works"
         ]
       },
-       {
+      {
          "group": "Reference",
          "pages": [
            "reference/auth-module",
            "reference/data-module",
-           "reference/react-sdk-reference"
+           "reference/react-sdk-reference",
+           "reference/entity-manager-api",
+           "reference/orm",
+           "reference/query-system",
+           "reference/schema"
          ]
-       },
-      {
-        "group": "Troubleshooting",
-        "pages": [
-          "troubleshooting/common-issues",
-          "troubleshooting/known-issues"
-        ]
       },
       {
-        "group": "Comparisons",
-        "pages": [
-          "bknd-comparison-pocketbase",
-          "schema",
-          "orm",
-          "query-system"
-        ]
+         "group": "Troubleshooting",
+         "pages": [
+           "troubleshooting/common-issues",
+           "troubleshooting/known-issues"
+         ]
+      },
+      {
+         "group": "Comparisons",
+         "pages": [
+           "bknd-comparison-pocketbase"
+         ]
       }
     ]
   }

@@ -207,10 +207,10 @@ Update the file after completing each sub-task, not just after completing an ent
     - Link tutorials to relevant guides
     - Link guides to reference docs
     - Link explanations to tutorials
-  - [ ] 6.4 Review navigation structure
-    - Test user journeys
-    - Verify information hierarchy
-    - Check for dead links
+   - [x] 6.4 Review navigation structure
+     - Test user journeys
+     - Verify information hierarchy
+     - Check for dead links
 
   - [ ] 7.0 Launch Preparation
    - [x] 7.1 Create documentation index

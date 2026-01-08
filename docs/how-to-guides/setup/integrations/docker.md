@@ -356,7 +356,7 @@ docker run -p 3000:1337 bknd
 
 ## Next Steps
 
-- **Database Configuration**: Learn more about database options in the [Database Configuration](../../architecture-and-concepts/database-setup.md) guide
+- **Database Configuration**: Learn more about database options in the [Choose Your Mode](../choose-your-mode.md) guide
 - **Production Deployment**: See the [Deploy to Production](../../getting-started/deploy-to-production.md) tutorial
 - **Media Storage**: Configure cloud storage for production (needs documentation)
 

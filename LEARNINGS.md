@@ -1,5 +1,80 @@
 # Learnings
 
+## Task 6.4: Review Navigation Structure
+
+### Navigation Structure Validation Process
+
+**Key Discoveries:**
+
+1. **Dead Links Come from Multiple Sources**
+   - File path errors (wrong number of `../` in relative paths)
+   - Non-existent files referenced in cross-links
+   - Missing assets directories
+   - Incorrect navigation configuration in docs.json
+
+2. **Navigation Hierarchy Validation**
+   - Divio's Four Documentation Types provide excellent structure: Tutorials, How-to Guides, Explanations, Reference
+   - Progressive disclosure works best: Learn by doing → Solve specific problems → Understand concepts → Look up APIs
+   - Duplicate navigation entries can be intentional (e.g., "What is Bknd" in multiple sections for discoverability)
+
+3. **User Journey Testing Methodology**
+   - Primary journeys: New user onboarding, framework integration, troubleshooting
+   - Secondary journeys: Reference lookup, learning architecture
+   - Validate each journey from multiple entry points
+   - Check cross-link consistency across journey paths
+
+**Issues Found and Fixed:**
+
+1. **Broken Links (3 total)**
+   - `choose-your-mode.md`: Incorrect relative path for database configuration link
+   - `docker.md`: Reference to non-existent `database-setup.md` file
+   - `bknd-comparison-pocketbase.md`: Reference to non-existent `assets/` directory
+
+2. **Navigation Structure Issues (1 total)**
+   - docs.json had incorrect grouping: `schema`, `orm`, `query-system` under "Comparisons" instead of "Reference"
+   - Reference section only listed 3 files when 7 exist in docs/reference/
+
+**Best Practices for Navigation Review:**
+
+1. **Automated Link Checking**
+   - Use markdown-link-check or similar tools in CI/pre-commit hooks
+   - Validate all relative links before deployment
+   - Check both internal and external links
+
+2. **Navigation Linter**
+   - Validate docs.json structure:
+     - All listed files exist
+     - No duplicate pages
+     - No orphaned files (files not in navigation)
+   - Grouping follows logical hierarchy
+
+3. **Image Asset Management**
+   - Create dedicated `docs/assets/` directory
+   - Document naming conventions
+   - Add alt text for accessibility
+   - Use placeholder text when image not available
+
+4. **User Journey Validation**
+   - Test common paths: onboarding, integration, troubleshooting
+   - Verify cross-links between sections
+   - Ensure progressive disclosure works
+   - Check mobile responsiveness if applicable
+
+**Key Learning:**
+- Navigation structure is foundational to documentation usability
+- Dead links create poor user experience and reduce trust
+- User journey testing reveals navigation issues that automated checks miss
+- Divio's Four Documentation Types provide a proven framework for organizing technical docs
+
+**Files Modified:**
+1. `docs/how-to-guides/setup/choose-your-mode.md` - Fixed database configuration link
+2. `docs/how-to-guides/setup/integrations/docker.md` - Fixed database-setup link
+3. `docs/comparisons/bknd-comparison-pocketbase.md` - Removed broken image reference
+4. `docs.json` - Fixed navigation structure and file organization
+
+**Files Created:**
+1. `docs/navigation-structure-review.md` - Complete review report with user journey analysis
+
 ## Task 7.2: Set Up Search Optimization
 
 ### SEO Best Practices for Documentation

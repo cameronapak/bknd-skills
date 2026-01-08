@@ -5,7 +5,7 @@ description: "Feature comparison between Bknd and PocketBase backend frameworks 
 
 ## Bknd vs PocketBase Feature Comparison
 
-![Bknd vs PocketBase](../assets/bknd-vs-pocketbase.png)
+> **Note: A comparison image diagram would be displayed here showing the key differences between Bknd and PocketBase.**
 
 **Choosing a backend framework can feel overwhelming when you're just starting out.** You want something that won't lock you into complex decisions, but also scales as your skills grow. This comparison breaks down two popular options, Bknd and [PocketBase](https://pocketbase.io/), so you can see not just what they do, but how their different approaches might fit your learning journey and future projects. 
 
