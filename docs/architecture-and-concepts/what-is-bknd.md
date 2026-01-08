@@ -67,7 +67,9 @@ Get a complete REST API immediately:
 
 ### Authentication Module
 
-- Multiple authentication strategies (email/password, OAuth providers coming soon)
+- Multiple authentication strategies (email/password, OAuth 2.0, OpenID Connect)
+- Built-in support for Google and GitHub OAuth providers
+- Custom OAuth provider support for any OIDC/OAuth 2.0 compliant provider
 - JWT-based session management
 - Role-based access control (RBAC)
 - Row-level security (RLS) support
