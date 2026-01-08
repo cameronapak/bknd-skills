@@ -188,10 +188,290 @@ From `app/src/ui/client/index.ts`:
 
 ### Unknown Areas Requiring Research
 
-1. **useApiInfiniteQuery** - Marked as "highly experimental" in source code
+1. ~~**useApiInfiniteQuery**~~ - **RESOLVED** ✅
 2. **mountOnce middleware** - Purpose and usage not fully documented
 3. **Optimistic updates with mutateRaw** - Implementation details unclear
 4. **Custom fetcher configuration** - Edge cases and error handling patterns
+
+## Task 8.0: useApiInfiniteQuery Research (RESOLVED)
+
+### Key Discovery: useApiInfiniteQuery is an Experimental Infinite Scroll Hook
+
+`useApiInfiniteQuery` is an **experimental** React hook for implementing infinite scrolling (pagination) in Bknd applications. It wraps SWR's `useSWRInfinite` but is **NOT documented** in the official React SDK documentation.
+
+### Hook Implementation
+
+From `app/src/ui/client/api/use-api.ts` (lines 32-74):
+
+```typescript
+/** @attention: highly experimental, use with caution! */
+export const useApiInfiniteQuery = <
+   Data,
+   RefineFn extends (data: ResponseObject<Data>) => unknown = (data: ResponseObject<Data>) => Data,
+>(
+   fn: (api: Api, page: number) => FetchPromise<Data>,
+   options?: SWRConfiguration & { refine?: RefineFn; pageSize?: number },
+) => {
+   const [endReached, setEndReached] = useState(false);
+   const api = useApi();
+   const promise = (page: number) => fn(api, page);
+   const refine = options?.refine ?? ((data: any) => data);
+
+   // @ts-ignore
+   const swr = useSWRInfinite<RefinedData>(
+      (index, previousPageData: any) => {
+         if (index > 0 && previousPageData && previousPageData.length < (options?.pageSize ?? 0)) {
+            setEndReached(true);
+            return null; // reached end
+         }
+         return promise(index).request.url;
+      },
+      (url: string) => {
+         return new FetchPromise(new Request(url), { fetcher: api.fetcher }, refine).execute();
+      },
+      {
+         revalidateFirstPage: false,
+      },
+   );
+   // @ts-ignore
+   const data = swr.data ? [].concat(...swr.data) : [];
+   return {
+      ...swr,
+      _data: swr.data,
+      data,
+      endReached,
+      promise: promise(swr.size),
+      key: promise(swr.size).key(),
+      api,
+   };
+};
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `fn` | `(api: Api, page: number) => FetchPromise<Data>` | Yes | Async function that fetches data for a given page |
+| `options` | `SWRConfiguration & { refine?: RefineFn; pageSize?: number }` | No | SWR options + Bknd-specific options |
+
+**Bknd-specific Options:**
+- `refine?: (data: ResponseObject<Data>) => unknown` - Transform response data before caching
+- `pageSize?: number` - Number of items per page (used for end detection)
+
+### Return Values
+
+| Property | Type | Description |
+|-----------|------|-------------|
+| `data` | `RefinedData[]` | Flattened array of all pages combined |
+| `_data` | `RefinedData[][]` | Array of page arrays (raw SWR data) |
+| `endReached` | `boolean` | Whether all data has been loaded |
+| `error` | `Error` | Error object if request failed |
+| `isLoading` | `boolean` | Whether initial page is loading |
+| `isValidating` | `boolean` | Whether any page is validating |
+| `size` | `number` | Current number of pages loaded |
+| `setSize` | `(size: number) => void` | Function to load more pages |
+| `promise` | `FetchPromise<Data>` | Promise for the current page |
+| `key` | `string` | Cache key for current page |
+| `api` | `Api` | API instance |
+
+### How It Works
+
+**Automatic End Detection:**
+- Checks if previous page has fewer items than `pageSize`
+- If true, sets `endReached = true` and stops fetching
+- Returns `null` for subsequent page requests
+
+**Pagination Logic:**
+- Uses `limit` and `offset` query parameters for pagination
+- `page * pageSize` calculates offset for each request
+- Standard pattern: `{ limit: 50, offset: page * 50 }`
+
+**Data Flattening:**
+- SWR stores pages as an array of arrays: `[[page1_items], [page2_items], ...]`
+- Hook flattens to single array: `[...page1_items, ...page2_items, ...]`
+- Raw `_data` available if you need page-by-page access
+
+### Real-World Usage Example
+
+From `app/src/ui/elements/media/DropzoneContainer.tsx` (lines 79-86):
+
+```typescript
+const pageSize = query?.limit ?? props.maxItems ?? 50;
+const defaultQuery = (page: number) => ({
+   limit: pageSize,
+   offset: page * pageSize,
+});
+
+const selectApi = (api: Api, page: number = 0) =>
+   entity
+      ? api.data.readManyByReference(entity.name, entity.id, entity.field, {
+           ...defaultQuery(page),
+           ...query,
+        })
+      : api.data.readMany(entity_name, {
+           ...defaultQuery(page),
+           ...query,
+        });
+
+const $q = infinite
+   ? useApiInfiniteQuery(selectApi, {
+        pageSize,
+     })
+   : useApiQuery(selectApi, { /* ... */ });
+```
+
+**Key Pattern:**
+- Query function accepts `page` parameter (starting at 0)
+- Uses `offset: page * pageSize` for pagination
+- `pageSize` must match the `limit` in your query
+
+### Loading More Data
+
+To implement "load more" functionality:
+
+```typescript
+const { data, setSize, size, endReached, isLoading } = useApiInfiniteQuery(
+  (api, page) => api.data.readMany("posts", {
+    limit: 20,
+    offset: page * 20,
+  }),
+  { pageSize: 20 }
+);
+
+const loadMore = () => {
+  if (!endReached && !isLoading) {
+    setSize(size + 1); // Load next page
+  }
+};
+
+return (
+  <div>
+    {data?.map(post => <PostCard key={post.id} post={post} />)}
+    {!endReached && (
+      <button onClick={loadMore} disabled={isLoading}>
+        {isLoading ? "Loading..." : "Load More"}
+      </button>
+    )}
+  </div>
+);
+```
+
+### Infinite Scroll with Intersection Observer
+
+For automatic infinite scroll:
+
+```typescript
+import { useEffect, useRef } from "react";
+
+export function InfiniteScroll() {
+  const { data, setSize, endReached, isValidating } = useApiInfiniteQuery(
+    (api, page) => api.data.readMany("posts", {
+      limit: 20,
+      offset: page * 20,
+    }),
+    { pageSize: 20 }
+  );
+  
+  const observer = useRef<IntersectionObserver>();
+  const lastElementRef = (node: HTMLElement | null) => {
+    if (isValidating || endReached) return;
+    
+    if (observer.current) observer.current.disconnect();
+    
+    observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) {
+        setSize(prev => prev + 1);
+      }
+    });
+    
+    if (node) observer.current.observe(node);
+  };
+  
+  return (
+    <div>
+      {data?.map((post, index) => (
+        <PostCard 
+          key={post.id} 
+          post={post}
+          ref={index === data.length - 1 ? lastElementRef : undefined}
+        />
+      ))}
+      {isValidating && <div>Loading more...</div>}
+    </div>
+  );
+}
+```
+
+### Important Warnings
+
+**1. Experimental Status:**
+- Hook is marked with `@attention: highly experimental, use with caution!`
+- Behavior may change in future versions
+- Not officially documented by Bknd
+
+**2. End Detection Issues:**
+- Only works correctly if your API returns exact page sizes
+- May not detect end if last page has full `pageSize` items
+- Consider using API's `meta.count` if available
+
+**3. Type Errors:**
+- Uses `@ts-ignore` comments (lines 47, 63)
+- TypeScript errors suppressed, but may cause issues in strict mode
+
+**4. Revalidation Behavior:**
+- `revalidateFirstPage: false` prevents revalidating earlier pages
+- May cause stale data if earlier pages change
+- Manual revalidation may be needed for dynamic lists
+
+### When to Use
+
+**Use `useApiInfiniteQuery` when:**
+- Implementing infinite scroll with large datasets
+- Building pagination with "load more" buttons
+- Need to load data incrementally for performance
+- Working with media galleries, social feeds, or comment threads
+
+**Consider alternatives when:**
+- Dataset is small (< 100 items) - use `useApiQuery` instead
+- Need server-side rendering - infinite scroll is client-side only
+- Require complex pagination logic - implement custom pagination
+- Building production-critical features - hook is experimental
+
+### Comparison: useApiInfiniteQuery vs useApiQuery
+
+| Feature | useApiInfiniteQuery | useApiQuery |
+|----------|---------------------|-------------|
+| **Purpose** | Infinite pagination | Single query |
+| **Data structure** | Flattened array | Single response |
+| **Page tracking** | `size`, `setSize` | N/A |
+| **End detection** | `endReached` boolean | N/A |
+| **Cache management** | Multiple cache entries | Single cache entry |
+| **Complexity** | High (experimental) | Low (stable) |
+| **Documentation** | ❌ None | ✅ Complete |
+
+### Unknown Areas Still Requiring Research
+
+1. **End detection with API metadata** - How to use `meta.count` for reliable end detection?
+2. **Error recovery** - How to handle failed page loads gracefully?
+3. **Prefetching** - Can we prefetch next page for smoother scrolling?
+4. **Performance optimization** - Memory usage with large datasets?
+5. **Server-side rendering** - Is SSR supported for infinite scroll?
+
+### Best Practices
+
+1. **Always check `endReached`** before loading more pages
+2. **Match `pageSize` to query `limit`** for accurate end detection
+3. **Disable loading while validating** to prevent duplicate requests
+4. **Use `_data`** if you need page-by-page access
+5. **Add error boundaries** since hook is experimental
+6. **Test with real datasets** to verify end detection works
+
+### Source Code Locations
+
+Key files for understanding `useApiInfiniteQuery`:
+- `app/src/ui/client/api/use-api.ts` - Hook implementation (lines 32-74)
+- `app/src/ui/elements/media/DropzoneContainer.tsx` - Real-world usage (lines 79-86)
+- `app/src/ui/elements/media/DropzoneContainer.tsx` - Footer intersection observer (lines 158-183)
 
 ### Official Documentation Quality
 

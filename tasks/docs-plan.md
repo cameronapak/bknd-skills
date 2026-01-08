@@ -232,3 +232,4 @@ Update the file after completing each sub-task, not just after completing an ent
     - Examples verified
 
 - [x] 8.0 Find answers to `LEARNINGS.md` and see if we can update any docs
+  - [x] Research and document `useApiInfiniteQuery` (experimental infinite scroll hook)
