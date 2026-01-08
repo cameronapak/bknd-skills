@@ -3490,3 +3490,241 @@ When documenting framework comparisons:
 - Encourage community contributions to fill gaps
 
 This builds trust with users and makes it clear what requires further research.
+
+## Task 4.5: Docker Integration Guide
+
+### Key Discovery: Docker Uses CLI Wrapper Pattern
+
+The official bknd Docker image is essentially a wrapper around the CLI command `npx bknd run`. This means:
+
+- Docker configuration happens via CLI arguments (`ARGS` environment variable)
+- No embedded `bknd.config.ts` file in the default Dockerfile
+- Designed for "UI-only" mode (db mode) by default
+- Uses PM2 for process management in production
+
+### Dockerfile Architecture
+
+The Dockerfile uses a multi-stage build:
+
+**Stage 1: Builder**
+- Uses `node:24` base image
+- Installs bknd CLI as a dependency
+- Argument `VERSION` allows specifying bknd version (default: 0.18.0)
+
+**Stage 2: Final Image**
+- Uses `node:24-alpine` for minimal size
+- Installs PM2 globally for production process management
+- Copies bknd dist files and node_modules from builder
+- Sets up `/data` volume for persistent storage
+- Exposes port 1337
+- Default CMD runs bknd CLI with `--no-open` flag
+
+### Environment Variables
+
+| Variable | Purpose | Default |
+|----------|-----------|----------|
+| `ARGS` | CLI arguments passed to bknd | `${DEFAULT_ARGS}` |
+| `DEFAULT_ARGS` | Default database configuration | `--db-url file:/data/data.db` |
+
+### Volume Mounting Patterns
+
+**Local directory mount:**
+```bash
+docker run -v /path/to/data:/data bknd
+```
+
+**Named volume (recommended):**
+```bash
+docker volume create bknd-data
+docker run -v bknd-data:/data bknd
+```
+
+**Named volumes are better for:**
+- Easier backup and migration
+- Better portability across systems
+- Cleaner host filesystem
+
+### Database Connection Patterns
+
+**Local SQLite:**
+```bash
+ARGS="--db-url file:/data/data.db"
+```
+
+**Remote Turso:**
+```bash
+ARGS="--db-url libsql://<db>.turso.io --db-token <token>"
+```
+
+**PostgreSQL:**
+```bash
+ARGS="--db-url postgres://user:password@host:port/dbname"
+```
+
+All connection types use the same `--db-url` CLI argument format.
+
+### Docker Compose Integration
+
+**Basic configuration:**
+```yaml
+services:
+  bknd:
+    pull_policy: build
+    build: https://github.com/bknd-io/bknd.git#main:docker
+    ports:
+      - 1337:1337
+    environment:
+      ARGS: "--db-url file:/data/data.db"
+    volumes:
+      - ${DATA_DIR:-.}/data:/data
+```
+
+**Key features:**
+- Builds directly from git repository
+- Uses `pull_policy: build` to always rebuild
+- Supports `${DATA_DIR}` environment variable for flexible paths
+- Volume mounts ensure data persistence
+
+### Multi-Service Setup Example
+
+Docker Compose can orchestrate bknd with PostgreSQL:
+
+```yaml
+services:
+  bknd:
+    pull_policy: build
+    build: https://github.com/bknd-io/bknd.git#main:docker
+    ports:
+      - 1337:1337
+    environment:
+      ARGS: "--db-url postgres://bknd:password@postgres:5432/bknd"
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: bknd
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: bknd
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:
+```
+
+### Critical Unknowns Requiring Research
+
+1. **Health Check Endpoint**: The exact health endpoint URL is not documented. Common patterns would be `/api/health` or `/health`, but this needs verification.
+
+2. **Media Storage Configuration**: How to configure media storage adapters (local vs cloud) in Docker CLI mode is not documented. For local storage, likely needs volume mount for uploads directory.
+
+3. **Mode Configuration in Docker**: How to set mode (db vs code vs hybrid) in Docker CLI mode is not documented. The default Dockerfile uses CLI mode, but custom Dockerfiles may be needed for code/hybrid modes.
+
+4. **Custom Dockerfile for Code Mode**: To use code or hybrid mode, developers would need to:
+   - Create a custom Dockerfile that includes their `bknd.config.ts`
+   - Change entry point to run their configured app instead of CLI
+   - This pattern needs documentation
+
+5. **Cloud Storage in Docker**: Configuration for AWS S3, Cloudflare R2, or other cloud storage providers within the Docker container is not documented.
+
+### Production Considerations
+
+**Environment Variables:**
+- Store database URLs in environment variables, not inline
+- Use `${DATABASE_URL}` pattern for portability
+- Never commit secrets to version control
+
+**Resource Limits:**
+```yaml
+deploy:
+  resources:
+    limits:
+      cpus: '1'
+      memory: 512M
+    reservations:
+      cpus: '0.5'
+      memory: 256M
+```
+
+**Health Checks:**
+⚠️ **UNKNOWN**: Exact health endpoint not documented. Example:
+```yaml
+healthcheck:
+  test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:1337/api/health"]
+  interval: 30s
+  timeout: 10s
+  retries: 3
+```
+
+**Backup Strategy:**
+- Use named volumes for easy backup
+- Backup script: `docker run --rm -v bknd-data:/data -v $(pwd):/backup alpine tar czf /backup/bknd-data.tar.gz /data`
+- Test restore procedure before production use
+
+### Docker vs Other Deployments
+
+| Aspect | Docker | Node.js | Bun | Cloudflare Workers |
+|--------|---------|----------|------|------------------|
+| **Isolation** | Containerized | Process | Process | Edge function |
+| **Portability** | High | Medium | Medium | Low |
+| **Setup Complexity** | Medium | Low | Low | High |
+| **Startup Time** | Medium | Fast | Fastest | Fast |
+| **Resource Usage** | Higher | Medium | Low | Low |
+| **Persistent Storage** | Via volumes | Direct | Direct | D1/R2 |
+| **Best For** | Production servers | General use | Performance | Global edge |
+
+### Documentation Pattern: Explicit Unknown Markers
+
+When documenting Docker deployment:
+
+1. **Mark unknown areas clearly:**
+   ```markdown
+   **UNKNOWN: The exact health endpoint path is not documented.**
+   ```
+
+2. **Provide workarounds when possible:**
+   ```markdown
+   For local media storage, ensure uploads directory is mounted:
+   ```bash
+   docker run -v /path/to/uploads:/app/uploads bknd
+   ```
+   ```
+
+3. **Add TODOs for future research:**
+   ```markdown
+   **TODO:** Document custom Dockerfile patterns for code and hybrid modes.
+   ```
+
+4. **Be honest about limitations:**
+   ```markdown
+   The default Dockerfile is designed for CLI (UI-only) mode. Code and hybrid modes require custom Dockerfiles that include your `bknd.config.ts`.
+   ```
+
+### Source Code Locations
+
+- Dockerfile: `docker/Dockerfile` in bknd repository
+- Docker README: `docker/README.md` in bknd repository
+- Official docs: https://docs.bknd.io/integration/docker/
+
+### Next Steps for Better Docker Documentation
+
+1. Test Docker image with various database configurations
+2. Verify health check endpoint and update documentation
+3. Document custom Dockerfile patterns for code/hybrid modes
+4. Add cloud storage configuration examples (S3, R2)
+5. Create Docker Compose templates for common stacks
+6. Document backup and restore procedures
+7. Add Docker-specific troubleshooting guide
+
+### Recommendation: Start with Default, Customize as Needed
+
+For most users:
+1. Start with official Docker image (CLI mode)
+2. Use volume mounts for data persistence
+3. Connect to appropriate database (SQLite for simple, PostgreSQL for production)
+4. Only create custom Dockerfile if code/hybrid mode is needed
+5. Test thoroughly in staging before production
+
+The official Docker image is well-optimized for production use with PM2 and minimal base image. Customization should only be pursued when the default CLI mode doesn't meet requirements.

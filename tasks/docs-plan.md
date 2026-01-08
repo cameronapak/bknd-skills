@@ -165,10 +165,10 @@ Update the file after completing each sub-task, not just after completing an ent
    - [x] 4.4 Write AWS Lambda guide (P3)
      - Serverless deployment
      - Environment configuration
-  - [ ] 4.5 Write Docker guide (P3)
-    - Container setup
-    - Database configuration
-    - Volume mounting
+   - [x] 4.5 Write Docker guide (P3)
+     - Container setup
+     - Database configuration
+     - Volume mounting
 
 - [ ] 5.0 Phase 5: Complete Reference Documentation
    - [x] 5.1 Complete Auth module documentation (P0)
