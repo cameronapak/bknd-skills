@@ -56,7 +56,7 @@ Update the file after completing each sub-task, not just after completing an ent
 
 ## Tasks
 
-- [ ] 1.0 Phase 1: Critical Foundation (Week 1-2)
+- [x] 1.0 Phase 1: Critical Foundation (Week 1-2)
   - [x] 1.1 Write "Build Your First API" tutorial (P0)
     - Create complete Vite + React tutorial from scratch (15 min)
     - Define entities in Admin UI
@@ -92,7 +92,7 @@ Update the file after completing each sub-task, not just after completing an ent
     - docs/schema.md
     - Then, update README that references those
 
-- [ ] 2.0 Phase 2: Core Task Guides (Week 3-4)
+- [x] 2.0 Phase 2: Core Task Guides (Week 3-4)
   - [x] 2.1 Write "Enable Public Access with Guard" guide (P1)
     - Step-by-step permission setup
     - Configure guest access
@@ -146,7 +146,7 @@ Update the file after completing each sub-task, not just after completing an ent
     - Document framework-specific considerations
     - Provide recommendation guidance
 
-- [ ] 4.0 Phase 4: Troubleshooting & Advanced (Week 7-8)
+- [x] 4.0 Phase 4: Troubleshooting & Advanced (Week 7-8)
    - [x] 4.1 Write Troubleshooting FAQ (P2)
      - Database connection errors
      - Type generation issues
@@ -170,7 +170,7 @@ Update the file after completing each sub-task, not just after completing an ent
      - Database configuration
      - Volume mounting
 
-- [ ] 5.0 Phase 5: Complete Reference Documentation
+- [x] 5.0 Phase 5: Complete Reference Documentation
    - [x] 5.1 Complete Auth module documentation (P0)
       - Replace "work in progress" placeholder
       - Document all auth methods
