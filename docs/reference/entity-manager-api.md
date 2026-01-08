@@ -878,11 +878,112 @@ em.emgr.on(Mutator.Events.MutatorInsertBefore, async (event) => {
 7. **Use `fork()`** inside event handlers to avoid infinite loops
 8. **Type safety** - Use generated types from `npx bknd types`
 
+## Transaction Management
+
+### Automatic Transactions (PostgreSQL)
+
+When using PostgreSQL, certain operations automatically execute in transactions:
+
+**Repository queries with count metadata:**
+```typescript
+const result = await em.repo("posts").findMany({
+  limit: 10,
+  includeCounts: true,
+});
+// Executes 3 queries (main, count, total) in a single transaction
+```
+
+**SchemaManager operations:**
+```typescript
+await em.schema().sync();
+// All schema changes execute atomically
+```
+
+**Mutator bulk operations:**
+```typescript
+await em.mutator("users").insertMany([
+  { email: "user1@example.com" },
+  { email: "user2@example.com" },
+]);
+// All inserts execute in a single transaction
+```
+
+**Under the hood (PostgresConnection only):**
+```typescript
+// From packages/postgres/src/PostgresConnection.ts
+override async executeQueries<O extends ConnQuery[]>(...qbs: O): Promise<ConnQueryResults<O>> {
+  return this.kysely.transaction().execute(async (trx) => {
+    return Promise.all(qbs.map((q) => trx.executeQuery(q)));
+  }) as any;
+}
+```
+
+### Manual Transactions (Kysely Direct Access)
+
+For custom transaction logic, access Kysely directly:
+
+```typescript
+import { Kysely } from "kysely";
+import type { DB } from "bknd";
+
+const kysely = em.connection.kysely as Kysely<DB>;
+
+await kysely.transaction().execute(async (trx) => {
+  // Execute operations within transaction
+  await trx.insertInto('users').values({ email: 'user@example.com' }).execute();
+  await trx.insertInto('posts').values({ title: 'First post', user_id: 1 }).execute();
+
+  // If any error is thrown, transaction rolls back automatically
+});
+```
+
+### SQLite Transaction Support
+
+**LibSql adapter (supports batch transactions):**
+```typescript
+// From app/src/data/connection/sqlite/libsql/LibsqlConnection.ts
+type LibSqlClientFns = {
+  batch: (statements: InStatement[], mode?: TransactionMode) => Promise<ResultSet[]>;
+};
+// TransactionMode options: "deferred", "immediate", "exclusive"
+```
+
+**D1/Cloudflare Workers:**
+- Uses `batch()` operations (adapter-specific behavior)
+- Comment in code suggests transaction support may be added: `// @todo: maybe wrap in a transaction?`
+
+**Node.js/Bun SQLite:**
+- Uses synchronous `Database.batch()` operations
+- Behavior depends on SQLite implementation
+
+### Transaction Limitations
+
+**No EntityManager-level transaction API:**
+- Bknd does not provide a public `em.transaction()` method
+- Must use Kysely directly for custom transactions
+- Atomicity depends on database adapter implementation
+
+**No distributed transactions:**
+- Cross-entity operations spanning different databases are not atomic
+- Each connection type manages its own transaction scope
+
+**Event hooks:**
+- Events (MutatorInsertBefore/After, etc.) fire within transactions for supported adapters
+- Be careful with side effects in event handlers - they execute within transaction context
+
+### Best Practices
+
+1. **Use bulk operations** when possible - they're optimized and atomic where supported
+2. **Access Kysely directly** for complex transaction logic
+3. **Test with different adapters** - transaction behavior varies between PostgreSQL and SQLite
+4. **Keep transactions short** - long-running transactions can cause locks and performance issues
+5. **Handle errors explicitly** - Kysely automatically rolls back on errors, but clean up any external resources
+
 ## Unknown Areas
 
 The following areas require additional research:
 
-- **Transaction management**: How to execute multiple operations atomically?
+- ~~Transaction management~~ - **PARTIALLY DOCUMENTED**: PostgreSQL has automatic transactions, SQLite behavior varies by adapter, manual transactions require Kysely access
 - **Bulk operations optimization**: Performance characteristics of `insertMany`/`updateWhere`/`deleteWhere`
 - **Relation mutation limitations**: Which relation types support `$create` and `$set`?
 - **Event error handling**: What happens when event listeners throw errors?

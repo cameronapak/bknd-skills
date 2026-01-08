@@ -232,12 +232,12 @@ Update the file after completing each sub-task, not just after completing an ent
       - Examples verified
 
  - [x] 8.0 Find answers to `LEARNINGS.md` and see if we can update any docs
-      - [x] Research and document `useApiInfiniteQuery` (experimental infinite scroll hook)
-      - [x] Research and document `mountOnce` middleware
-      - [x] Research and document `mutateRaw` implementation
-      - [x] Research and document end detection with API metadata (count/total)
-      - [x] Research and document health check endpoint (`/api/system/ping`)
-       - [x] Research and document transaction management (no transaction API, use Kysely directly)
-       - [x] Research and document bulk operations performance (single SQL, 4-5x faster)
-       - [x] Research and document relation mutation support (matrix by relation type)
-       - [x] Research and document error recovery for infinite scroll (SWR retry, onErrorRetry, per-page error handling)
+       - [x] Research and document `useApiInfiniteQuery` (experimental infinite scroll hook)
+       - [x] Research and document `mountOnce` middleware
+       - [x] Research and document `mutateRaw` implementation
+       - [x] Research and document end detection with API metadata (count/total)
+       - [x] Research and document health check endpoint (`/api/system/ping`)
+        - [x] Research and document transaction management (PostgreSQL auto-transactions, manual via Kysely)
+        - [x] Research and document bulk operations performance (single SQL, 4-5x faster)
+        - [x] Research and document relation mutation support (matrix by relation type)
+        - [x] Research and document error recovery for infinite scroll (SWR retry, onErrorRetry, per-page error handling)

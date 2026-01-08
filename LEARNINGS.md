@@ -647,11 +647,239 @@ export function InfiniteScroll() {
 
 1. ~~**mountOnce middleware**~~ - **RESOLVED** ✅
 2. ~~**Optimistic updates with mutateRaw**~~ - **RESOLVED** ✅
-3. **End detection with API metadata** - How to use `meta.count` for reliable end detection?
-4. **Error recovery** - How to handle failed page loads gracefully?
+3. ~~**End detection with API metadata**~~ - **RESOLVED** ✅
+4. ~~**Error recovery**~~ - **RESOLVED** ✅
 5. **Prefetching** - Can we prefetch next page for smoother scrolling?
 6. **Performance optimization** - Memory usage with large datasets?
 7. **Server-side rendering** - Is SSR supported for infinite scroll?
+
+## Task 8.4: Transaction Management Research (RESOLVED)
+
+### Key Discovery: No Public EntityManager Transaction API
+
+Bknd does NOT provide a public `em.transaction()` method. Transaction support varies significantly between database adapters.
+
+### Transaction Support by Adapter
+
+**PostgreSQL Adapter (Full Transaction Support):**
+
+From `packages/postgres/src/PostgresConnection.ts` (lines 79-83):
+
+```typescript
+override async executeQueries<O extends ConnQuery[]>(...qbs: O): Promise<ConnQueryResults<O>> {
+  return this.kysely.transaction().execute(async (trx) => {
+    return Promise.all(qbs.map((q) => trx.executeQuery(q)));
+  }) as any;
+}
+```
+
+**Automatic Transactions (PostgreSQL only):**
+- **Repository queries with count metadata**: Main query + count query + total query execute atomically
+- **SchemaManager operations**: All schema changes execute in single transaction
+- **Mutator bulk operations**: `insertMany()`, `updateWhere()`, `deleteWhere()` execute atomically
+
+**SQLite Adapters (Varied Support):**
+
+**LibSql Adapter (Partial Support):**
+From `app/src/data/connection/sqlite/libsql/LibsqlConnection.ts`:
+```typescript
+type LibSqlClientFns = {
+  batch: (statements: InStatement[], mode?: TransactionMode) => Promise<ResultSet[]>;
+};
+// TransactionMode: "deferred", "immediate", "exclusive"
+```
+- Supports batch operations with transaction modes
+- Transactions are per-batch, not per-query group
+
+**D1/Cloudflare Workers (Limited Support):**
+From `app/src/adapter/cloudflare/connection/DoConnection.ts` (line 48):
+```typescript
+batch: async (stmts) => {
+  // @todo: maybe wrap in a transaction?
+  // because d1 implicitly does a transaction on batch
+  return Promise.all(stmts.map(async (stmt) => {
+    return mapResult(await getStmt(stmt.sql, stmt.parameters));
+  }));
+}
+```
+- Uses `batch()` operations (not explicitly transactional)
+- D1 implicitly handles transactions for batch operations
+- Comment indicates transaction wrapper may be added later
+
+**Node.js/Bun SQLite (Unknown):**
+- Uses synchronous `Database.batch()` operations
+- Transaction behavior depends on SQLite implementation
+- Not explicitly documented in source code
+
+### Manual Transactions via Kysely
+
+Since Bknd doesn't provide a transaction API, access Kysely directly:
+
+```typescript
+import { Kysely } from "kysely";
+import type { DB } from "bknd";
+
+const kysely = em.connection.kysely as Kysely<DB>;
+
+await kysely.transaction().execute(async (trx) => {
+  // All operations in this callback execute atomically
+  await trx.insertInto('users').values({ email: 'user@example.com' }).execute();
+  await trx.insertInto('posts').values({ title: 'First post', user_id: 1 }).execute();
+
+  // If any error is thrown, entire transaction rolls back
+});
+```
+
+**Key Points:**
+- Must cast connection.kysely to `Kysely<DB>` type
+- Transaction callback receives `trx` (transaction object)
+- Use `trx` instead of `kysely` for all operations within transaction
+- Kysely automatically commits on success, rolls back on errors
+
+### Transaction Limitations
+
+**1. No EntityManager-Level API:**
+- No `em.transaction()` or similar method
+- Must access Kysely directly for custom transactions
+- Not documented in official Bknd docs
+
+**2. No Distributed Transactions:**
+- Can't span transactions across different databases
+- Each connection manages its own transaction scope
+- Multi-database operations are not atomic
+
+**3. Adapter-Dependent Behavior:**
+- PostgreSQL: Automatic transactions for bulk operations
+- SQLite: Varied support (LibSql has transactions, D1 is implicit)
+- Different adapters may have different transaction guarantees
+
+**4. Event Hooks in Transactions:**
+Events (MutatorInsertBefore/After, etc.) fire within transaction context:
+- Mutator events execute inside transaction (for PostgreSQL)
+- Side effects in event handlers are committed if transaction succeeds
+- Be careful with external API calls in event handlers
+
+**5. No Transaction Isolation Levels:**
+- Can't set isolation levels through Bknd
+- Must use Kysely directly for advanced transaction configuration
+- Default isolation depends on database adapter
+
+### Real-World Use Cases
+
+**Bank Transfer Pattern (Manual Transaction):**
+```typescript
+async function transferMoney(fromId: number, toId: number, amount: number) {
+  const kysely = em.connection.kysely as Kysely<DB>;
+
+  await kysely.transaction().execute(async (trx) => {
+    // Decrement sender balance
+    await trx
+      .updateTable('accounts')
+      .set({ balance: sql`balance - ${amount}` })
+      .where('id', '=', fromId)
+      .execute();
+
+    // Increment receiver balance
+    await trx
+      .updateTable('accounts')
+      .set({ balance: sql`balance + ${amount}` })
+      .where('id', '=', toId)
+      .execute();
+
+    // Verify balances (rollback if insufficient funds)
+    const sender = await trx.selectFrom('accounts').where('id', '=', fromId).executeTakeFirst();
+    if (sender.balance < 0) {
+      throw new Error('Insufficient funds');
+    }
+  });
+}
+```
+
+**Related Records Creation (Automatic Transaction):**
+```typescript
+// PostgreSQL: This executes atomically without manual transaction
+await em.mutator("users").insertMany([
+  { email: "user1@example.com", name: "User 1" },
+  { email: "user2@example.com", name: "User 2" },
+]);
+// Both inserts succeed or both fail
+```
+
+**Schema Migration (Automatic Transaction):**
+```typescript
+// PostgreSQL: All schema changes execute atomically
+await em.schema().sync();
+// Either all tables are created/updated, or none are
+```
+
+### Performance Considerations
+
+**Transaction Overhead:**
+- PostgreSQL: Minimal overhead for transactions (already optimized)
+- SQLite: Higher overhead due to file locking
+- LibSql: Depends on transaction mode (deferred/immediate/exclusive)
+
+**Transaction Modes (LibSql):**
+- `"deferred"` - Lock acquired on first write (best for read-mostly)
+- `"immediate"` - Lock acquired immediately (best for read-write mix)
+- `"exclusive"` - Exclusive lock from start (best for write-heavy)
+
+**Long-Running Transactions:**
+- Keep transactions short to avoid locks
+- Avoid external API calls inside transactions
+- Consider breaking complex operations into multiple transactions
+
+### Comparison with Other ORMs
+
+| Feature | Bknd | Prisma | TypeORM | Drizzle |
+|---------|-------|--------|---------|---------|
+| **Public transaction API** | ❌ No | ✅ Yes | ✅ Yes | ✅ Yes |
+| **Automatic bulk transactions** | ✅ PostgreSQL only | ✅ Yes | ✅ Yes | ❌ No |
+| **Manual transactions** | ✅ Kysely access | ✅ Native | ✅ Native | ✅ Native |
+| **Distributed transactions** | ❌ No | ❌ No | ❌ No | ❌ No |
+| **Transaction isolation levels** | ❌ Kysely only | ✅ Yes | ✅ Yes | ❌ No |
+
+### Documentation Gaps
+
+**Current State:**
+- No mention of transactions in EntityManager API docs
+- No examples of manual transactions
+- No explanation of adapter differences
+- No warnings about lack of transaction API
+
+**Recommendations for Documentation:**
+1. Add "Transaction Management" section to EntityManager API
+2. Document adapter-specific transaction behavior
+3. Provide Kysely transaction examples
+4. Add warnings about distributed transaction limitations
+5. Document transaction mode options for LibSql
+
+### Best Practices
+
+1. **Use bulk operations** - They're optimized and atomic where supported
+2. **Access Kysely directly** for complex transaction logic
+3. **Test with all adapters** - Transaction behavior varies significantly
+4. **Keep transactions short** - Minimize lock time and performance impact
+5. **Avoid external calls** in transactions - Can cause deadlocks and timeouts
+6. **Handle errors explicitly** - Kysely auto-rolls back, but clean up external resources
+7. **Document transaction usage** - Other developers may not expect Kysely access
+8. **Use correct transaction modes** - Choose deferred/immediate/exclusive based on workload
+
+### Unknown Areas Remaining
+
+1. **Node.js/Bun SQLite transactions** - How does synchronous batch() work?
+2. **Transaction isolation levels** - How to set via Kysely?
+3. **Nested transactions** - Does Kysely support savepoints?
+4. **Transaction retry logic** - How to handle deadlocks and conflicts?
+5. **Performance benchmarks** - Overhead for different transaction patterns?
+
+### Source Code Locations
+
+- `packages/postgres/src/PostgresConnection.ts` - PostgreSQL transaction implementation (lines 79-83)
+- `app/src/data/connection/sqlite/libsql/LibsqlConnection.ts` - LibSql batch support (line 10-15)
+- `app/src/adapter/cloudflare/connection/DoConnection.ts` - D1 batch operations (lines 46-54)
+- `app/src/data/connection/Connection.ts` - Base Connection class (lines 155-169)
+- `app/src/data/entities/query/RepositoryResult.ts` - Execute queries usage (line 58-61)
 
 ## Task 8.1: mountOnce Middleware Research (RESOLVED)
 
