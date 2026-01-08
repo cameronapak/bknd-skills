@@ -67,7 +67,7 @@ Update the file after completing each sub-task, not just after completing an ent
     - Document deployment approaches (CLI standalone, Framework Embedded, Serverless/Edge)
     - Provide code examples for each approach
     - Explain mode switching workflow (development in db mode, production in code mode)
-  - [ ] 1.4 Write "Seed Database" guide (P1)
+  - [x] 1.4 Write "Seed Database" guide (P1)
     - Document seeding process for each mode
     - Include workaround for CodeMode initial seed bug
     - Provide example seed scripts
