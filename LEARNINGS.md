@@ -1323,3 +1323,254 @@ Key files for authentication understanding:
 - `app/src/auth/api/AuthController.ts` - Auth endpoint handlers
 - `app/src/data/api/DataController.ts` - Data endpoint protection examples
 - `app/src/modules/ModuleManager.ts` - Plugin system and controller registration
+
+## Task 5.2: Complete Data Module Documentation
+
+### Key Discovery: Data Module Has Two Clear APIs
+
+Bknd's Data module provides a clean separation between read and write operations:
+- **Repository** - All read operations (findMany, findOne, findId, count, exists)
+- **Mutator** - All write operations (insertOne, insertMany, updateOne, updateWhere, deleteOne, deleteWhere)
+
+Both are accessed through **EntityManager**, which is the central point for all data operations.
+
+### Repository API (Read Operations)
+
+**What I know:**
+- Access via `em.repository("entity")` or `em.repo("entity")`
+- `findMany(options)` - Query multiple records with filtering, sorting, pagination
+- `findOne(where)` - Find single record by conditions
+- `findId(id)` - Find single record by primary key
+- `count(where)` - Count records matching conditions
+- `exists(where)` - Check if records exist (returns boolean)
+- All methods return `RepositoryResult` objects with `data` property
+- Queries are type-safe when using generated types
+
+**Query Options:**
+- `where` - Filtering with operators ($eq, $ne, $gt, $gte, $lt, $lte, $in, $notin, $between, $like, $isnull)
+- `sort` - Ordering with `{by: "field", dir: "asc|desc"}`
+- `select` - Field selection array
+- `with` - Eager loading of relations (array of relation names)
+- `join` - Manual joins for filtering/selecting related table fields
+- `limit` - Result count (default: 10)
+- `offset` - Pagination offset
+
+**Where Operators:**
+- `$eq` - Equality (default, can be omitted)
+- `$ne` - Not equal
+- `$gt/$gte` - Greater than / Greater than or equal
+- `$lt/$lte` - Less than / Less than or equal
+- `$in/$notin` - In array / Not in array
+- `$between` - Between two values (inclusive)
+- `$like` - Pattern matching (supports * and %)
+- `$isnull` - Is null (boolean)
+- `$or/$and` - Logical operators (for complex conditions)
+
+**What I don't know:**
+- Exact behavior of complex nested `$or` and `$and` combinations
+- Whether `select` supports aliased fields or expressions
+- Maximum depth for `with` eager loading
+- Performance characteristics of large `with` queries
+
+### Mutator API (Write Operations)
+
+**What I know:**
+- Access via `em.mutator("entity")`
+- `insertOne(data)` - Create single record
+- `insertMany(data[])` - Create multiple records efficiently
+- `updateOne(id, data)` - Update single record by ID
+- `updateWhere(data, where)` - Update multiple records (requires where clause)
+- `deleteOne(id)` - Delete single record by ID
+- `deleteWhere(where)` - Delete multiple records (requires where clause)
+- All methods return `MutatorResult` objects with `data` property
+- System entity creation is disabled by default (flag: `__unstable_disable_system_entity_creation`)
+
+**What I don't know:**
+- Which entities are considered "system" entities
+- How to enable system entity creation if needed
+- Bulk operation limits (maximum records for insertMany)
+- Error recovery on partial failures in batch operations
+
+### Relationship Mutations
+
+Bknd provides special operators for managing entity relationships through the Mutator API:
+
+**Many-to-One Relations:**
+- `$set` - Assign existing entity by ID
+- `$create` - Create and assign new entity
+
+**One-to-One Relations:**
+- `$create` - Create and assign (same as Many-to-One)
+- `$set` - Intentionally disabled to maintain exclusivity
+
+**Many-to-Many Relations:**
+- `$attach` - Add relations by ID array
+- `$detach` - Remove relations by ID array
+- `$set` - Replace all relations (detach all, then attach new)
+
+**What I know:**
+- Many-to-Many queries default to 5-record limit on related records
+- Operations modify the junction table automatically
+- No need to manually manage foreign keys
+
+**What I don't know:**
+- How to change the 5-record limit for Many-to-Many queries
+- Performance impact of Many-to-Many operations with large datasets
+- Whether `$set` performs a single query or multiple queries
+
+### Query System Architecture
+
+Bknd uses **Kysely** (a type-safe SQL query builder) under the hood. The Repository and Mutator APIs are fluent wrappers around Kysely query builders.
+
+**Query Building Flow:**
+1. Repository methods receive `RepoQuery` options object
+2. `getValidOptions()` validates options against entity schema
+3. `addOptionsToQueryBuilder()` builds Kysely query
+4. WhereBuilder adds WHERE clauses with operator transformation
+5. WithBuilder adds relation preloading
+6. JoinBuilder adds manual joins
+7. Query executes via Connection
+8. Results hydrate through RepositoryResult/MutatorResult
+
+**What I know:**
+- Queries are validated before execution
+- Indexing warnings emitted for non-indexed fields in where/sort
+- Query results are automatically hydrated (transforms applied)
+- Type safety maintained throughout query building
+
+**What I don't know:**
+- Query execution timing and performance profiling
+- Connection pooling behavior
+- Query caching strategies (if any)
+
+### Event System
+
+Both Repository and Mutator emit events through the EventManager:
+
+**Repository Events:**
+- `RepositoryFindOneBefore` / `RepositoryFindOneAfter`
+- `RepositoryFindManyBefore` / `RepositoryFindManyAfter`
+
+**Mutator Events:**
+- `MutatorInsertBefore` / `MutatorInsertAfter`
+- `MutatorUpdateBefore` / `MutatorUpdateAfter`
+- `MutatorDeleteBefore` / `MutatorDeleteAfter`
+
+**What I don't know:**
+- How to subscribe to these events
+- Event payload structure
+- Event ordering guarantees
+- Whether events are synchronous or asynchronous
+- How events affect performance
+
+### Critical Unknowns
+
+The following aspects are not documented in available resources:
+
+1. **Transaction Management:**
+   - How transactions work in Bknd
+   - Transaction isolation levels (read committed, serializable, etc.)
+   - Automatic rollback behavior on errors
+   - How to group multiple operations in a transaction
+
+2. **Connection Management:**
+   - Connection pooling configuration
+   - How connections are reused or released
+   - Connection timeout behavior
+   - Health check details beyond basic ping()
+
+3. **Field Transformations:**
+   - How fields are transformed during read/write operations
+   - Type conversion rules (e.g., dates, JSON fields)
+   - Validation rules beyond required/optional
+   - Custom field transformation hooks
+
+4. **Default Values:**
+   - How default values are applied on insert
+   - Whether defaults are applied on update for NULL fields
+   - Database-level defaults vs application-level defaults
+
+5. **Error Handling:**
+   - Specific error types (validation, constraint, connection, etc.)
+   - Error message formats
+   - How to catch and handle different error types
+   - Retry logic for transient failures
+
+6. **Performance Optimization:**
+   - Query caching strategies
+   - Batch operation limits
+   - Index usage statistics
+   - Slow query logging
+
+7. **System Entities:**
+   - Which entities are considered "system" entities
+   - Why system entity creation is disabled by default
+   - How to identify and manage system entities
+
+8. **Complex Query Patterns:**
+   - Maximum depth for `with` eager loading
+   - Nested `with` patterns for multiple levels
+   - Complex join patterns (self-joins, etc.)
+   - Subquery support
+
+### Documentation Pattern: Explicit Unknowns Section
+
+For comprehensive API documentation where details are incomplete:
+
+1. **Document what we know** - Provide all verified information
+2. **Create dedicated "Unknown Details" section** - Clear what's missing
+3. **Categorize unknowns** - Group by importance (Critical, Important, Nice-to-have)
+4. **Suggest research approaches** - How to find answers (source code, testing, community)
+5. **Link to related docs** - Cross-reference relevant sections
+
+Example structure used:
+```markdown
+## Unknown Details
+
+The following aspects are not documented in available resources:
+
+1. **Transaction management** - Why it matters
+2. **Another behavior** - Why it matters
+
+To understand these aspects, consult:
+- Source code at `app/src/data/...`
+- Community discussions
+- Issue tracker
+```
+
+This pattern:
+- Is honest about documentation gaps
+- Doesn't mislead users
+- Provides actionable next steps
+- Encourages community contributions
+
+### Key Learnings
+
+1. **Clean separation of concerns** - Repository for reads, Mutator for writes is intuitive and matches common patterns
+2. **Type safety throughout** - Generated types provide excellent developer experience
+3. **Fluent API design** - Query building is readable and composable
+4. **Rich where operators** - Supports all common comparison and logical operators
+5. **Eager loading support** - `with` option prevents N+1 query problems
+6. **Relation mutations** - Special operators make working with relationships easy
+
+### Source Code Locations
+
+Key files for understanding Data module:
+- `app/src/data/entities/EntityManager.ts` - Central entity management
+- `app/src/data/entities/query/Repository.ts` - Read operations implementation
+- `app/src/data/entities/mutation/Mutator.ts` - Write operations implementation
+- `app/src/data/entities/query/WhereBuilder.ts` - Query filtering logic
+- `app/src/data/entities/query/WithBuilder.ts` - Eager loading implementation
+- `app/src/data/entities/query/JoinBuilder.ts` - Manual join logic
+- `app/src/data/relations/` - Entity relationship implementation
+- `app/src/data/connection/Connection.ts` - Database connection abstraction
+
+### Next Steps for Better Documentation
+
+1. Test transaction behavior with integration tests
+2. Document event subscription patterns
+3. Research system entity identification and management
+4. Create performance benchmarks for different query patterns
+5. Add concrete examples for complex scenarios (nested relations, etc.)
+6. Document error handling patterns with try-catch examples
+7. Research connection pooling configuration options
