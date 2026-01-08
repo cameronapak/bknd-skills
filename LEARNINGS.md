@@ -318,7 +318,7 @@ Based on quickstart docs:
 
 ### Critical Insight: Bknd Doesn't Use Mintlify
 
-After reviewing the Bknd repository's `docs/source.config.ts`, Bknd uses **Fumadocs** (not Mintlify) for their official documentation:
+After reviewing Bknd repository's `docs/source.config.ts`, Bknd uses **Fumadocs** (not Mintlify) for their official documentation:
 - Uses `fumadocs-mdx/config` and related packages
 - Custom configuration with remark/rehype plugins
 - Next.js-based documentation site
@@ -326,3 +326,237 @@ After reviewing the Bknd repository's `docs/source.config.ts`, Bknd uses **Fumad
 
 **Implication:**
 Our supplemental docs can use Mintlify independently of Bknd's official docs. The structure I created (`docs.json`) is correct for a Mintlify-based site that complements the official documentation.
+
+## Task 2.1: "Enable Public Access with Guard" Guide
+
+### Key Discovery: Guest Access Through Default Roles
+
+Bknd provides a robust system for public (unauthenticated) access through the Guard authorization system and role-based access control (RBAC):
+
+**How Guest Access Works:**
+1. Guard checks user context for `role` property
+2. If no explicit role, falls back to **default role** (configured with `is_default: true`)
+3. If no default role exists, user has no role (cannot access anything with Guard enabled)
+4. Default role permissions determine what unauthenticated users can access
+
+### Role Configuration Properties
+
+Based on `app/src/auth/authorize/Role.ts` and `app/src/auth/auth-schema.ts`:
+
+| Property | Type | Default | Purpose |
+|----------|------|---------|---------|
+| `name` | string | required | Identifies the role |
+| `is_default` | boolean | false | Assigned to users without explicit roles |
+| `implicit_allow` | boolean | false | Allows all unspecified permissions (use with caution) |
+| `permissions` | RolePermission[] | [] | Permissions and policies for this role |
+
+### Permission System Architecture
+
+The Guard system consists of four layers:
+1. **Permissions** - Define actionable rights (e.g., `entityRead`, `entityCreate`)
+2. **Policies** - Apply contextual rules with three effects: `allow`, `deny`, `filter`
+3. **Roles** - Aggregate permissions into logical groups
+4. **Guard** - Enforces authorization checks at runtime
+
+### Built-in Permissions
+
+From `app/src/auth/auth-permissions.ts`:
+
+**Auth Permissions (non-filterable):**
+- `createUser` - Create new users
+- `testPassword` - Test password validity
+- `changePassword` - Change user passwords
+- `createToken` - Generate authentication tokens
+
+**Data Permissions (all filterable):**
+- `entityRead` - Read entity records
+- `entityCreate` - Create entity records
+- `entityUpdate` - Update entity records
+- `entityDelete` - Delete entity records
+
+### Policy Effects
+
+Policies support three distinct effects for controlling access:
+
+| Effect | Behavior | Use Case |
+|--------|----------|----------|
+| `allow` | Grants access when condition is met | Explicit permission grant |
+| `deny` | Revokes access (takes precedence) | Security overrides |
+| `filter` | Filters data based on query criteria | Row-level security (RLS) |
+
+### Guest Access Configuration Pattern
+
+**Best practice configuration for guest access:**
+
+```typescript
+roles: [
+  {
+    name: "guest",
+    is_default: true,
+    implicit_allow: false, // Explicit permissions required
+    permissions: [
+      {
+        permission: "entityRead",
+        effect: "allow",
+        policies: [
+          {
+            condition: { entity: "posts" },
+            effect: "filter",
+            filter: { published: true }, // Only see published posts
+          },
+        ],
+      },
+      // No entityCreate/entityUpdate/entityDelete permissions
+    ],
+  },
+]
+```
+
+### Firebase vs Bknd Comparison
+
+Key architectural differences in access control:
+
+| Aspect | Firebase | Bknd |
+|--------|----------|------|
+| **Access Control Model** | Security Rules (rule-first) | Guard + Roles (role-first) |
+| **Public Access** | `allow read, write: if true` | Default role with permissions |
+| **Granularity** | Rule-based conditions | Role-based with policy conditions |
+| **Configuration** | Security Rules language | TypeScript/JSON in code |
+| **Type Safety** | Limited (string-based) | Strong (typed permissions) |
+| **Testing** | Firebase Emulator | Programmatic `granted()`/`filters()` |
+| **RLS** | Yes, via rules | Yes, via filter policies |
+| **Compilation** | Deploy-time | Build-time (code mode) |
+
+### Guard Methods
+
+From `app/src/auth/authorize/Guard.ts`:
+
+**`granted(permission, context, contextData?)`**
+- Throws `GuardPermissionsException` if access denied
+- Checks role exists and has permission
+- Evaluates all policies in role permission
+- Supports `implicit_allow` for trusted roles
+
+**`filters(permission, context, contextData?)`**
+- Returns RLS filter objects for data queries
+- Merges user filters with policy filters
+- Supports `merge()` method to combine filters
+- Provides `matches()` method to test objects against filters
+
+### Common Access Patterns
+
+**1. Public Read, Private Write:**
+```typescript
+{
+  permissions: [
+    {
+      permission: "entityRead",
+      effect: "allow",
+      policies: [
+        {
+          condition: { entity: "posts" },
+          effect: "filter",
+          filter: { published: true },
+        },
+      ],
+    },
+    // No create/update/delete permissions
+  ],
+}
+```
+
+**2. Tenant Isolation:**
+```typescript
+{
+  permissions: [
+    {
+      permission: "entityRead",
+      effect: "allow",
+      policies: [
+        {
+          condition: { entity: "posts" },
+          effect: "filter",
+          filter: {
+            $or: [
+              { published: true }, // Public posts
+              { tenant_id: "$user.id" }, // User's own posts
+            ],
+          },
+        },
+      ],
+    },
+  ],
+}
+```
+
+**3. Time-Limited Access:**
+```typescript
+{
+  permissions: [
+    {
+      permission: "entityRead",
+      effect: "allow",
+      policies: [
+        {
+          condition: {
+            entity: "events",
+            now: { $lte: "date" }, // Can only see past events
+          },
+          effect: "allow",
+        },
+      ],
+    },
+  ],
+}
+```
+
+### Testing Guest Access
+
+**Test pattern for verifying guest behavior:**
+
+```typescript
+// Create unauthenticated context
+const guestContext = { user: null };
+
+// Test permission check
+guard.granted(entityRead, guestContext, { entity: "posts" });
+
+// Test RLS filtering
+const filters = guard.filters(entityRead, guestContext, { entity: "posts" });
+const query = filters.merge({}); // Merge with user's query
+```
+
+### Unknown Areas Requiring Research
+
+1. **Firebase Rule Translation**: Complete mapping of Firebase security rules to Bknd Guard policies
+2. **Policy Variable Substitution**: How `$user.id`, `$ctx.prop` variable substitution works in filter policies
+3. **Multi-Entity Policies**: Whether policies can span multiple entities or are entity-scoped
+4. **Performance Impact**: Performance characteristics of policy evaluation vs Firebase rules
+5. **Policy Debugging**: Tools or methods for debugging why policies match/don't match
+
+### Documentation Pattern: Comparison Tables
+
+When comparing Bknd to alternatives (like Firebase):
+- Focus on architectural differences, not feature lists
+- Highlight why Bknd's approach is better/worse for specific use cases
+- Provide concrete examples showing equivalent functionality
+- Be honest about trade-offs (Firebase has mature ecosystem, Bknd is younger)
+
+### Best Practices for Guest Access
+
+1. **Always use `implicit_allow: false`** for guest roles
+2. **Combine with `published`/`public` fields** for easy public/private distinction
+3. **Test with null user context** to verify guest behavior
+4. **Use policy filters** instead of `implicit_allow` for complex rules
+5. **Document public endpoints** clearly for API consumers
+6. **Monitor access patterns** to identify unintended exposure
+
+### Source Code Locations
+
+Key files for understanding Guard and RBAC:
+- `app/src/auth/authorize/Guard.ts` - Core authorization engine
+- `app/src/auth/authorize/Role.ts` - Role implementation
+- `app/src/auth/authorize/Permission.ts` - Permission definition
+- `app/src/auth/authorize/Policy.ts` - Policy implementation
+- `app/src/auth/auth-schema.ts` - Auth module configuration schema
+- `app/src/auth/auth-permissions.ts` - Built-in permissions

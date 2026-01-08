@@ -90,7 +90,7 @@ Update the file after completing each sub-task, not just after completing an ent
     - Then, update README that references those
 
 - [ ] 2.0 Phase 2: Core Task Guides (Week 3-4)
-  - [ ] 2.1 Write "Enable Public Access with Guard" guide (P1)
+  - [x] 2.1 Write "Enable Public Access with Guard" guide (P1)
     - Step-by-step permission setup
     - Configure guest access
     - Test permission rules
