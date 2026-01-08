@@ -181,12 +181,12 @@ Update the file after completing each sub-task, not just after completing an ent
      - Document CRUD operations
      - Include practical examples
      - Document query system
-  - [ ] 5.3 Expand SDK Reference (P1)
-    - EntityManager API examples
-    - Repository API examples
-    - Mutator API examples
-    - Query system examples (where, with, sort)
-    - Event hooks documentation
+   - [x] 5.3 Expand SDK Reference (P1)
+     - EntityManager API examples
+     - Repository API examples
+     - Mutator API examples
+     - Query system examples (where, with, sort)
+     - Event hooks documentation
    - [x] 5.4 Complete React SDK Reference (P1)
      - useAuth hook examples
      - useEntity hook examples

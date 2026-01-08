@@ -466,6 +466,186 @@ export function InfiniteScroll() {
 5. **Add error boundaries** since hook is experimental
 6. **Test with real datasets** to verify end detection works
 
+## Task 5.3: EntityManager API Research
+
+### Key Discovery: Comprehensive EntityManager API Uncovered
+
+The EntityManager is the central interface for all data operations in Bknd. Through research using Zread and source code analysis, I've documented:
+
+1. **EntityManager methods** - 20+ methods for managing entities, relations, indices, and accessing repositories/mutators
+2. **Repository API** - Complete query interface with 7 methods (findMany, findOne, findId, findManyByReference, count, exists)
+3. **Mutator API** - Complete mutation interface with 6 methods (insertOne, insertMany, updateOne, updateWhere, deleteOne, deleteWhere)
+4. **Query system** - Full WhereBuilder operators ($eq, $ne, $gt, $gte, $lt, $lte, $isnull, $in, $notin, $between, $like), sort, pagination, select, with (relations), join
+5. **Event hooks** - 8 mutator events and 4 repository events with before/after phases
+
+### EntityManager Methods Discovered
+
+**Entity Management:**
+- `entity(name, silent?)` - Get entity by name
+- `hasEntity(name)` - Check if entity exists
+- `addEntity(entity)` - Register entity
+- `__replaceEntity(entity, name?)` - Replace entity (internal)
+
+**Relation Management:**
+- `relationsOf(entityName)` - Get all relations
+- `relationOf(entityName, reference)` - Get specific relation
+- `hasRelations(entityName)` - Check if entity has relations
+- `relatedEntitiesOf(entityName)` - Get related entities
+- `relationReferencesOf(entityName)` - Get relation reference names
+- `addRelation(relation)` - Register relation
+
+**Index Management:**
+- `hasIndex(name)` - Check if index exists
+- `addIndex(index, force?)` - Register index
+- `getIndicesOf(entity)` - Get indices for entity
+- `getIndexedFields(entity)` - Get indexed fields (includes primary + relations)
+
+**Repository & Mutator Access:**
+- `repo(entity, options?)` - Get Repository instance
+- `repository(entity, options?)` - Alias for repo()
+- `mutator(entity)` - Get Mutator instance
+
+**Utility Methods:**
+- `hydrate(entityName, data)` - Transform raw rows to entity data
+- `ping()` - Test database connection
+- `schema()` - Get SchemaManager
+- `clear()` - Clear all entities/relations/indices
+- `fork()` - Create EM without EventManager (for event handlers)
+- `toJSON()` - Get JSON representation
+
+### Repository API Methods
+
+**Query Methods:**
+- `findMany(options?)` - Find multiple records with filtering/sorting/pagination
+- `findOne(where, options?)` - Find single record
+- `findId(id, options?)` - Find by primary key
+- `findManyByReference(id, reference, options?)` - Find related records through relation
+- `count(where?)` - Count records
+- `exists(where)` - Check if record exists
+
+**Key Features:**
+- Returns `RepositoryResult<T>` with lazy execution
+- Supports `select`, `where`, `sort`, `limit`, `offset`, `with` (relations), `join`
+- Emits `RepositoryFindManyBefore/After` and `RepositoryFindOneBefore/After` events
+- Validates query options before execution
+- Warns about non-indexed fields in where/sort clauses
+
+### Mutator API Methods
+
+**Mutation Methods:**
+- `insertOne(data)` - Insert single record
+- `insertMany(data)` - Insert multiple records
+- `updateOne(id, data)` - Update single record by ID
+- `updateWhere(data, where)` - Update multiple records
+- `deleteOne(id)` - Delete single record by ID
+- `deleteWhere(where)` - Delete multiple records
+
+**Key Features:**
+- Returns `MutatorResult<T>` with executed results
+- Validates field fillability and required fields
+- Supports relation mutations with `$set` and `$create` operators
+- Emits `MutatorInsertBefore/After`, `MutatorUpdateBefore/After`, `MutatorDeleteBefore/After` events
+- Can disable system entity creation with `__unstable_disable_system_entity_creation`
+- Automatically applies default values and transforms data
+
+### Query System Operators
+
+**WhereBuilder Operators:**
+- `$eq` - Equal to
+- `$ne` - Not equal to
+- `$gt` - Greater than
+- `$gte` - Greater than or equal
+- `$lt` - Less than
+- `$lte` - Less than or equal
+- `$isnull` - Is null / is not null
+- `$in` - In array
+- `$notin` - Not in array
+- `$between` - Between two values (inclusive)
+- `$like` - Pattern matching (supports `*` wildcard)
+
+**Query Options:**
+- `select: string[]` - Fields to return
+- `where: WhereQuery` - Filter conditions (supports `$or` and nested conditions)
+- `sort: { by: string; dir?: "asc" | "desc" }` - Sort order
+- `limit: number` - Max results (default: 10)
+- `offset: number` - Skip results
+- `with: Record<string, RepoQuery>` - Include relations (supports nesting)
+- `join: string[]` - Join relations for filtering
+
+**Relation Features:**
+- `with` uses `jsonObjectFrom` (single) or `jsonArrayFrom` (many) based on cardinality
+- Supports nested `with` for multi-level relations
+- Can filter/sort/paginate relations in `with` clause
+- `join` allows filtering on related entity fields with dot notation (e.g., `author.name`)
+
+### Event Hooks
+
+**Mutator Events (6):**
+- `MutatorInsertBefore` - Before insertion (allows data modification)
+- `MutatorInsertAfter` - After insertion (includes changed data)
+- `MutatorUpdateBefore` - Before update (allows data modification)
+- `MutatorUpdateAfter` - After update (includes changed data)
+- `MutatorDeleteBefore` - Before deletion
+- `MutatorDeleteAfter` - After deletion (includes deleted data)
+
+**Repository Events (4):**
+- `RepositoryFindManyBefore` - Before findMany query
+- `RepositoryFindManyAfter` - After findMany (includes data)
+- `RepositoryFindOneBefore` - Before findOne query
+- `RepositoryFindOneAfter` - After findOne (includes data)
+
+**Event System Features:**
+- Events contain entity, options/data context
+- Before events can return modified data that gets used for the operation
+- Event manager can be shared across EntityManager instances
+- Use `fork()` to create EM without event manager (prevents infinite loops)
+
+### Relation Mutation Operators
+
+**$set Operator:**
+```typescript
+// Set existing related record
+await em.mutator("posts").insertOne({
+  title: "New Post",
+  author: { $set: { id: 123 } } // Sets author_id to 123
+});
+```
+- Validates that referenced record exists
+- Works for relation fields
+
+**$create Operator:**
+```typescript
+// Create and relate new record
+await em.mutator("posts").insertOne({
+  title: "New Post",
+  author: { $create: { email: "new@example.com", name: "New User" } }
+});
+```
+- Creates related record atomically in same transaction
+- Returns related record's ID for foreign key
+- `$set` disabled for exclusive relations (OneToOne)
+
+### Unknown Areas Requiring Research
+
+1. **Transaction management** - How to execute multiple operations atomically?
+2. **Bulk operations optimization** - Performance characteristics of `insertMany`/`updateWhere`/`deleteWhere`
+3. **Relation mutation limitations** - Which relation types support `$create` and `$set`?
+4. **Event error handling** - What happens when event listeners throw errors?
+5. **Custom field types** - How to create custom field types with proper validation?
+6. **Advanced query patterns** - Subqueries, aggregations, complex joins
+7. **RepositoryResult/MutatorResult** - What additional methods/properties do these result types expose?
+
+### Best Practices
+
+1. **Use indexes** for frequently queried fields (check console warnings)
+2. **Leverage `with`** for relations instead of separate queries
+3. **Use pagination** for large datasets (`limit` + `offset`)
+4. **Subscribe to events** for cross-cutting concerns (logging, caching)
+5. **Use `fork()`** inside event handlers to avoid infinite loops
+6. **Type safety** - Use generated types from `npx bknd types`
+7. **Validate input** before passing to mutator methods
+8. **Use `select`** to limit returned fields for better performance
+
 ### Source Code Locations
 
 Key files for understanding `useApiInfiniteQuery`:
