@@ -49,6 +49,8 @@ Example:
 
 Update the file after completing each sub-task, not just after completing an entire parent task.
 
+**IMPORTANT:** After completing a task, you must process something that you've learned that would be helpful for you to continue as you do more tasks like this. YOU MUST update LEARNINGS.md with at least one learning.
+
 ## Tasks
 
 - [ ] 1.0 Phase 1: Critical Foundation (Week 1-2)
