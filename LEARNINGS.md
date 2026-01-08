@@ -872,6 +872,170 @@ await em.schema().sync();
 3. **Nested transactions** - Does Kysely support savepoints?
 4. **Transaction retry logic** - How to handle deadlocks and conflicts?
 5. **Performance benchmarks** - Overhead for different transaction patterns?
+6. ~~**Prefetching for infinite scroll**~~ - **RESOLVED** ✅
+
+## Task: Prefetching for Infinite Scroll Research (RESOLVED)
+
+### Key Discovery: Prefetching is NOT Supported for useApiInfiniteQuery
+
+Prefetching (loading the next page before the user scrolls to it) is **not supported** for `useApiInfiniteQuery`. This is a fundamental limitation of SWR's `useSWRInfinite` hook.
+
+### Why Prefetching Doesn't Work
+
+**1. Custom Cache Key Algorithm:**
+- `useSWRInfinite` uses a different cache key structure than standard `useSWR`
+- Each page gets a unique cache key that depends on the getKeys function
+- SWR's `preload()` API doesn't understand these infinite scroll cache keys
+
+**2. SWR's preload() API Limitations:**
+From SWR documentation (https://swr.vercel.app/docs/prefetching):
+```typescript
+import { preload } from 'swr';
+preload('/api/user', fetcher); // Works for useSWR
+```
+- `preload()` only accepts string keys (simple cache keys)
+- `useSWRInfinite` uses a function-based key generator: `(index, previousPageData) => string`
+- The key generation depends on previous page data (sequential fetching)
+
+**3. unstable_serialize is for Mutation, Not Prefetching:**
+From SWR docs (https://swr.vercel.app/docs/pagination):
+```typescript
+import { unstable_serialize } from 'swr/infinite';
+// Used for global mutation with useSWRConfig().mutate()
+// NOT for prefetching
+```
+- `unstable_serialize` generates cache keys for mutation operations
+- It does not provide a way to prefetch data for those keys
+- Marked as "unstable" - API may change
+
+**4. Official GitHub Discussion:**
+From GitHub discussion https://github.com/vercel/swr/discussions/966:
+- User asked: "Is it possible to programmatically prefetch with useSWRInfinite?"
+- SWR maintainer response: "useSWRInfinite uses own algorithm for the cache key, so it's difficult to mutate for prefetching without depending on the internal implementation."
+- **Status:** Not possible without depending on internal implementation (unstable)
+
+### Alternative Approaches
+
+**1. Pre-load More Data on Initial Render:**
+Use `initialSize` to load multiple pages upfront:
+```typescript
+const { data, setSize } = useApiInfiniteQuery(
+  (api, page) => api.data.readMany("posts", {
+    limit: pageSize,
+    offset: page * pageSize,
+  }),
+  { 
+    pageSize: 20,
+    initialSize: 3, // Load first 3 pages (60 items) immediately
+  }
+);
+```
+
+**2. Larger Page Sizes:**
+Load more items per page to reduce fetch frequency:
+```typescript
+// Instead of 20 items per page, load 50
+const { data } = useApiQuery(
+  (api) => api.data.readMany("posts", { limit: 50 })
+);
+// Use react-window or react-virtualized for rendering
+```
+
+**3. Client-side Virtualization:**
+Use virtual windowing libraries to render only visible items:
+```bash
+npm install react-window
+```
+```typescript
+import { FixedSizeList } from 'react-window';
+
+<FixedSizeList
+  height={600}
+  itemCount={data.length}
+  itemSize={100}
+  width="100%"
+>
+  {({ index, style }) => (
+    <div style={style}>
+      <PostCard post={data[index]} />
+    </div>
+  )}
+</FixedSizeList>
+```
+
+**4. Hybrid Approach:**
+Combine standard `useSWR` prefetching with manual pagination:
+```typescript
+// Prefetch next page when user scrolls near bottom
+useEffect(() => {
+  if (!endReached && !isLoading) {
+    const handleScroll = () => {
+      const scrollPercentage = (window.scrollY + window.innerHeight) / document.body.scrollHeight;
+      if (scrollPercentage > 0.8) { // Prefetch when 80% down
+        // This doesn't work for useSWRInfinite!
+        // Workaround: Use setSize() instead
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }
+}, [isLoading, endReached]);
+```
+
+### Comparison: useSWR vs useSWRInfinite Prefetching
+
+| Feature | useSWR | useSWRInfinite |
+|---------|---------|-----------------|
+| **Prefetching support** | ✅ Native `preload()` API | ❌ Not supported |
+| **Cache key type** | String | Function (depends on previous data) |
+| **Prefetching method** | `preload(key, fetcher)` | Not possible |
+| **Parallel loading** | ✅ Multiple hooks | ✅ `parallel: true` option |
+| **Preload next page** | Render hidden component | Not possible |
+| **Workarounds** | Native support | `initialSize`, larger pages, virtualization |
+
+### Documentation Updates
+
+**Files Updated:**
+1. `docs/reference/react-sdk-reference.md` - Added `useApiInfiniteQuery` section with prefetching limitations
+
+**Key Documentation Points:**
+- Clearly state prefetching is not supported
+- Explain WHY it doesn't work (technical reasons)
+- Provide alternative approaches
+- Reference official GitHub discussion
+- Include "Experimental" warning for the hook
+
+### Best Practices
+
+1. **Use initialSize strategically** - Load enough data upfront to minimize fetches without overloading
+2. **Optimize page sizes** - Balance between fetch frequency and payload size (20-50 items typically good)
+3. **Implement virtualization** - For lists > 100 items, use react-window or react-virtualized
+4. **Set appropriate pageSize** - Must match your API's `limit` parameter for end detection
+5. **Consider useApiQuery** - For smaller datasets (< 200 items), use standard query instead
+
+### Performance Considerations
+
+**Memory Usage:**
+- Infinite scroll keeps all loaded pages in memory
+- With virtualization: Only rendered items consume DOM memory
+- Consider clearing old pages: Not supported by SWR (would require custom implementation)
+
+**Network Requests:**
+- Sequential fetching (default): Pages load one after another
+- Parallel fetching (`parallel: true`): All pages load simultaneously
+- Parallel mode: `previousPageData` becomes `null` in getKey function
+
+**Browser Limitations:**
+- Large lists (1000+ items) can cause performance issues without virtualization
+- Mobile devices have stricter memory limits
+- Test target devices to ensure acceptable performance
+
+### Unknown Areas Still Remaining
+
+1. **Custom prefetching implementation** - Could we build a custom prefetching layer?
+2. **Memory optimization** - How to unload old pages from cache?
+3. **Server-side rendering** - Is SSR supported for infinite scroll?
+4. **Prefetching with parallel mode** - Does it work better with `parallel: true`?
 
 ## Task: Health Check Endpoint Research (RESOLVED)
 

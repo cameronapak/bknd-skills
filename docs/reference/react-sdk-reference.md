@@ -341,7 +341,7 @@ export default function QuickAdd({ onCreated }: { onCreated: () => void }) {
 
 ### `useApi()`
 
-Access the API instance directly.
+Access API instance directly.
 
 ```tsx
 import { useApi } from "bknd/client";
@@ -363,6 +363,112 @@ export default function SystemStatus() {
 
 **Returns:**
 - `Api` - Full API instance with `data`, `auth`, `media`, `system` modules
+
+### `useApiInfiniteQuery` (Experimental)
+
+**⚠️ Experimental - Use with caution**
+
+Infinite scroll hook for paginated data with caching.
+
+```tsx
+import { useApiInfiniteQuery } from "bknd/client";
+
+const pageSize = 20;
+
+export default function InfiniteList() {
+  const { data, setSize, endReached, isLoading } = useApiInfiniteQuery(
+    (api, page) => api.data.readMany("posts", {
+      limit: pageSize,
+      offset: page * pageSize,
+    }),
+    { pageSize }
+  );
+
+  return (
+    <div>
+      {data?.map((post) => (
+        <div key={post.id}>{post.title}</div>
+      ))}
+      {!endReached && (
+        <button 
+          onClick={() => setSize((size) => size + 1)}
+          disabled={isLoading}
+        >
+          {isLoading ? "Loading..." : "Load More"}
+        </button>
+      )}
+    </div>
+  );
+}
+```
+
+**Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `fn` | `(api: Api, page: number) => FetchPromise<Data>` | Yes | Async function fetching data for a page |
+| `options` | `SWRConfiguration & { pageSize?: number }` | No | SWR options + `pageSize` |
+
+**Returns:**
+| Property | Type | Description |
+|-----------|------|-------------|
+| `data` | `Data[]` | Flattened array of all pages |
+| `_data` | `Data[][]` | Array of page arrays (raw SWR) |
+| `endReached` | `boolean` | Whether all data loaded |
+| `error` | `Error` | Error if failed |
+| `isLoading` | `boolean` | Initial loading state |
+| `isValidating` | `boolean` | Revalidating state |
+| `size` | `number` | Current page count |
+| `setSize` | `(size: number) => void` | Load more pages |
+
+**Important Warnings:**
+
+1. **Experimental Status** - Hook may change in future versions
+2. **End Detection** - Only works if pages return exact `pageSize` (may fail if last page is full)
+3. **Type Errors** - Uses `@ts-ignore` internally
+4. **No Prefetching** - Prefetching is not supported (see below)
+
+### Prefetching with Infinite Scroll
+
+**❌ Prefetching Not Supported**
+
+Prefetching (loading next page before user scrolls) is **not supported** for `useApiInfiniteQuery`. This is a known limitation of SWR's `useSWRInfinite` hook.
+
+**Why Prefetching Doesn't Work:**
+
+- `useSWRInfinite` uses a custom cache key algorithm
+- SWR's `preload()` API only works with regular `useSWR`, not `useSWRInfinite`
+- The `unstable_serialize` helper is for global mutation, not prefetching
+- Prefetching would require depending on SWR's internal implementation
+
+**Alternative Approaches:**
+
+**1. Pre-load More Data on Initial Render:**
+```tsx
+const { data, setSize } = useApiInfiniteQuery(
+  (api, page) => api.data.readMany("posts", {
+    limit: pageSize,
+    offset: page * pageSize,
+  }),
+  { 
+    pageSize,
+    initialSize: 3, // Load first 3 pages immediately
+  }
+);
+```
+
+**2. Use Standard `useApiQuery` with Larger Pages:**
+```tsx
+// Load 50 items at once instead of 20
+const { data } = useApiQuery(
+  (api) => api.data.readMany("posts", { limit: 50 })
+);
+```
+
+**3. Implement Client-side Windowing:**
+Use libraries like `react-window` or `react-virtualized` to render only visible items while having all data loaded.
+
+**Known Issue:**
+GitHub discussion https://github.com/vercel/swr/discussions/966 confirms prefetching with `useSWRInfinite` is not possible without depending on internal implementation.
 
 ## Components
 
