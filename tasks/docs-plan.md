@@ -221,15 +221,15 @@ Update the file after completing each sub-task, not just after completing an ent
       - Add meta descriptions
       - Configure search terms
       - Add keywords
-   - [x] 7.3 Create onboarding flow
-     - Define first-time visitor path
-     - Highlight key resources
-     - Create progressive disclosure
-   - [ ] 7.4 Prepare launch checklist
-     - Technical validation complete
-     - All P0 and P1 deliverables shipped
-     - Navigation tested
-     - Examples verified
+    - [x] 7.3 Create onboarding flow
+      - Define first-time visitor path
+      - Highlight key resources
+      - Create progressive disclosure
+    - [x] 7.4 Prepare launch checklist
+      - Technical validation complete
+      - All P0 and P1 deliverables shipped
+      - Navigation tested
+      - Examples verified
 
  - [x] 8.0 Find answers to `LEARNINGS.md` and see if we can update any docs
       - [x] Research and document `useApiInfiniteQuery` (experimental infinite scroll hook)
