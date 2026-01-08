@@ -132,9 +132,9 @@ Update the file after completing each sub-task, not just after completing an ent
   - [ ] 3.4 Write Astro integration guide (P3)
     - SSR integration
     - Endpoint configuration
-  - [ ] 3.5 Write Bun/Node standalone guide (P3)
-    - Server setup
-    - Basic configuration
+   - [x] 3.5 Write Bun/Node standalone guide (P3)
+     - Server setup
+     - Basic configuration
   - [ ] 3.6 Create "Deploy to Production" tutorial (P2)
     - Deploy to Vercel (15 min)
     - Choose mode guidance

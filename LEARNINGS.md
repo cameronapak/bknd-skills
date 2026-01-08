@@ -1997,3 +1997,93 @@ Key files for understanding Data module:
 5. Add concrete examples for complex scenarios (nested relations, etc.)
 6. Document error handling patterns with try-catch examples
 7. Research connection pooling configuration options
+
+
+## Task 3.5: Bun/Node Standalone Guide
+
+### Key Discovery: Simple Standalone Server Setup
+
+Bknd provides extremely simple standalone server setup for both Bun and Node.js runtimes. The official documentation is concise and accurate for both runtimes.
+
+**What I know:**
+
+1. **Installation methods:**
+   - CLI starter: `npx bknd create -i bun` or `npx bknd create -i node` (fastest)
+   - Manual: `bun add bknd` or `npm install bknd`
+
+2. **Server setup pattern:**
+   - For Bun: `import { serve } from "bknd/adapter/bun"`
+   - For Node.js: `import { serve } from "bknd/adapter/node"`
+   - Both support optional configuration with `serve(config)`
+
+3. **Minimal configuration:**
+   ```typescript
+   // Bun example
+   serve({
+     connection: {
+       url: "file:data.db",
+     },
+   });
+   ```
+
+   ```typescript
+   // Node.js example
+   /** @type {import("bknd/adapter/node").NodeAdapterOptions} */
+   const config = {
+     connection: {
+       url: "file:data.db",
+     },
+   };
+   serve(config);
+   ```
+
+4. **Server output:**
+   - Server runs on `http://localhost:3000`
+   - Admin UI available at `http://localhost:3000/_admin`
+   - API endpoints at `http://localhost:3000/api`
+
+5. **Runtime differences:**
+   - Bun: Faster startup, lower memory, better for development and edge
+   - Node.js: Slower startup, wider compatibility, better for production
+
+6. **Configuration options:**
+   - Database connection: SQLite files, PostgreSQL, in-memory
+   - Media storage: Local filesystem adapter
+   - Server port: Configurable via environment variables
+
+**What I don't know:**
+
+1. **Media configuration details:** How to configure different media adapters beyond local filesystem
+2. **Advanced config options:** Full list of configuration options for `serve()`
+3. **Production deployment specifics:** Best practices for standalone servers in production
+4. **Performance benchmarks:** Actual performance differences between Bun and Node.js
+5. **Error handling:** How errors are handled in standalone mode
+
+### Documentation Pattern: Dual Option Approach
+
+For runtime-specific guides where CLI starter and manual setup are both viable:
+
+1. **Present CLI starter first** - It's the fastest and recommended approach
+2. **Include manual setup** - For users who want control or have existing projects
+3. **Show minimal examples** - Both runtimes can start with just `serve()` and a database URL
+4. **Highlight differences** - Performance, compatibility, use cases in comparison table
+5. **Provide next steps** - Link to related guides (deployment, configuration)
+
+This pattern gives users the quickest path to success while maintaining flexibility.
+
+### Source Code Locations
+
+Key files for understanding standalone adapters:
+- `app/src/adapter/bun/index.ts` - Bun adapter implementation
+- `app/src/adapter/node/node.adapter.ts` - Node.js adapter implementation
+- `examples/bun/index.ts` - Bun standalone example
+- `examples/node/index.js` - Node.js standalone example
+- `app/src/adapter/Adapter.ts` - Base adapter interface
+
+### Next Steps for Better Documentation
+
+1. Document advanced configuration options (media adapters, logging, middleware)
+2. Research production deployment patterns (PM2, Docker, systemd)
+3. Add performance benchmarks comparing Bun vs Node.js
+4. Document error handling and recovery strategies
+5. Add examples for common scenarios (HTTPS, custom middleware, logging)
