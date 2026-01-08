@@ -245,14 +245,14 @@ services:
   bknd:
     # ... other config
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:1337/api/health"]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:1337/api/system/ping"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
-```
+ ```
 
-**UNKNOWN: The exact health endpoint path is not documented. You may need to adjust the URL or add a custom health check endpoint.**
+**Note:** The `/api/system/ping` endpoint returns `{ pong: true }` when the server is running and responsive.
 
 ### Resource Limits
 

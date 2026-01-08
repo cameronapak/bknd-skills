@@ -873,6 +873,95 @@ await em.schema().sync();
 4. **Transaction retry logic** - How to handle deadlocks and conflicts?
 5. **Performance benchmarks** - Overhead for different transaction patterns?
 
+## Task: Health Check Endpoint Research (RESOLVED)
+
+### Key Discovery: Health Check Endpoint is `/api/system/ping`
+
+The Bknd health check endpoint has been verified through source code inspection:
+
+**Endpoint:** `GET /api/system/ping`  
+**Response:** `{ pong: true }`  
+**Implementation:** `SystemController.ts` (lines 462-470)
+
+### Source Code Reference
+
+From `app/src/modules/server/SystemController.ts`:
+```typescript
+hono.get(
+   "/ping",
+   mcpTool("system_ping"),
+   describeRoute({
+      summary: "Ping the server",
+      tags: ["system"],
+   }),
+   (c) => c.json({ pong: true }),
+);
+```
+
+### Documentation Updates
+
+**Files Updated:**
+1. `docs/how-to-guides/setup/integrations/docker.md` - Corrected health check endpoint from `/api/health` to `/api/system/ping`
+
+**Previous Incorrect Information:**
+- Docker guide used non-existent endpoint `/api/health`
+- Documentation incorrectly stated the endpoint path was unknown
+
+**Correct Information:**
+- Official health check endpoint: `/api/system/ping`
+- Returns JSON: `{ pong: true }`
+- Used for Docker health checks, load balancer probes, monitoring systems
+
+### Usage Examples
+
+**Docker Health Check:**
+```yaml
+healthcheck:
+  test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:1337/api/system/ping"]
+  interval: 30s
+  timeout: 10s
+  retries: 3
+```
+
+**Manual Testing:**
+```bash
+curl http://localhost:1337/api/system/ping
+# Response: {"pong":true}
+```
+
+**Programmatic Health Check:**
+```typescript
+const response = await fetch('/api/system/ping');
+const healthy = (await response.json()).pong === true;
+```
+
+### Connection Ping vs System Ping
+
+**Connection-level ping** (`Connection.ping()`):
+- Tests database connection
+- Executes `SELECT 1` query
+- Available through EntityManager: `await em.connection.ping()`
+- Returns `boolean` (true if database is reachable)
+
+**System-level ping** (`/api/system/ping`):
+- Tests entire Bknd server
+- Verifies HTTP endpoint is responding
+- No database query required (faster)
+- Returns JSON: `{ pong: true }`
+- Used for infrastructure health checks
+
+### Research Method
+
+This discovery was made by:
+1. Searching Bknd source code for `/api/system/ping`
+2. Found implementation in `SystemController.ts`
+3. Verified with official Bknd docs at https://docs.bknd.io/api-reference/system/getApiSystemPing
+4. Compared with Connection.ping() method for clarity
+
+### Key Learning
+
+The health check endpoint is documented in the API reference but not clearly linked from Docker/deployment guides. This gap caused confusion about the correct endpoint path for Docker health checks.
+
 ### Source Code Locations
 
 - `packages/postgres/src/PostgresConnection.ts` - PostgreSQL transaction implementation (lines 79-83)
