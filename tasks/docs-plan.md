@@ -203,7 +203,7 @@ Update the file after completing each sub-task, not just after completing an ent
     - Run all code snippets
     - Verify copy-paste functionality
     - Test on fresh environments
-  - [ ] 6.3 Cross-link documentation
+  - [x] 6.3 Cross-link documentation
     - Link tutorials to relevant guides
     - Link guides to reference docs
     - Link explanations to tutorials
@@ -237,3 +237,6 @@ Update the file after completing each sub-task, not just after completing an ent
      - [x] Research and document `mutateRaw` implementation
      - [x] Research and document end detection with API metadata (count/total)
      - [x] Research and document health check endpoint (`/api/system/ping`)
+      - [x] Research and document transaction management (no transaction API, use Kysely directly)
+      - [x] Research and document bulk operations performance (single SQL, 4-5x faster)
+      - [x] Research and document relation mutation support (matrix by relation type)

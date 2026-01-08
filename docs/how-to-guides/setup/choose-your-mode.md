@@ -351,7 +351,12 @@ Building a full-stack app?
 
 ## Related Guides
 
-- [Next.js Integration](./integrations/nextjs.md)
-- [Database Configuration](../data/seed-database.md)
-- [Deployment to Production](../../getting-started/deploy-to-production.md)
-- [Cloudflare Workers Guide](./integrations/cloudflare-workers.md)
+- [Next.js Integration](./integrations/nextjs.md) - Set up Next.js framework
+- [Vite + React Integration](./integrations/vite-react.md) - Standalone SPA setup
+- [React Router Integration](./integrations/react-router.md) - Loader/Action pattern
+- [Astro Integration](./integrations/astro.md) - SSR integration
+- [Database Configuration](../data/seed-database.md) - Seeding strategies
+- [Deployment to Production](../../getting-started/deploy-to-production.md) - Production deployment guide
+- [Cloudflare Workers Guide](./integrations/cloudflare-workers.md) - Edge deployment
+- [AWS Lambda Guide](./integrations/aws-lambda.md) - Serverless deployment
+- [Docker Guide](./integrations/docker.md) - Container deployment

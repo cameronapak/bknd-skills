@@ -13,7 +13,7 @@ Bknd's media system uses **polymorphic relationships** to connect media to any e
 
 - Media module enabled and configured with storage adapter
 - Basic understanding of [Bknd configuration](/getting-started/build-your-first-api.md)
-- Knowledge of [entity relationships](/how-to-guides/setup/choose-your-mode.md)
+- Knowledge of [entity relationships](/reference/data-module#relationship-mutations)
 
 ## How Media Relations Work
 

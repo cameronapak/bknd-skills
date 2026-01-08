@@ -200,3 +200,11 @@ For framework-specific integration, see the [Integration Guides](../how-to-guide
 - [How Bknd Works](./how-bknd-works.md) - Deep dive into request lifecycle and architecture
 - [Choose Your Mode](../how-to-guides/setup/choose-your-mode.md) - Decide which mode fits your needs
 - [Build Your First API](../getting-started/build-your-first-api.md) - 15-minute tutorial
+
+## Related Guides
+
+- [Add Authentication with Permissions](../getting-started/add-authentication.md) - Complete auth setup
+- [Deploy to Production](../getting-started/deploy-to-production.md) - Production deployment guide
+- [Next.js Integration](../how-to-guides/setup/integrations/nextjs.md) - Framework integration example
+- [Public Access with Guard](../how-to-guides/permissions/public-access-guard.md) - Permission setup
+- [Framework Comparison](../how-to-guides/setup/integrations/framework-comparison.md) - Compare integration approaches

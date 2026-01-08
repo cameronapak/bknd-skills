@@ -543,3 +543,10 @@ To understand these aspects, consult:
 - [Database Indices](../reference/orm.md) - Indexing for performance
 - [Query System](../reference/query-system.md) - Advanced query patterns
 - [Schema IDs vs UUIDs](../how-to-guides/data/schema-ids-vs-uuids.md) - Primary key configuration
+
+## Related Guides
+
+- [Build Your First API](../getting-started/build-your-first-api.md) - Learn through hands-on tutorial
+- [Seed Database](../how-to-guides/data/seed-database.md) - Populate initial data
+- [Choose Your Mode](../how-to-guides/setup/choose-your-mode.md) - Configuration modes overview
+- [Entity-Media Relationships](../how-to-guides/data/entity-media-relationships.md) - Media file associations

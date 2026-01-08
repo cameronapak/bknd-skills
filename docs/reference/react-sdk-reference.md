@@ -590,3 +590,11 @@ const query: RepoQueryIn = {
 - [TypeScript SDK Reference](/reference/sdk) - Low-level API reference
 - [React Integration Guide](/how-to-guides/setup/integrations/react) - Setup examples
 - [Vite + React Guide](/how-to-guides/setup/integrations/vite-react) - Complete tutorial
+
+## Related Guides
+
+- [Build Your First API](../getting-started/build-your-first-api.md) - Hands-on React tutorial
+- [Add Authentication with Permissions](../getting-started/add-authentication.md) - Auth with React hooks
+- [Deploy to Production](../getting-started/deploy-to-production.md) - Production React deployment
+- [Next.js Integration](../how-to-guides/setup/integrations/nextjs.md) - React in Next.js
+- [React Router Integration](../how-to-guides/setup/integrations/react-router.md) - Loader/Action pattern

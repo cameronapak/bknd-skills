@@ -339,6 +339,13 @@ npm run dev
 - Read [Permission System](/reference/auth-module#permissions) - Advanced authorization patterns
 - Complete [Deploy to Production](/getting-started/deploy-to-production) - Launch your app
 
+## Related Guides
+
+- [Create First User](/how-to-guides/auth/create-first-user.md) - User creation methods (Admin UI, CLI, programmatic)
+- [Build Your First API](/getting-started/build-your-first-api.md) - Complete onboarding tutorial
+- [Auth Module Reference](/reference/auth-module.md) - Complete authentication configuration
+- [Seed Database](/how-to-guides/data/seed-database.md) - Seed users and roles with seed function
+
 ## What We Learned
 
 In this tutorial, you learned:

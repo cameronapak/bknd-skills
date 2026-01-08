@@ -1281,6 +1281,103 @@ await kysely.transaction().execute(async (trx) => {
 Note: Direct Kysely usage bypasses Bknd's validation and event system.
 ```
 
+## Task 6.3: Cross-link Documentation (RESOLVED)
+
+### Key Discovery: Cross-linking Connects Different Documentation Types
+
+Cross-linking is essential for helping users navigate between different types of documentation (tutorials, guides, explanations, and reference). Following Divio's documentation system principles, each page should link to related content to create a cohesive learning path.
+
+### Cross-linking Strategy
+
+**Tutorials → Guides and Reference:**
+- Tutorials link to guides for specific feature deep-dives
+- Tutorials link to reference docs for complete API documentation
+- Example: "Build Your First API" → "Add Authentication", "Data Module Reference", "Choose Your Mode"
+
+**Guides → Tutorials and Reference:**
+- How-to guides link back to tutorials for hands-on learning
+- Guides link to reference docs for detailed implementation
+- Example: "Choose Your Mode" → "Build Your First API", "Next.js Integration", "Cloudflare Workers"
+
+**Reference → Guides and Tutorials:**
+- Reference docs link to guides for practical usage patterns
+- Reference docs link to tutorials for learning through examples
+- Example: "Data Module" → "Entity Relationships", "Seed Database", "Build Your First API"
+
+**Architecture → Tutorials and Guides:**
+- Conceptual docs link to practical implementation guides
+- Architecture docs link to tutorials for hands-on experience
+- Example: "What is Bknd?" → "How Bknd Works", "Choose Your Mode", "Build Your First API"
+
+### Best Practices Identified
+
+1. **Related Guides Section** - Add at bottom of each page with contextual links
+2. **Next Steps Section** - In tutorials, guide users through learning progression
+3. **See Also Section** - In reference docs, link to related conceptual and practical docs
+4. **Avoid Redundant Links** - Don't explain concepts in multiple places, link instead
+5. **Contextual Linking** - Link only to truly relevant pages based on page content
+
+### Cross-linking Patterns
+
+**Tutorial Pattern:**
+```markdown
+## Next Steps
+- [Related Tutorial](/getting-started/tutorial.md) - Brief description
+- [Reference Doc](/reference/doc.md) - Detailed API info
+
+## Related Guides
+- [Guide 1](/how-to-guides/guide1.md) - Specific topic
+- [Guide 2](/how-to-guides/guide2.md) - Related topic
+```
+
+**Reference Pattern:**
+```markdown
+## See Also
+- [Related Reference](/reference/other.md) - API connections
+
+## Related Guides
+- [Practical Guide](/how-to-guides/guide.md) - How to use
+- [Tutorial](/getting-started/tutorial.md) - Learn by doing
+```
+
+**Guide Pattern:**
+```markdown
+## Related Guides
+- [Similar Guide](/how-to-guides/other.md) - Related task
+
+## Related Reference
+- [API Docs](/reference/doc.md) - Implementation details
+```
+
+### Files Updated with Cross-links
+
+**Tutorials:**
+- `build-your-first-api.md` - Added "Related Guides" with 4 links
+- `add-authentication.md` - Added "Related Guides" with 4 links
+- `deploy-to-production.md` - Added "Related Guides" with 6 links
+
+**How-to Guides:**
+- `choose-your-mode.md` - Expanded "Related Guides" from 4 to 9 links
+- `entity-media-relationships.md` - Fixed broken prerequisite link
+
+**Reference Docs:**
+- `data-module.md` - Added "Related Guides" section with 4 links
+- `react-sdk-reference.md` - Added "Related Guides" section with 5 links
+
+**Architecture Docs:**
+- `what-is-bknd.md` - Added "Related Guides" section with 5 links
+
+### Unknown Areas
+
+1. **Optimal link density** - How many cross-links are too many?
+2. **Link ordering** - Should links be prioritized or alphabetical?
+3. **Contextual descriptions** - Best length/depth for link descriptions?
+4. **Mintlify auto-navigation** - Does Mintlify auto-generate related pages?
+
+### Documentation Recommendation
+
+Cross-linking significantly improves discoverability and helps users find relevant content without searching. Following a consistent pattern (Related Guides section at bottom of each page) makes the documentation more navigable and cohesive.
+
 ## Task 8.5: Bulk Operations Performance Research (RESOLVED)
 
 ### Key Discovery: Bulk Operations Are Optimized Single Queries

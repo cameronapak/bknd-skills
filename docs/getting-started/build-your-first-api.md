@@ -190,9 +190,18 @@ export default App;
 
 ## Next Steps
 
-- Learn about [Authentication](/getting-started/add-authentication)
-- Explore [Query Options](/reference/data-module)
-- Read about [Deployment](/getting-started/deploy-to-production)
+- Learn about [Authentication](/getting-started/add-authentication) - Add user auth with permissions
+- Explore [Data Module Reference](/reference/data-module) - Complete CRUD operations API
+- Read [Deploy to Production](/getting-started/deploy-to-production) - Launch your app
+- Choose Your [Configuration Mode](/how-to-guides/setup/choose-your-mode) - Understand db vs code mode
+- Learn [Database Seeding](/how-to-guides/data/seed-database.md) - Populate initial data
+
+## Related Guides
+
+- [Create First User](/how-to-guides/auth/create-first-user.md) - User creation methods
+- [Seed Database](/how-to-guides/data/seed-database.md) - Database initialization patterns
+- [Schema IDs vs UUIDs](/how-to-guides/data/schema-ids-vs-uuids.md) - Primary key configuration
+- [Choose Your Mode](/how-to-guides/setup/choose-your-mode.md) - Configuration and deployment decisions
 
 ## Troubleshooting
 
