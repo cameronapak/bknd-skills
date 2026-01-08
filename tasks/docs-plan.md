@@ -82,7 +82,7 @@ Update the file after completing each sub-task, not just after completing an ent
     - Create directory structure for 5 main sections
     - Configure Mintlify navigation
     - Create stub pages for all planned content
-  - [ ] 1.7 Organize docs into correct folders
+  - [x] 1.7 Organize docs into correct folders
     - docs/bknd-comparison-pocketbase.md
     - docs/orm.md
     - docs/query-system.md

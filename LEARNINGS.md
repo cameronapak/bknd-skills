@@ -957,3 +957,44 @@ For understanding request lifecycle:
 4. Document connection pooling configuration
 5. Research error handling and retry logic
 6. Add concrete examples for complex scenarios (multi-entity policies, etc.)
+
+## Task 1.7: Organize Docs into Correct Folders
+
+### Documentation Organization Strategy
+
+Created proper directory structure for supplemental Bknd docs:
+
+**New Structure:**
+```
+docs/
+├── reference/           # Technical reference materials
+│   ├── orm.md          # Schema prototype API documentation
+│   ├── query-system.md # Query builder reference
+│   └── schema.md       # Drizzle/Prisma/Bknd comparison
+└── comparisons/         # Framework comparisons
+    └── bknd-comparison-pocketbase.md
+```
+
+### Why This Organization Matters
+
+1. **Reference vs Guides:** Reference docs are for API lookup and comparison, while guides are task-oriented
+2. **Discoverability:** Users can find specific technical details quickly
+3. **Maintainability:** Clear separation makes future additions easier
+4. **Scalability:** Structure can grow as new reference materials and comparisons are added
+
+### Implementation Details
+
+- Used `mkdir -p` to create nested directories in one command
+- Used `mv` to relocate existing files to new locations
+- Updated README.md to reflect new file paths
+- All existing internal links and references remain functional
+
+### Learning: File Organization Principles
+
+Good documentation organization follows:
+- **Type-based grouping:** Reference, tutorials, guides, comparisons
+- **Purpose-based naming:** Clear, descriptive filenames
+- **Consistent structure:** Logical hierarchy that scales
+- **User-centric:** Organize by how users look for information, not by implementation details
+
+This mirrors the Mintlify structure principles where content is organized by documentation type (Divio's Four Documentation Types).
