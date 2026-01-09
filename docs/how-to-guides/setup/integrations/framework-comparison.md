@@ -506,7 +506,6 @@ const file = await connection.client.getDatabaseFile();
 - ✅ Team already knows Next.js
 - ✅ Want Vercel deployment (one-click)
 - ✅ Need server components for performance
-| **Browser Mode** | N/A | localStorage | Not supported | N/A |
 
 ### Choose React Router if:
 - ✅ Want full-stack React without Next.js complexity
