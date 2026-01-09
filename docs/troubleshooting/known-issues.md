@@ -258,4 +258,4 @@ Error: Field not found: created_at
 
 - [GitHub Issues](https://github.com/bknd-io/bknd/issues) - Track and report bugs
 - [Discord Community](https://discord.gg/952SFk8Tb8) - Real-time help and discussions
-- [Troubleshooting FAQ](/troubleshooting/common-issues) - Solutions to common problems
+- [Troubleshooting FAQ](./common-issues.md) - Solutions to common problems

@@ -693,9 +693,9 @@ const query: RepoQueryIn = {
 
 ## See Also
 
-- [TypeScript SDK Reference](/reference/sdk) - Low-level API reference
-- [React Integration Guide](/how-to-guides/setup/integrations/react) - Setup examples
-- [Vite + React Guide](/how-to-guides/setup/integrations/vite-react) - Complete tutorial
+- [TypeScript SDK Reference](./sdk.md) - Low-level API reference
+- [React Integration Guide](../how-to-guides/setup/integrations/react.md) - Setup examples
+- [Vite + React Guide](../how-to-guides/setup/integrations/vite-react.md) - Complete tutorial
 
 ## Related Guides
 

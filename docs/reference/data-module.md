@@ -540,8 +540,8 @@ To understand these aspects, consult:
 ## See Also
 
 - [Entity Relationships](../how-to-guides/data/entity-media-relationships.md) - Working with entity relationships
-- [Database Indices](../reference/orm.md) - Indexing for performance
-- [Query System](../reference/query-system.md) - Advanced query patterns
+- [Database Indices](./orm.md) - Indexing for performance
+- [Query System](./query-system.md) - Advanced query patterns
 - [Schema IDs vs UUIDs](../how-to-guides/data/schema-ids-vs-uuids.md) - Primary key configuration
 
 ## Related Guides

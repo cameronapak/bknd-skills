@@ -121,7 +121,7 @@ The Admin UI allows you to:
 
 Since we defined our `todos` entity in `bknd.config.ts`, it's automatically available in the Admin UI. No additional configuration needed.
 
-**Note:** In this tutorial, we're using `code mode` (schema defined in code). If you prefer to define entities visually, you can switch to `db mode` by removing the `config` object from your `bknd.config.ts` and creating entities through the Admin UI. See [Choose Your Mode](/how-to-guides/setup/choose-your-mode) for details.
+**Note:** In this tutorial, we're using `code mode` (schema defined in code). If you prefer to define entities visually, you can switch to `db mode` by removing the `config` object from your `bknd.config.ts` and creating entities through the Admin UI. See [Choose Your Mode](/how-to-guides/setup/choose-your-mode.md) for details.
 
 ## Step 6: Enable Auth Module
 
@@ -199,10 +199,10 @@ export default App;
 
 ## Next Steps
 
-- Learn about [Authentication](/getting-started/add-authentication) - Add user auth with permissions
-- Explore [Data Module Reference](/reference/data-module) - Complete CRUD operations API
-- Read [Deploy to Production](/getting-started/deploy-to-production) - Launch your app
-- Choose Your [Configuration Mode](/how-to-guides/setup/choose-your-mode) - Understand db vs code mode
+- Learn about [Authentication](/getting-started/add-authentication.md) - Add user auth with permissions
+- Explore [Data Module Reference](/reference/data-module.md) - Complete CRUD operations API
+- Read [Deploy to Production](/getting-started/deploy-to-production.md) - Launch your app
+- Choose Your [Configuration Mode](/how-to-guides/setup/choose-your-mode.md) - Understand db vs code mode
 - Learn [Database Seeding](/how-to-guides/data/seed-database.md) - Populate initial data
 
 ## Related Guides
@@ -215,7 +215,7 @@ export default App;
 ## Troubleshooting
 
 If you encounter issues with entity creation or user management, please:
-1. Check the [Troubleshooting FAQ](/troubleshooting/common-issues)
+1. Check the [Troubleshooting FAQ](/troubleshooting/common-issues.md)
 2. Open an issue on [GitHub](https://github.com/bknd-io/bknd/issues)
 
 ## What We Learned
@@ -227,4 +227,4 @@ In this tutorial, you learned:
 - How to use the Admin UI to manage your data
 - How to use the Bknd SDK in your React components
 
-**Note:** This tutorial uses `code mode` (schema defined in code). For visual schema creation in Admin UI, see [Choose Your Mode](/how-to-guides/setup/choose-your-mode) to learn about `db mode`.
+**Note:** This tutorial uses `code mode` (schema defined in code). For visual schema creation in Admin UI, see [Choose Your Mode](/how-to-guides/setup/choose-your-mode.md) to learn about `db mode`.

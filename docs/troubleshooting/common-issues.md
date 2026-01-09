@@ -416,7 +416,7 @@ import { Admin } from "bknd/ui";
 
 If you're still having issues:
 
-1. **Check Known Issues** - See [Known Issues](/troubleshooting/known-issues) for documented bugs
+1. **Check Known Issues** - See [Known Issues](./known-issues.md) for documented bugs
 2. **Search GitHub Issues** - Check [bknd-io/bknd/issues](https://github.com/bknd-io/bknd/issues)
 3. **Review Source Code** - Inspect relevant files in `opensrc/repos/github.com/bknd-io/bknd/app/src/`
 4. **Create Minimal Reproduction** - Create a simple example that demonstrates the issue

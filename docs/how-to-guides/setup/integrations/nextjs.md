@@ -389,7 +389,7 @@ Some features may not work with edge runtime. Remove `export const runtime = "ed
 
 ## Next Steps
 
-- [React SDK Reference](/usage/react/) - Client-side hooks documentation
-- [Data Module Reference](/reference/data-module/) - Complete API documentation
+- [React SDK Reference](/reference/react-sdk-reference.md) - Client-side hooks documentation
+- [Data Module Reference](/reference/data-module.md) - Complete API documentation
 - [Authentication Guide](/getting-started/add-authentication.md) - Set up auth with permissions
 - [Deploy to Production](/getting-started/deploy-to-production.md) - Production deployment guide

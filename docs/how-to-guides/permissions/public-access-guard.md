@@ -441,7 +441,7 @@ console.log("User context:", ctx.get("auth"));
 
 ## Related Resources
 
-- [Role-Based Access Control](../reference/auth-module#rbac) - Deep dive into roles and permissions
-- [Permission System](../reference/auth-module#permissions) - Understanding permissions and policies
-- [Data Permissions and RLS](../reference/auth-module#rls) - Row-level security for data filtering
-- [Auth Module Reference](../reference/auth-module) - Complete auth module documentation
+- [Role-Based Access Control](../../reference/auth-module.md#rbac) - Deep dive into roles and permissions
+- [Permission System](../../reference/auth-module.md#permissions) - Understanding permissions and policies
+- [Data Permissions and RLS](../../reference/auth-module.md#rls) - Row-level security for data filtering
+- [Auth Module Reference](../../reference/auth-module.md) - Complete auth module documentation

@@ -463,7 +463,7 @@ After creating your first user:
 
 ## Related Documentation
 
-- [Auth Module](../reference/auth-module.md) - Complete auth module documentation
-- [Add Authentication](../getting-started/add-authentication.md) - Full authentication tutorial
+- [Auth Module](../../reference/auth-module.md) - Complete auth module documentation
+- [Add Authentication](../../getting-started/add-authentication.md) - Full authentication tutorial
 - [Enable Public Access with Guard](./public-access-guard.md) - Configure permission-based access
-- [Choose Your Mode](./setup/choose-your-mode.md) - Understanding configuration modes
+- [Choose Your Mode](../setup/choose-your-mode.md) - Understanding configuration modes

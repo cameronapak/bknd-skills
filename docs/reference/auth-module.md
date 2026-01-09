@@ -865,8 +865,8 @@ Based on source code analysis, the following limitations are known:
 
 ## Related Documentation
 
-- [Add Authentication with Permissions Tutorial](/docs/getting-started/add-authentication.md)
-- [Enable Public Access with Guard Guide](/docs/how-to-guides/auth/public-access-guard.md)
-- [Create First User Guide](/docs/how-to-guides/auth/create-first-user.md)
-- [Guard and RBAC](/docs/architecture-and-concepts/guard-rbac.md)
-- [SDK Reference](/docs/reference/sdk-reference.md)
+- [Add Authentication with Permissions Tutorial](../getting-started/add-authentication.md)
+- [Enable Public Access with Guard Guide](../how-to-guides/auth/public-access-guard.md)
+- [Create First User Guide](../how-to-guides/auth/create-first-user.md)
+- [Guard and RBAC](../architecture-and-concepts/guard-rbac.md)
+- [SDK Reference](./sdk-reference.md)

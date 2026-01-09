@@ -13,7 +13,7 @@ Bknd is an embeddable backend framework that lets you build full-stack applicati
   
   <div className="flex flex-col gap-2 p-4 rounded-lg border border-border">
     
-### [Build Your First API](./getting-started/build-your-first-api)
+### [Build Your First API](./getting-started/build-your-first-api.md)
 
 Create a complete API in 15 minutes with Vite + React.
 
@@ -23,7 +23,7 @@ Learn the fundamentals of defining entities, enabling authentication, and buildi
 
   <div className="flex flex-col gap-2 p-4 rounded-lg border border-border">
     
-### [Add Authentication](./getting-started/add-authentication)
+### [Add Authentication](./getting-started/add-authentication.md)
 
 Add email/password authentication with role-based permissions in 20 minutes.
 
@@ -33,7 +33,7 @@ Secure your API with user registration, login, roles, and protected endpoints.
 
   <div className="flex flex-col gap-2 p-4 rounded-lg border border-border">
     
-### [Deploy to Production](./getting-started/deploy-to-production)
+### [Deploy to Production](./getting-started/deploy-to-production.md)
 
 Deploy your Bknd application to Vercel in 15 minutes.
 
@@ -45,7 +45,7 @@ Configure environment variables, choose the right mode, and go live.
 
 ## What is Bknd?
 
-[Read the full overview →](./architecture-and-concepts/what-is-bknd)
+[Read the full overview →](./architecture-and-concepts/what-is-bknd.md)
 
 **Embeddable Architecture**
 
@@ -70,38 +70,38 @@ Works with any frontend framework: React, Next.js, Vue, Svelte, Astro, and vanil
 ## Popular Resources
 
 ### Core Concepts
-- [Choose Your Mode](./how-to-guides/setup/choose-your-mode) - DB mode, code mode, or UI mode
-- [How Bknd Works](./architecture-and-concepts/how-bknd-works) - Request lifecycle and architecture
-- [Entity Relationships](./how-to-guides/data/entity-media-relationships) - One-to-many, many-to-many, polymorphic
+- [Choose Your Mode](./how-to-guides/setup/choose-your-mode.md) - DB mode, code mode, or UI mode
+- [How Bknd Works](./architecture-and-concepts/how-bknd-works.md) - Request lifecycle and architecture
+- [Entity Relationships](./how-to-guides/data/entity-media-relationships.md) - One-to-many, many-to-many, polymorphic
 
 ### Integration Guides
-- [Next.js Integration](./how-to-guides/setup/integrations/nextjs) - Server components and App Router
-- [Vite + React Integration](./how-to-guides/setup/integrations/vite-react) - Standalone SPA setup
-- [React Router Integration](./how-to-guides/setup/integrations/react-router) - Loader/Action pattern
-- [Cloudflare Workers](./how-to-guides/setup/integrations/cloudflare-workers) - Edge deployment
+- [Next.js Integration](./how-to-guides/setup/integrations/nextjs.md) - Server components and App Router
+- [Vite + React Integration](./how-to-guides/setup/integrations/vite-react.md) - Standalone SPA setup
+- [React Router Integration](./how-to-guides/setup/integrations/react-router.md) - Loader/Action pattern
+- [Cloudflare Workers](./how-to-guides/setup/integrations/cloudflare-workers.md) - Edge deployment
 
 ### Authentication & Permissions
-- [Create First User](./how-to-guides/auth/create-first-user) - Admin, CLI, or programmatic methods
-- [Public Access with Guard](./how-to-guides/permissions/public-access-guard) - Guest access configuration
-- [Auth Module Reference](./reference/auth-module) - Complete authentication API
+- [Create First User](./how-to-guides/auth/create-first-user.md) - Admin, CLI, or programmatic methods
+- [Public Access with Guard](./how-to-guides/permissions/public-access-guard.md) - Guest access configuration
+- [Auth Module Reference](./reference/auth-module.md) - Complete authentication API
 
 ### Data Management
-- [Seed Database](./how-to-guides/data/seed-database) - Initial data for any mode
-- [Schema IDs vs UUIDs](./how-to-guides/data/schema-ids-vs-uuids) - Configuration and trade-offs
-- [Data Module Reference](./reference/data-module) - CRUD operations and query system
+- [Seed Database](./how-to-guides/data/seed-database.md) - Initial data for any mode
+- [Schema IDs vs UUIDs](./how-to-guides/data/schema-ids-vs-uuids.md) - Configuration and trade-offs
+- [Data Module Reference](./reference/data-module.md) - CRUD operations and query system
 
 ## Framework Comparison
 
 **Not sure which framework to use?**
 
-[Compare integration approaches across React, Next.js, Vue, and more →](./how-to-guides/setup/integrations/framework-comparison)
+[Compare integration approaches across React, Next.js, Vue, and more →](./how-to-guides/setup/integrations/framework-comparison.md)
 
 ## Troubleshooting
 
 Running into issues? Check our troubleshooting resources:
 
-- [Common Issues](./troubleshooting/common-issues) - Database connections, type generation, CORS
-- [Known Issues](./troubleshooting/known-issues) - Bugs and workarounds
+- [Common Issues](./troubleshooting/common-issues.md) - Database connections, type generation, CORS
+- [Known Issues](./troubleshooting/known-issues.md) - Bugs and workarounds
 
 ## Getting Help
 
@@ -109,7 +109,7 @@ Running into issues? Check our troubleshooting resources:
 
 - Browse the [full documentation index](#)
 - Search using **Ctrl/Cmd + K**
-- Explore [how-to guides](./how-to-guides/setup/choose-your-mode) and [reference docs](./reference/auth-module)
+- Explore [how-to guides](./how-to-guides/setup/choose-your-mode.md) and [reference docs](./reference/auth-module.md)
 
 **Community**
 
@@ -123,9 +123,9 @@ Running into issues? Check our troubleshooting resources:
 
 ## Next Steps
 
-1. **New to Bknd?** Follow the [Onboarding Flow](./onboarding-flow) for a guided experience
-2. **Start building?** [Build Your First API](./getting-started/build-your-first-api)
-3. **Exploring Bknd?** Read [What is Bknd?](./architecture-and-concepts/what-is-bknd)
-4. **Integrating Bknd?** Choose your integration: [Next.js](./how-to-guides/setup/integrations/nextjs), [Vite + React](./how-to-guides/setup/integrations/vite-react), [React Router](./how-to-guides/setup/integrations/react-router), or [Astro](./how-to-guides/setup/integrations/astro)
-5. **Need authentication?** Follow [Add Authentication](./getting-started/add-authentication)
-6. **Ready to deploy?** Read [Deploy to Production](./getting-started/deploy-to-production)
+1. **New to Bknd?** Follow the [Onboarding Flow](./onboarding-flow.md) for a guided experience
+2. **Start building?** [Build Your First API](./getting-started/build-your-first-api.md)
+3. **Exploring Bknd?** Read [What is Bknd?](./architecture-and-concepts/what-is-bknd.md)
+4. **Integrating Bknd?** Choose your integration: [Next.js](./how-to-guides/setup/integrations/nextjs.md), [Vite + React](./how-to-guides/setup/integrations/vite-react.md), [React Router](./how-to-guides/setup/integrations/react-router.md), or [Astro](./how-to-guides/setup/integrations/astro.md)
+5. **Need authentication?** Follow [Add Authentication](./getting-started/add-authentication.md)
+6. **Ready to deploy?** Read [Deploy to Production](./getting-started/deploy-to-production.md)
