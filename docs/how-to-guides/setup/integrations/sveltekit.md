@@ -620,6 +620,7 @@ export const actions: Actions = {
 
 ## Next Steps
 
+- [Configuration Reference](../../../reference/configuration.md) - Complete configuration options
 - [Configure authentication](../../authentication/add-authentication.md) for user management
 - [Learn about data relationships](../../data/entity-media-relationships.md)
 - [Deploy to production](../../../getting-started/deploy-to-production.md)

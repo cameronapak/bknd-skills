@@ -602,3 +602,18 @@
     - Data module improvements: readOneBy in data-module.md
  - **Documentation quality indicators**: Comprehensive guides have 600+ lines with sections on overview, configuration, integration, best practices, troubleshooting, and cross-references
 
+## Task 25.5: Review Cross-References (v0.20.0)
+
+### What I learned:
+- **Cross-reference verification workflow**: When reviewing cross-references, systematically check each new file both for outgoing links (what it links to) and incoming links (what links to it)
+- **Grep patterns for verification**: Use patterns like `grep -n "\.md" file.md` to find markdown links, and `grep -rn "target-file-name" docs/` to find incoming references
+- **Bidirectional linking importance**: Core documentation should have bidirectional links where possible - if A links to B, B should link back to A in its "Related Documentation" section
+- **New file cross-reference patterns**: New integration guides should link to configuration reference, relevant reference docs, framework comparison, and related getting-started guides
+- **Reference docs linking strategy**: Reference docs should link to comprehensive guides in "Related Documentation" sections, but don't need extensive linking to other reference docs
+- **Breaking change cross-references**: Migration guides need extensive inbound links from all affected integration guides
+- **Index.md as central hub**: Index.md should have links to all new major features and migration guides in prominent notice boxes for visibility
+- **Framework comparison cross-refs**: When adding a new integration, framework-comparison.md should have a dedicated section with a cross-link to full guide
+- **Missing link detection**: Use `grep -q` in loops to check which files are missing specific links
+- **Priority for cross-reference fixes**: Focus on user-facing improvements first (getting-started guides, integration guides) before polishing internal reference doc links
+- **Comprehensive review approach**: Check both explicit `.md` links and conceptual references (feature names, guide titles) to ensure complete coverage
+
