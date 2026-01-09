@@ -336,6 +336,18 @@
 
 ### What I learned:
 - **Broken internal links in getting-started directory**: Files within `getting-started/` directory were using `./getting-started/` prefix which created broken links. These should use relative `./` since files are already in the same directory.
+
+## Task 3.0: Navigation Restructure (v0.20.0)
+
+### What I learned:
+- **Task verification approach**: When checking if a task is complete, verify all subtasks by checking actual file state:
+  - For docs.json changes: Read docs.json and verify the group/page exists
+  - For new files: Test with `test -f` to confirm file exists
+  - For cross-references: Use `grep` to verify links exist in files
+- **Navigation structure**: docs.json uses nested groups with simple page references (no file extensions)
+- **Migration Guides placement**: Should be at top of navigation before Getting Started for visibility
+- **Status tracking**: Tasks can be marked complete even if work was done previously - verify state, then mark as [x]
+- **Task 3.0 was already complete**: The migration-guides directory, postgres-package-merge.md file, docs.json navigation, and index.md link were all already in place from previous work
 - **Link verification approach**: Use `grep` patterns to find all broken links at once: `grep -rn 'getting-started/' docs --include="*.md"`
 - **Fix strategy for internal directory links**: When files in a directory link to other files in the same directory, use relative paths like `./file.md` not `./directory/file.md`.
 - **Sed one-liner for bulk fixing**: `find directory -name "*.md" -exec sed -i '' 's/pattern/replacement/g' {} \;` works well for macOS
