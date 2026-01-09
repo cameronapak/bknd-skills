@@ -294,6 +294,8 @@ DB_URL=postgres://user:pass@host:port/db
 JWT_SECRET=your-secret-here
 ```
 
+> **Note:** As of v0.20.0, PostgreSQL adapters (`pg`, `postgresJs`) are available directly from `bknd` package. Previously they were in a separate `@bknd/postgres` package. See [PostgreSQL Migration Guide](../migration-guides/postgres-package-merge.md) for adapter configuration examples.
+
 **Note:** The `process.env` is passed to `getApp()` in the helper, allowing environment variable access.
 
 ## Troubleshooting

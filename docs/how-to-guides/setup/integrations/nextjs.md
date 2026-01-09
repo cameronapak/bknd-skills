@@ -320,6 +320,61 @@ export default function TodoList() {
 }
 ```
 
+## PostgreSQL Adapter Options
+
+Bknd provides two PostgreSQL adapters available from the main `bknd` package:
+
+### pg Adapter (node-postgres)
+
+Best for traditional Node.js applications with connection pooling:
+
+```typescript
+import { pg } from "bknd";
+import { Pool } from "pg";
+
+export default {
+  connection: pg({
+    pool: new Pool({
+      connectionString: process.env.POSTGRES_URL,
+    }),
+  }),
+} satisfies NextjsBkndConfig;
+```
+
+### postgresJs Adapter
+
+Best for edge runtimes (Vercel Edge Functions, Cloudflare Workers):
+
+```typescript
+import { postgresJs } from "bknd";
+import postgres from "postgres";
+
+export default {
+  connection: postgresJs({
+    postgres: postgres(process.env.POSTGRES_URL),
+  }),
+} satisfies NextjsBkndConfig;
+```
+
+### Custom PostgreSQL (Neon, Xata, etc.)
+
+For managed PostgreSQL providers:
+
+```typescript
+import { createCustomPostgresConnection } from "bknd";
+import { NeonDialect } from "kysely-neon";
+
+const neon = createCustomPostgresConnection("neon", NeonDialect);
+
+export default {
+  connection: neon({
+    connectionString: process.env.NEON_URL,
+  }),
+} satisfies NextjsBkndConfig;
+```
+
+> **Note:** As of v0.20.0, PostgreSQL adapters are available directly from `bknd` package. Previously they were in a separate `@bknd/postgres` package.
+
 ## Deployment
 
 ### Environment Variables

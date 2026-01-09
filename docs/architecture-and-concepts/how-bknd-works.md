@@ -402,13 +402,15 @@ hono.get("/api/data/posts", permission("posts.read"), async (c) => {
 
 Bknd supports multiple database backends through adapters:
 
-| Database | Adapter | Connection Type |
+ | Database | Adapter | Connection Type |
 |----------|---------|-----------------|
 | SQLite (node) | `nodeSqlite()` | `DatabaseSync` (node:sqlite) |
 | SQLite (Bun) | `bunSqlite()` | `Database` (bun:sqlite) |
-| PostgreSQL | `postgresJs()` | `node-postgres` |
+| PostgreSQL | `pg()` or `postgresJs()` | `node-postgres` or `postgres` |
 | Cloudflare D1 | Built-in | D1 binding |
 | Turso/LibSQL | Built-in | HTTP client |
+
+> **Note:** As of v0.20.0, PostgreSQL adapters are available directly from the `bknd` package (previously `@bknd/postgres`). Use `pg()` for node-postgres driver or `postgresJs()` for postgres-js driver.
 
 ### Transaction Handling
 

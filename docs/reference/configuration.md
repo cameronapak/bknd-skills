@@ -81,24 +81,26 @@ connection: {
 }
 ```
 
-**PostgreSQL:**
+**PostgreSQL (pg adapter - node-postgres):**
 ```typescript
-import { pgPostgres } from "bknd";
+import { pg } from "bknd";
 
 connection: {
-  url: pgPostgres({
-    connectionString: "postgres://user:pass@host:5432/db",
+  url: pg({
+    pool: new Pool({
+      connectionString: "postgres://user:pass@host:5432/db",
+    }),
   }),
 }
 ```
 
-**PostgreSQL (node-postgres):**
+**PostgreSQL (postgresJs adapter - postgres-js):**
 ```typescript
 import { postgresJs } from "bknd";
 
 connection: {
   url: postgresJs({
-    connectionString: "postgres://user:pass@host:5432/db",
+    postgres: postgres("postgres://user:pass@host:5432/db"),
   }),
 }
 ```
@@ -147,16 +149,21 @@ connection: {
 
 ### PostgreSQL
 
-Production-ready database with `pgPostgres` or `postgresJs` adapters.
+Production-ready database with `pg` or `postgresJs` adapters.
 
-#### pgPostgres Adapter
+#### pg Adapter (node-postgres)
+
+Best for traditional Node.js applications with connection pooling:
 
 ```typescript
-import { pgPostgres } from "bknd";
+import { pg } from "bknd";
+import { Pool } from "pg";
 
 connection: {
-  url: pgPostgres({
-    connectionString: env.POSTGRES_URL,
+  url: pg({
+    pool: new Pool({
+      connectionString: env.POSTGRES_URL,
+    }),
   }),
 }
 ```
@@ -164,16 +171,19 @@ connection: {
 **Options:**
 | Option | Type | Description |
 |--------|------|-------------|
-| `connectionString` | string | PostgreSQL connection string |
+| `pool` | Pool | PostgreSQL Pool instance |
 
-#### postgresJs Adapter
+#### postgresJs Adapter (postgres-js)
+
+Best for edge runtimes:
 
 ```typescript
 import { postgresJs } from "bknd";
+import postgres from "postgres";
 
 connection: {
   url: postgresJs({
-    connectionString: env.POSTGRES_URL,
+    postgres: postgres(env.POSTGRES_URL),
   }),
 }
 ```
@@ -181,10 +191,12 @@ connection: {
 **Options:**
 | Option | Type | Description |
 |--------|------|-------------|
-| `connectionString` | string | PostgreSQL connection string |
+| `postgres` | Sql | postgres-js Sql instance |
 
 **Environment Variables:**
 - `POSTGRES_URL` - PostgreSQL connection string
+
+> **Note:** As of v0.20.0, PostgreSQL adapters (`pg`, `postgresJs`) are available directly from `bknd` package. Previously they were in a separate `@bknd/postgres` package.
 
 ### Custom PostgreSQL Dialects
 

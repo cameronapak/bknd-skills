@@ -69,8 +69,48 @@ Create `.env`:
 
 ```env
 BKND_DB_URL=file:data.db
+ ## PostgreSQL Adapter Options
+
+Bknd provides two PostgreSQL adapters available from main `bknd` package:
+
+### pg Adapter (node-postgres)
+
+Best for traditional Node.js applications with connection pooling:
+
+```typescript
+import { pg } from "bknd";
+import { Pool } from "pg";
+
+export default {
+  connection: pg({
+    pool: new Pool({
+      connectionString: "postgresql://user:password@localhost:5432/database",
+    }),
+  }),
+} satisfies AstroBkndConfig;
+```
+
+### postgresJs Adapter
+
+Best for edge runtimes (Vercel Edge Functions, Cloudflare Workers):
+
+```typescript
+import { postgresJs } from "bknd";
+import postgres from "postgres";
+
+export default {
+  connection: postgresJs({
+    postgres: postgres("postgresql://user:password@localhost:5432/database"),
+  }),
+} satisfies AstroBkndConfig;
+```
+
+> **Note:** As of v0.20.0, PostgreSQL adapters are available directly from `bknd` package. See [PostgreSQL Migration Guide](../migration-guides/postgres-package-merge.md) for migrating from `@bknd/postgres`.
+
+```env
 # For production with PostgreSQL:
 # BKND_DB_URL=postgresql://user:password@host:5432/database
+```
 ```
 
 ## Helper File Setup

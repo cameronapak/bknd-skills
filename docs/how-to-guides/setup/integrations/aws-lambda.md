@@ -109,11 +109,44 @@ assets: {
 Use cloud databases for Lambda deployments:
 
 **RDS PostgreSQL:**
+
+Bknd provides two PostgreSQL adapters available from main `bknd` package:
+
+### pg Adapter (node-postgres)
+
+Best for traditional Node.js applications with connection pooling:
+
 ```javascript
+import { pg } from "bknd";
+import { Pool } from "pg";
+
 connection: {
-   url: process.env.DB_URL,
+  url: pg({
+    pool: new Pool({
+      connectionString: process.env.DB_URL,
+    }),
+  }),
 }
 ```
+
+### postgresJs Adapter
+
+Best for edge runtimes:
+
+```javascript
+import { postgresJs } from "bknd";
+import postgres from "postgres";
+
+connection: {
+  url: postgresJs({
+    postgres: postgres(process.env.DB_URL),
+  }),
+}
+```
+
+> **Note:** As of v0.20.0, PostgreSQL adapters (`pg`, `postgresJs`) are available directly from `bknd` package. See [PostgreSQL Migration Guide](../migration-guides/postgres-package-merge.md) for migrating from `@bknd/postgres`.
+
+Or use connection string directly:
 
 **Turso (LibSQL):**
 ```javascript

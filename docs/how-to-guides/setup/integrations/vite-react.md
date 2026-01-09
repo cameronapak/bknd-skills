@@ -62,6 +62,44 @@ export default {
 } satisfies ViteBkndConfig;
 ```
 
+### PostgreSQL Adapter Options
+
+For PostgreSQL connections, Bknd provides two adapters:
+
+#### pg Adapter (node-postgres)
+
+Best for traditional Node.js applications with connection pooling:
+
+```typescript
+import { pg } from "bknd";
+import { Pool } from "pg";
+
+export default {
+  connection: pg({
+    pool: new Pool({
+      connectionString: "postgresql://user:password@localhost:5432/dbname",
+    }),
+  }),
+} satisfies ViteBkndConfig;
+```
+
+#### postgresJs Adapter
+
+Best for edge runtimes:
+
+```typescript
+import { postgresJs } from "bknd";
+import postgres from "postgres";
+
+export default {
+  connection: postgresJs({
+    postgres: postgres("postgresql://user:password@localhost:5432/dbname"),
+  }),
+} satisfies ViteBkndConfig;
+```
+
+> **Note:** As of v0.20.0, PostgreSQL adapters (`pg`, `postgresJs`) are available directly from `bknd` package. See [PostgreSQL Migration Guide](../migration-guides/postgres-package-merge.md) for migrating from `@bknd/postgres`.
+
 ### 2. Create `server.ts`
 
 Create the server entry point in your root directory:

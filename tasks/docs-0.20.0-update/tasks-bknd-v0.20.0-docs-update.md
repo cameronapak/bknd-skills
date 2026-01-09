@@ -70,12 +70,12 @@ Update the file after completing each sub-task, not just after completing an ent
    - [x] 1.9 Add cross-references to integration guides and configuration reference
    - [x] 1.10 Review and validate migration guide for accuracy and completeness
 
-- [ ] 2.0 Week 1 Critical Path: Update Existing Files for Postgres Package Merge (Priority: HIGH)
-  - [ ] 2.1 Update `/docs/architecture-and-concepts/how-bknd-works.md` line 250 (PostgreSQL adapter reference)
-  - [ ] 2.2 Update `/docs/how-to-guides/setup/integrations/nextjs.md` PostgreSQL section
-  - [ ] 2.3 Update `/docs/getting-started/deploy-to-production.md` database configuration
-  - [ ] 2.4 Update all integration guides with "PostgreSQL Adapter Options" section
-  - [ ] 2.5 Verify all PostgreSQL adapter imports reference main bknd package
+- [x] 2.0 Week 1 Critical Path: Update Existing Files for Postgres Package Merge (Priority: HIGH)
+  - [x] 2.1 Update `/docs/architecture-and-concepts/how-bknd-works.md` line 250 (PostgreSQL adapter reference)
+  - [x] 2.2 Update `/docs/how-to-guides/setup/integrations/nextjs.md` PostgreSQL section
+  - [x] 2.3 Update `/docs/getting-started/deploy-to-production.md` database configuration
+  - [x] 2.4 Update all integration guides with "PostgreSQL Adapter Options" section
+  - [x] 2.5 Verify all PostgreSQL adapter imports reference main bknd package
 
 - [ ] 3.0 Week 1 Critical Path: Navigation Restructure - Add Migration Guides (Priority: HIGH)
   - [ ] 3.1 Update `docs.json` to add "Migration Guides" group at top

@@ -56,9 +56,56 @@ DATABASE_URL="libsql://bknd-prod.turso.io"
 TURSO_AUTH_TOKEN="your-auth-token"
 ```
 
-### Option B: PostgreSQL (Recommended for Traditional)
+ ### Option B: PostgreSQL (Recommended for Traditional)
 
 Use a PostgreSQL provider like Neon, Supabase, or Railway.
+
+**Choose an adapter:**
+
+For traditional Node.js deployments (connection pooling):
+
+```typescript
+import { pg } from "bknd";
+import { Pool } from "pg";
+
+export default {
+  connection: pg({
+    pool: new Pool({
+      connectionString: "postgresql://user:password@host:5432/dbname",
+    }),
+  }),
+} satisfies BkndConfig;
+```
+
+For edge runtimes (Vercel Edge Functions, Cloudflare Workers):
+
+```typescript
+import { postgresJs } from "bknd";
+import postgres from "postgres";
+
+export default {
+  connection: postgresJs({
+    postgres: postgres("postgresql://user:password@host:5432/dbname"),
+  }),
+} satisfies BkndConfig;
+```
+
+For managed providers (Neon, Xata, etc.):
+
+```typescript
+import { createCustomPostgresConnection } from "bknd";
+import { NeonDialect } from "kysely-neon";
+
+const neon = createCustomPostgresConnection("neon", NeonDialect);
+
+export default {
+  connection: neon({
+    connectionString: process.env.NEON_URL,
+  }),
+} satisfies BkndConfig;
+```
+
+> **Note:** As of v0.20.0, PostgreSQL adapters (`pg`, `postgresJs`) are available directly from `bknd` package. See [PostgreSQL Migration Guide](../migration-guides/postgres-package-merge.md) for migrating from `@bknd/postgres`.
 
 ```env
 DATABASE_URL="postgresql://user:password@host:5432/dbname"

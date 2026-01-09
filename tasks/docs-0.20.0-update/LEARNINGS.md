@@ -1,3 +1,17 @@
+## Task 1.0: PostgreSQL Package Merge Migration Guide (v0.20.0)
+
+### What I learned:
+- **Package merge verification**: Before creating migration guides, verify actual package structure using opensrc to fetch source code and check actual exports
+- **Adapter function names**: The main `bknd` package exports `pg` (not `pgPostgres`) and `postgresJs` functions for PostgreSQL connections
+- **Two PostgreSQL adapters**: Bknd provides `pg` adapter (uses `pg` driver, aka node-postgres) and `postgresJs` adapter (uses `postgres` driver)
+- **pg adapter**: Best for traditional Node.js applications, uses `pg` Pool for connection pooling, exported as `pg` from main bknd package
+- **postgresJs adapter**: Best for edge runtimes (Vercel Edge, Cloudflare Workers), lightweight and minimal, exported as `postgresJs` from main bknd package
+- **Breaking change scope**: Only import paths changed - configuration objects and connection strings remain compatible
+- **Migration guide structure**: Should include overview, breaking changes, step-by-step migration, adapter comparison, code examples, troubleshooting, cross-references, and checklist
+- **Navigation updates**: Add Migration Guides as a new top-level group in docs.json before Getting Started for visibility
+- **Index.md visibility**: Add prominent notice box in index.md for breaking changes to catch users before they start
+- **Adapter selection guidance**: Provide clear decision table for choosing between `pg` and `postgresJs` based on use case (edge vs traditional runtime, existing pg-based apps, performance needs)
+
 ## Task 18.0: Schema Permissions (v0.20.0)
 
 ### What I learned:
@@ -222,22 +236,57 @@
 - **Best practices**: Seed sample data in development, implement database export for backups, use pagination for performance, add indexes to frequently queried fields
 - **Documentation placement**: Should be added to docs.json integration guides, linked from index.md, mentioned in choose-your-mode and framework-comparison
 
-## Task 21.0: Navigation - Add Configuration Reference (v0.20.0)
+ ## Task 21.0: Navigation - Add Configuration Reference (v0.20.0)
+
+ ### What I learned:
+ - **Configuration reference positioning**: Should be placed first in Reference group (before auth-module) because it's the foundational document users need when setting up any bknd project
+ - **Cross-linking strategy**: When adding a new central reference document, add links from:
+   - All getting-started guides (build-your-first-api, add-authentication, deploy-to-production)
+   - Decision/setup guides (choose-your-mode)
+   - Framework integration guides (nextjs, vite-react, etc.)
+ - **Navigation structure updates**: docs.json uses nested groups with simple page references (no file extensions)
+ - **Path consistency**: When adding cross-links from different directory levels, use relative paths correctly:
+   - Same directory: `./page-name.md`
+   - Up one level: `../page-name.md`
+   - Up two levels: `../../page-name.md`
+   - Root reference docs: `../../../reference/configuration.md`
+ - **Cross-linking completeness**: Don't need to link from every single file - focus on:
+   - High-traffic pages (getting-started)
+   - Decision/setup pages (choose-your-mode)
+   - Framework integration guides (nextjs, vite-react)
+   - Skip: specific feature guides (data seeding, entity relationships, etc.) unless configuration is directly relevant
+
+## Task 13.0: Navigation - Add Browser Guide (v0.20.0)
 
 ### What I learned:
-- **Configuration reference positioning**: Should be placed first in Reference group (before auth-module) because it's the foundational document users need when setting up any bknd project
-- **Cross-linking strategy**: When adding a new central reference document, add links from:
-  - All getting-started guides (build-your-first-api, add-authentication, deploy-to-production)
-  - Decision/setup guides (choose-your-mode)
-  - Framework integration guides (nextjs, vite-react, etc.)
-- **Navigation structure updates**: docs.json uses nested groups with simple page references (no file extensions)
-- **Path consistency**: When adding cross-links from different directory levels, use relative paths correctly:
-  - Same directory: `./page-name.md`
-  - Up one level: `../page-name.md`
-  - Up two levels: `../../page-name.md`
-  - Root reference docs: `../../../reference/configuration.md`
-- **Cross-linking completeness**: Don't need to link from every single file - focus on:
-  - High-traffic pages (getting-started)
-  - Decision/setup pages (choose-your-mode)
-  - Framework integration guides (nextjs, vite-react)
-  - Skip: specific feature guides (data seeding, entity relationships, etc.) unless configuration is directly relevant
+- **Verification is key before starting**: Before completing Task 13.0, I verified what was already done by reading all relevant files (docs.json, choose-your-mode.md, framework-comparison.md, index.md). Most subtasks were already complete.
+- **Decision tree hierarchy matters**: When adding a new deployment mode to the decision tree, it should be placed at the appropriate decision point. Browser mode was added as the first branch after "Building a full-stack app?" because it's a distinct use case (offline/local-only) that should be considered before edge deployment.
+- **Decision tree flow logic**: The deployment decision tree follows a hierarchical decision structure:
+  1. First decision: Full-stack app? (Framework Embedded vs others)
+  2. Second decision (if not full-stack): Offline/local-only? (Browser Mode vs server-based)
+  3. Third decision (if server-based): Global edge deployment? (Serverless/Edge vs CLI Standalone)
+- **Task verification approach**: When completing a navigation task, check these files:
+  - docs.json: Navigation structure
+  - choose-your-mode.md: Mode and deployment sections + decision tree
+  - framework-comparison.md: Comparison table
+  - index.md: Main page links
+- **Incremental progress tracking**: The tasks file tracks all subtasks individually. When completing a task, mark all subtasks as complete with [x] even if they were already done in previous work.
+
+## Task 2.0: Week 1 Critical Path: Update Existing Files for Postgres Package Merge (Priority: HIGH)
+
+### What I learned:
+- **Source code verification is critical**: Before updating documentation, verify actual implementation from source code. The bknd source shows that the export is `pg` (not `pgPostgres`), while release notes mentioned `pgPostgres`. Always verify with opensrc and check actual exports in `app/src/index.ts`.
+- **Adapter names in v0.20.0**: The correct export names from `bknd` package are `pg` (for node-postgres driver) and `postgresJs` (for postgres-js driver). Both adapters are now available from main `bknd` package without needing separate `@bknd/postgres` package.
+- **Documentation update workflow**: When updating multiple files for a breaking change:
+  1. First, verify the correct API from official release notes and source code
+  2. Update architecture/concept docs with the adapter reference
+  3. Add detailed "PostgreSQL Adapter Options" sections to integration guides showing both adapters with use cases
+  4. Update deployment guides with PostgreSQL adapter guidance
+  5. Update configuration reference with correct import paths and adapter names
+  6. Cross-reference to the migration guide for detailed migration steps
+- **Migration guide already existed**: The migration guide (postgres-package-merge.md) was already complete from Task 1.0, which made this task much easier since I could reference it for migration steps and cross-link it from updated docs.
+- **Consistent note format**: Add a clear note box at the end of updated sections indicating "As of v0.20.0, PostgreSQL adapters (`pg`, `postgresJs`) are available directly from `bknd` package" with cross-link to the migration guide.
+- **Adapter choice guidance**: When documenting PostgreSQL adapters, always provide guidance on when to use each:
+  - `pg()` adapter: Best for traditional Node.js applications with connection pooling (uses Pool from pg package)
+  - `postgresJs()` adapter: Best for edge runtimes (Vercel Edge Functions, Cloudflare Workers) - lightweight and minimal
+  - Custom connections: For managed providers like Neon, Xata that provide their own dialects

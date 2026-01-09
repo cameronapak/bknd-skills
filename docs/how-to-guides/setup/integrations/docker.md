@@ -106,15 +106,59 @@ docker run -p 1337:1337 \
   bknd
 ```
 
-### PostgreSQL Connection
+ ### PostgreSQL Connection
 
-Connect to a PostgreSQL database:
+Bknd provides two PostgreSQL adapters available from main `bknd` package:
+
+#### pg Adapter (node-postgres)
+
+Best for traditional Node.js deployments with connection pooling:
 
 ```bash
 docker run -p 1337:1337 \
-  -e ARGS="--db-url postgres://user:password@host:port/dbname" \
-  bknd
+   -e ARGS="--db-url postgres://user:password@host:port/dbname" \
+   bknd
 ```
+
+Or in code:
+
+```typescript
+import { pg } from "bknd";
+import { Pool } from "pg";
+
+export default {
+  connection: pg({
+    pool: new Pool({
+      connectionString: "postgresql://user:password@host:5432/dbname",
+    }),
+  }),
+} satisfies BkndConfig;
+```
+
+#### postgresJs Adapter
+
+Best for edge runtimes:
+
+```bash
+docker run -p 1337:1337 \
+   -e ARGS="--db-url postgres://user:password@host:port/dbname" \
+   bknd
+```
+
+Or in code:
+
+```typescript
+import { postgresJs } from "bknd";
+import postgres from "postgres";
+
+export default {
+  connection: postgresJs({
+    postgres: postgres("postgresql://user:password@host:5432/dbname"),
+  }),
+} satisfies BkndConfig;
+```
+
+> **Note:** As of v0.20.0, PostgreSQL adapters (`pg`, `postgresJs`) are available directly from `bknd` package. Previously they were in a separate `@bknd/postgres` package.
 
 ## Persistent Storage
 

@@ -177,8 +177,10 @@ connection: {
   // SQLite file (default)
   url: "file:data.db",
 
-  // PostgreSQL
+  // PostgreSQL (choose adapter: pg or postgresJs)
   url: "postgresql://user:pass@localhost:5432/dbname",
+
+> **Note:** As of v0.20.0, use `pg` or `postgresJs` adapter from `bknd` package. See [PostgreSQL Migration Guide](../migration-guides/postgres-package-merge.md) for details.
 
   // In-memory (testing only)
   url: ":memory:",
