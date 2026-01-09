@@ -50,7 +50,7 @@ Update the file after completing each sub-task, not just after completing an ent
   - [x] 0.1 Research Email OTP implementation details (API, TTL, template variables, rate limits)
   - [x] 0.2 Research Plunk integration details (configuration syntax, options, comparison with Resend)
   - [x] 0.3 Research Browser/SQLocal implementation (BkndBrowserApp API, OpfsStorageAdapter, limitations)
-  - [ ] 0.4 Research SvelteKit adapter (import paths, config options, load system, type generation)
+  - [x] 0.4 Research SvelteKit adapter (import paths, config options, load system, type generation)
   - [ ] 0.5 Research Hybrid mode improvements (reader returns objects, sync_required flag, config handling)
   - [ ] 0.6 Research Auto-join behavior (trigger conditions, performance implications, control options)
   - [ ] 0.7 Research MCP navigation (what it is, Admin UI integration, configuration options)

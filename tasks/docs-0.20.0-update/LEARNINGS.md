@@ -497,17 +497,31 @@
     - Validation: Checks code exists, not expired, not already used before allowing login/register
     - Auto-mark used: Code marked with `used_at: new Date()` upon successful verification
 
- - **Plunk Email Driver** (from `app/src/core/drivers/email/plunk.ts`):
-    - Driver function: `plunkEmail({ apiKey, host, from })`
-    - Configuration options: apiKey (required), host (default: "https://api.useplunk.com/v1/send"), from (default from address)
-    - Send options: subscribed (boolean), name, from (override), reply, headers (Record<string, string>)
-    - Body format: Accepts string (plain text) or object `{ text, html }` - HTML used if object provided
-    - API endpoint: POST to configured host with Authorization header `Bearer ${apiKey}`
-    - Response structure: `{ success: boolean, emails: Array<{contact: {id, email}, email}>, timestamp: string }`
-    - Error handling: Throws error if response not ok with API error message
-    - Comparison with Resend: Both have similar API pattern, Plunk response includes contact ID tracking
+  - **Plunk Email Driver** (from `app/src/core/drivers/email/plunk.ts`):
+     - Driver function: `plunkEmail({ apiKey, host, from })`
+     - Configuration options: apiKey (required), host (default: "https://api.useplunk.com/v1/send"), from (default from address)
+     - Send options: subscribed (boolean), name, from (override), reply, headers (Record<string, string>)
+     - Body format: Accepts string (plain text) or object `{ text, html }` - HTML used if object provided
+     - API endpoint: POST to configured host with Authorization header `Bearer ${apiKey}`
+     - Response structure: `{ success: boolean, emails: Array<{contact: {id, email}, email}>, timestamp: string }`
+     - Error handling: Throws error if API response not ok with API error message
+     - Comparison with Resend: Both have similar API pattern, Plunk response includes contact ID tracking
 
- ## Task 9.0: Email OTP Authentication Guide (v0.20.0)
+  - **SvelteKit Adapter API** (from `app/src/adapter/sveltekit/sveltekit.adapter.ts`):
+     - Import path: `bknd/adapter/sveltekit`
+     - Two main functions: `getApp()` for load functions and `serve()` for hooks.server.ts
+     - Runtime-agnostic env access: Uses `$env/dynamic/private` to access env vars, compatible with Node.js, Bun, and Edge runtimes
+     - Hooks integration: `serve()` returns handler that takes SvelteKit event object and calls bknd handler with request
+     - API route handling: Filter requests by pathname prefix (`/api/` or `/admin`) in hooks.server.ts
+     - Server-side data fetching: Use `getApp()` in load functions, then `app.getApi()` to get API client
+     - Authentication: Pass request headers to `app.getApi({ headers: request.headers })` and call `await api.verifyAuth()`
+     - Admin UI static serving: Requires postinstall script `bknd copy-assets --out static` to copy assets
+     - SvelteKit-specific type: `SvelteKitBkndConfig<Env>` extends `RuntimeBkndConfig<Env>` and only picks `adminOptions` property
+     - Svelte 5 syntax: Example uses `$props()` runes for component props instead of `export let` declarations
+     - Type-safe routing: SvelteKit provides auto-generated types (`./$types`) for load functions and actions
+     - Edge deployment: Can use `postgresJs` adapter and configure SvelteKit adapter for edge runtime via `adapter({ edge: true })`
+
+  ## Task 9.0: Email OTP Authentication Guide (v0.20.0)
 
  ### What I learned:
  - **Email OTP Plugin API**: The `emailOTP()` plugin function from `bknd/plugins` provides complete passwordless authentication with login and registration flows
