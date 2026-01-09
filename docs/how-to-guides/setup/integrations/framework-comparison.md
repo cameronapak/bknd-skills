@@ -14,6 +14,7 @@ Choose the right framework for your Bknd integration based on your project requi
 | **Next.js** | Full-stack apps, production SaaS | Framework | ✅ Yes | ✅ Yes | Medium |
 | **React Router** | Full-stack React apps | Framework | ✅ Yes | ✅ Yes | Medium |
 | **Vite + React** | SPAs, rapid prototyping | Runtime | ❌ No | ✅ Yes | Low |
+| **SvelteKit** | Full-stack apps, SEO optimization | Framework | ✅ Yes | ✅ Yes | Medium |
 | **Astro** | Content sites, marketing pages | Framework | ✅ Yes | ✅ Yes | Low |
 | **Bun/Node** | Standalone APIs, microservices | Runtime | ❌ No | ✅ Watch | Low |
 | **Cloudflare Workers** | Edge deployment, global APIs | Runtime | ❌ No | ❌ No | High |
@@ -120,6 +121,70 @@ export const action = async (args: ActionFunctionArgs) => {
 **Deployment:**
 - **Primary:** Vercel, Netlify
 - **Alternatives:** Any Node.js hosting
+
+---
+
+### SvelteKit
+
+**Integration Pattern:** Framework adapter with `bknd/adapter/sveltekit`
+
+**Best Use Cases:**
+- Full-stack applications with SSR
+- Projects requiring SEO optimization
+- Teams familiar with Svelte and SvelteKit conventions
+- Edge deployment with Vercel or Cloudflare
+
+**Strengths:**
+- ✅ Server-side data fetching via load functions
+- ✅ Runtime-agnostic (Node.js, Bun, Edge)
+- ✅ Built-in type safety with TypeScript
+- ✅ Svelte's reactive programming model
+- ✅ Form actions for mutations
+- ✅ Excellent performance (small bundle size)
+- ✅ SEO-friendly with SSR
+
+**Considerations:**
+- ⚠️ Requires postinstall script for Admin UI assets
+- ⚠️ Smaller ecosystem compared to React/Next.js
+- ⚠️ Requires Node.js 22+ for Node.js runtime
+
+**Key Integration Features:**
+```typescript
+// Hooks server
+import { serve } from "bknd/adapter/sveltekit";
+const bkndHandler = serve(config, env);
+
+export const handle: Handle = async ({ event, resolve }) => {
+  if (event.url.pathname.startsWith("/api/")) {
+    const res = await bkndHandler(event);
+    if (res.status !== 404) return res;
+  }
+  return resolve(event);
+};
+
+// Load function
+import { getApp } from "bknd/adapter/sveltekit";
+export const load = async () => {
+  const app = await getApp(config, env);
+  const api = app.getApi();
+  const { data } = await api.data.readMany("todos");
+  return { todos: data };
+};
+
+// Action
+export const actions = {
+  createTodo: async ({ request }) => {
+    const formData = await request.formData();
+    const app = await getApp(config, env);
+    const api = app.getApi();
+    await api.data.create("todos", { title: formData.get("title") });
+  }
+};
+```
+
+**Deployment:**
+- **Primary:** Vercel (native)
+- **Alternatives:** Netlify, Cloudflare Workers, Railway
 
 ---
 

@@ -107,26 +107,26 @@ Update the file after completing each sub-task, not just after completing an ent
   - [x] 6.2 Update `/docs/reference/react-sdk-reference.md` useAuth hook table
   - [x] 6.3 Update examples to include logout usage
 
-- [ ] 7.0 Week 1 Critical Path: SvelteKit Integration Guide (Priority: HIGH)
-  - [ ] 7.1 Create `/docs/how-to-guides/setup/integrations/sveltekit.md` with complete structure
-  - [ ] 7.2 Write "Overview" section on SvelteKit adapter capabilities
-  - [ ] 7.3 Write "Installation" section (CLI starter and manual)
-  - [ ] 7.4 Write "Configuration" section (bknd.config.ts, SvelteKit-specific options)
-  - [ ] 7.5 Write "API Setup" section (API routes, load functions)
-  - [ ] 7.6 Write "Server-Side Data Fetching" section (+page.server.ts, +layout.server.ts)
-  - [ ] 7.7 Write "Admin UI" section (integration with SvelteKit pages)
-  - [ ] 7.8 Write "Client-Side with SDK" section (Svelte stores, useAuth equivalent)
-  - [ ] 7.9 Write "Type Safety" section (TypeScript, type generation)
-  - [ ] 7.10 Write "Deployment" section (Vercel, edge runtime)
-  - [ ] 7.11 Write "Examples" section with complete app examples
-  - [ ] 7.12 Add cross-references to reference docs and framework comparison
+- [x] 7.0 Week 1 Critical Path: SvelteKit Integration Guide (Priority: HIGH)
+   - [x] 7.1 Create `/docs/how-to-guides/setup/integrations/sveltekit.md` with complete structure
+   - [x] 7.2 Write "Overview" section on SvelteKit adapter capabilities
+   - [x] 7.3 Write "Installation" section (CLI starter and manual)
+   - [x] 7.4 Write "Configuration" section (bknd.config.ts, SvelteKit-specific options)
+   - [x] 7.5 Write "API Setup" section (API routes, load functions)
+   - [x] 7.6 Write "Server-Side Data Fetching" section (+page.server.ts, +layout.server.ts)
+   - [x] 7.7 Write "Admin UI" section (integration with SvelteKit pages)
+   - [x] 7.8 Write "Client-Side with SDK" section (Svelte stores, useAuth equivalent)
+   - [x] 7.9 Write "Type Safety" section (TypeScript, type generation)
+   - [x] 7.10 Write "Deployment" section (Vercel, edge runtime)
+   - [x] 7.11 Write "Examples" section with complete app examples
+   - [x] 7.12 Add cross-references to reference docs and framework comparison
 
-- [ ] 8.0 Week 1 Critical Path: Navigation - Add SvelteKit Guide (Priority: HIGH)
-  - [ ] 8.1 Update `docs.json` to include SvelteKit guide in Integration Guides
-  - [ ] 8.2 Position SvelteKit after React Router, before Cloudflare Workers
-  - [ ] 8.3 Update `/docs/how-to-guides/setup/integrations/framework-comparison.md`
-  - [ ] 8.4 Add SvelteKit comparison row to framework comparison table
-  - [ ] 8.5 Update `/docs/index.md` with SvelteKit link
+- [x] 8.0 Week 1 Critical Path: Navigation - Add SvelteKit Guide (Priority: HIGH)
+   - [x] 8.1 Update `docs.json` to include SvelteKit guide in Integration Guides
+   - [x] 8.2 Position SvelteKit after React Router, before Cloudflare Workers
+   - [x] 8.3 Update `/docs/how-to-guides/setup/integrations/framework-comparison.md`
+   - [x] 8.4 Add SvelteKit comparison row to framework comparison table
+   - [x] 8.5 Update `/docs/index.md` with SvelteKit link
 
 - [ ] 9.0 Week 2 Parallel: Email OTP Guide (Priority: MEDIUM)
   - [ ] 9.1 Create `/docs/how-to-guides/auth/email-otp.md` with complete structure

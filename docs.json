@@ -51,6 +51,7 @@
                   "how-to-guides/setup/integrations/nextjs",
                   "how-to-guides/setup/integrations/vite-react",
                   "how-to-guides/setup/integrations/react-router",
+                  "how-to-guides/setup/integrations/sveltekit",
                   "how-to-guides/setup/integrations/astro",
                   "how-to-guides/setup/integrations/bun-node",
                   "how-to-guides/setup/integrations/cloudflare-workers",
