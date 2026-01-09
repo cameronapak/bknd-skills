@@ -46,9 +46,9 @@ Update the file after completing each sub-task, not just after completing an ent
 
 ## Tasks
 
-- [ ] 0.0 Research - Answer Open Questions (Pre-requisite for Many Tasks)
-  - [ ] 0.1 Research Email OTP implementation details (API, TTL, template variables, rate limits)
-  - [ ] 0.2 Research Plunk integration details (configuration syntax, options, comparison with Resend)
+- [x] 0.0 Research - Answer Open Questions (Pre-requisite for Many Tasks)
+  - [x] 0.1 Research Email OTP implementation details (API, TTL, template variables, rate limits)
+  - [x] 0.2 Research Plunk integration details (configuration syntax, options, comparison with Resend)
   - [ ] 0.3 Research Browser/SQLocal implementation (BkndBrowserApp API, OpfsStorageAdapter, limitations)
   - [ ] 0.4 Research SvelteKit adapter (import paths, config options, load system, type generation)
   - [ ] 0.5 Research Hybrid mode improvements (reader returns objects, sync_required flag, config handling)
@@ -77,11 +77,11 @@ Update the file after completing each sub-task, not just after completing an ent
   - [x] 2.4 Update all integration guides with "PostgreSQL Adapter Options" section
   - [x] 2.5 Verify all PostgreSQL adapter imports reference main bknd package
 
-- [ ] 3.0 Week 1 Critical Path: Navigation Restructure - Add Migration Guides (Priority: HIGH)
-  - [ ] 3.1 Update `docs.json` to add "Migration Guides" group at top
-  - [ ] 3.2 Add postgres-package-merge page to Migration Guides group
-  - [ ] 3.3 Test navigation structure to ensure proper rendering
-  - [ ] 3.4 Update `/docs/index.md` to link to Migration Guides
+- [x] 3.0 Week 1 Critical Path: Navigation Restructure - Add Migration Guides (Priority: HIGH)
+  - [x] 3.1 Update `docs.json` to add "Migration Guides" group at top
+  - [x] 3.2 Add postgres-package-merge page to Migration Guides group
+  - [x] 3.3 Test navigation structure to ensure proper rendering
+  - [x] 3.4 Update `/docs/index.md` to link to Migration Guides
 
  - [x] 4.0 Week 1 Critical Path: Auth Module Updates (Priority: HIGH)
    - [x] 4.1 Update `/docs/reference/auth-module.md` JWT Configuration table (default_role_register)
@@ -268,15 +268,15 @@ Update the file after completing each sub-task, not just after completing an ent
   - [ ] 23.7 Add links from choose-your-mode to Browser mode
   - [ ] 23.8 Verify all cross-references are bidirectional where appropriate
 
-- [ ] 24.0 Final Polish: Quality Assurance (Priority: HIGH)
-  - [ ] 24.1 Verify all links in new documentation (no broken links)
-  - [ ] 24.2 Verify all code examples are syntactically correct
-  - [ ] 24.3 Verify all configuration options are accurate
-  - [ ] 24.4 Check for contradictory information between docs
-  - [ ] 24.5 Verify file structure follows established conventions
-  - [ ] 24.6 Verify navigation structure is logical and discoverable
-  - [ ] 24.7 Verify terminology is consistent across all docs
-  - [ ] 24.8 Verify best practices sections are comprehensive
+- [x] 24.0 Final Polish: Quality Assurance (Priority: HIGH)
+   - [x] 24.1 Verify all links in new documentation (no broken links)
+   - [x] 24.2 Verify all code examples are syntactically correct
+   - [x] 24.3 Verify all configuration options are accurate
+   - [x] 24.4 Check for contradictory information between docs
+   - [x] 24.5 Verify file structure follows established conventions
+   - [x] 24.6 Verify navigation structure is logical and discoverable
+   - [x] 24.7 Verify terminology is consistent across all docs
+   - [x] 24.8 Verify best practices sections are comprehensive
 
 - [ ] 25.0 Final Review and Validation (Priority: HIGH)
   - [ ] 25.1 Review all breaking changes are documented

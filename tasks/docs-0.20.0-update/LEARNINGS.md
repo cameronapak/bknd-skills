@@ -332,3 +332,47 @@
   - `pg()` adapter: Best for traditional Node.js applications with connection pooling (uses Pool from pg package)
   - `postgresJs()` adapter: Best for edge runtimes (Vercel Edge Functions, Cloudflare Workers) - lightweight and minimal
   - Custom connections: For managed providers like Neon, Xata that provide their own dialects
+## Task 24.0: Quality Assurance (v0.20.0)
+
+### What I learned:
+- **Broken internal links in getting-started directory**: Files within `getting-started/` directory were using `./getting-started/` prefix which created broken links. These should use relative `./` since files are already in the same directory.
+- **Link verification approach**: Use `grep` patterns to find all broken links at once: `grep -rn 'getting-started/' docs --include="*.md"`
+- **Fix strategy for internal directory links**: When files in a directory link to other files in the same directory, use relative paths like `./file.md` not `./directory/file.md`.
+- **Sed one-liner for bulk fixing**: `find directory -name "*.md" -exec sed -i '' 's/pattern/replacement/g' {} \;` works well for macOS
+- **External links verification**: Links from files outside `getting-started/` directory correctly use `../getting-started/` prefix - no changes needed.
+- **Git lock files**: Git `.git/index.lock` file can prevent commits. Delete with `rm -f .git/index.lock` if commit fails with lock error.
+- **Quality checklist execution**: Systematically check code blocks, links, terminology, and TODO markers.
+- **TODO/FIXME markers**: Found 29 TODO/FIXME/UNKNOWN markers across docs - these are intentional (areas needing future research), not bugs.
+- **@bknd/postgres references**: All references to `@bknd/postgres` are intentional (migration guide and release notes explaining breaking change).
+- **Code block verification**: 449 TypeScript code blocks found, no unclosed blocks detected.
+- **Markdown file count**: 41 markdown files in docs directory.
+- **Consistent naming**: Directory is named `getting-started` (with 'ed') - this is correct and matches docs.json navigation.
+
+## Task 0.0: Research - Answer Open Questions (v0.20.0)
+
+### What I learned:
+- **Email OTP Plugin API** (from `app/src/plugins/auth/email-otp.plugin.ts`):
+  - Plugin function: `emailOTP({ generateCode, apiBasePath, ttl, entity, entityConfig, generateEmail, showActualErrors, allowExternalMutations, sendEmail })`
+  - Default TTL: 600 seconds (10 minutes), configurable via `ttl` parameter
+  - Default entity name: "users_otp", customizable via `entity` parameter
+  - Base path default: "/api/auth/otp", customizable via `apiBasePath`
+  - Email sending enabled by default, can be disabled with `sendEmail: false`
+  - Two OTP actions: "login" and "register" (enum values)
+  - OTP fields: action, code (text, required), email (text, required), created_at (datetime), expires_at (datetime, required), used_at (datetime)
+  - Rate limiting: Auto-invalidation of previous codes when generating new code via `invalidateAllUserCodes()`
+  - Code generation: Default is random 6-digit numeric (100000-999999), customizable via `generateCode` function
+  - Email customization: `generateEmail` callback receives otp object with all fields, returns `{ subject, body }` where body can be string or `{ text, html }`
+  - Error messages: Generic "Invalid credentials" by default, enable actual errors with `showActualErrors: true`
+  - Security: Mutations to OTP entity blocked by default (event listeners on InsertBefore/UpdateBefore), enable with `allowExternalMutations: true`
+  - Validation: Checks code exists, not expired, not already used before allowing login/register
+  - Auto-mark used: Code marked with `used_at: new Date()` upon successful verification
+
+- **Plunk Email Driver** (from `app/src/core/drivers/email/plunk.ts`):
+  - Driver function: `plunkEmail({ apiKey, host, from })`
+  - Configuration options: apiKey (required), host (default: "https://api.useplunk.com/v1/send"), from (default from address)
+  - Send options: subscribed (boolean), name, from (override), reply, headers (Record<string, string>)
+  - Body format: Accepts string (plain text) or object `{ text, html }` - HTML used if object provided
+  - API endpoint: POST to configured host with Authorization header `Bearer ${apiKey}`
+  - Response structure: `{ success: boolean, emails: Array<{contact: {id, email}, email}>, timestamp: string }`
+  - Error handling: Throws error if response not ok with API error message
+  - Comparison with Resend: Both have similar API pattern, Plunk response includes contact ID tracking
