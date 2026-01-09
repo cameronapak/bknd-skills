@@ -252,7 +252,7 @@ const postsWithCover = await em.repository("posts").findMany({
 // Find products with specific image type
 const products = await em.repository("products").findMany({
   where: {
-    'gallery.mime_type': { $startsWith: 'image/' }
+    'gallery.mime_type': { $like: 'image/%' }
   }
 });
 // Auto-joins media through gallery relation
@@ -264,7 +264,7 @@ const products = await em.repository("products").findMany({
 // Find posts with cover image and have at least 3 gallery images
 const posts = await em.repository("posts").findMany({
   where: {
-    'cover.mime_type': { $startsWith: 'image/' },
+    'cover.mime_type': { $like: 'image/%' },
     'thumbnail.width': { $gte: 1200 }
   }
 });
@@ -425,7 +425,7 @@ const fullProduct = await em.repository("products").findOne({
   with: {
     thumbnail: true,
     gallery: { orderBy: { created_at: "desc" } },
-    documents: { where: { mime_type: { $startsWith: "application/" } } },
+    documents: { where: { mime_type: { $like: "application/%" } } },
   },
 });
 ```
