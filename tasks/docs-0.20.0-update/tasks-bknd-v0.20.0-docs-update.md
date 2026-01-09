@@ -83,13 +83,13 @@ Update the file after completing each sub-task, not just after completing an ent
   - [ ] 3.3 Test navigation structure to ensure proper rendering
   - [ ] 3.4 Update `/docs/index.md` to link to Migration Guides
 
-- [ ] 4.0 Week 1 Critical Path: Auth Module Updates (Priority: HIGH)
-  - [ ] 4.1 Update `/docs/reference/auth-module.md` JWT Configuration table (default_role_register)
-  - [ ] 4.2 Update `/docs/reference/auth-module.md` Password Strategy section (minLength)
-  - [ ] 4.3 Update `/docs/reference/auth-module.md` API Endpoints (logout method)
-  - [ ] 4.4 Update `/docs/reference/auth-module.md` to reflect configurable password validation
-  - [ ] 4.5 Update `/docs/reference/auth-module.md` Roles and Permissions section (schema permissions)
-  - [ ] 4.6 Add new endpoints to API Endpoints table if any
+ - [x] 4.0 Week 1 Critical Path: Auth Module Updates (Priority: HIGH)
+   - [x] 4.1 Update `/docs/reference/auth-module.md` JWT Configuration table (default_role_register)
+   - [x] 4.2 Update `/docs/reference/auth-module.md` Password Strategy section (minLength)
+   - [x] 4.3 Update `/docs/reference/auth-module.md` API Endpoints (logout method)
+   - [x] 4.4 Update `/docs/reference/auth-module.md` to reflect configurable password validation
+   - [x] 4.5 Update `/docs/reference/auth-module.md` Roles and Permissions section (schema permissions)
+   - [x] 4.6 Add new endpoints to API Endpoints table if any
 
 - [ ] 5.0 Week 1 Critical Path: Data Module Updates (Priority: HIGH)
   - [ ] 5.1 Update `/docs/reference/data-module.md` Repository API (readOneBy method)

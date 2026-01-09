@@ -33,6 +33,23 @@ export default {
 }
 ```
 
+**Additional configuration options:**
+
+```typescript
+{
+  auth: {
+    enabled: true,
+    entity_name: "users",           // Custom entity name (default: "users")
+    basepath: "/api/auth",         // Custom API base path (default: "/api/auth")
+    allow_register: true,           // Allow user registration (default: true)
+    default_role_register: "user",   // Default role for new users (optional)
+    jwt: {
+      issuer: "your-app-name",
+    },
+  },
+}
+```
+
 When you enable auth without providing a JWT secret, Bknd automatically generates a secure random secret for you.
 
 ## Configuration
@@ -48,6 +65,15 @@ The auth module provides extensive configuration options for JWT tokens, cookies
 | `expires` | number | `undefined` | Token expiration time in seconds. If not set, cookie expiration is used. |
 | `issuer` | string | `undefined` | Issuer claim in JWT payload. |
 | `fields` | string[] | `["id", "email", "role"]` | User fields included in JWT payload. |
+
+### Auth Module Configuration
+
+| Property | Type | Default | Description |
+|-----------|------|----------|-------------|
+| `entity_name` | string | `"users"` | Name of the entity used for user storage. |
+| `basepath` | string | `"/api/auth"` | Base path for authentication endpoints. |
+| `allow_register` | boolean | `true` | Allow user registration via password strategy. |
+| `default_role_register` | string | `undefined` | Default role assigned to newly registered users. Must match a configured role. |
 
 **Example:**
 
@@ -123,6 +149,7 @@ Email/password authentication with configurable hashing algorithms.
         config: {
           hashing: "sha256", // "plain", "sha256", or "bcrypt"
           rounds: 4, // Only for bcrypt (1-10)
+          minLength: 8, // Minimum password length (default: 8, minimum: 1)
         },
       },
     },
@@ -136,10 +163,16 @@ Email/password authentication with configurable hashing algorithms.
 - `sha256` - SHA-256 hashing (default)
 - `bcrypt` - Bcrypt hashing with configurable rounds (1-10, default 4)
 
+**Password Configuration:**
+
+| Property | Type | Default | Description |
+|-----------|------|----------|-------------|
+| `minLength` | number | `8` | Minimum password length (minimum: 1) |
+
 **Password Requirements:**
 
-- Minimum 8 characters (hardcoded in PasswordStrategy)
-- Password length validation is **not configurable** (TODO in source code)
+- Password must meet configured minimum length (default: 8 characters)
+- Password length validation is configurable via `minLength` option
 
 #### OAuth Strategy
 
@@ -313,6 +346,68 @@ Configure roles and their permissions for authorization.
 - `deny` - Revokes access (takes precedence over allow).
 - `filter` - Filters data based on query criteria (row-level security).
 
+### Schema Permissions
+
+Schema operations (reading and modifying application schema) are protected by system-level permissions.
+
+**Schema Permissions:**
+
+| Permission | Description | Context |
+|------------|-------------|---------|
+| `system.schema.read` | Read application schema and configuration | `{ module?: string }` - Optional module filter |
+
+**Protected Endpoints:**
+
+Schema operations are protected by the `system.schema.read` permission:
+
+- `GET /api/system/schema` - Get current schema
+- `GET /api/system/config` - Get configuration (module-specific)
+- `GET /api/data/schema` - Get data schema
+- `GET /api/data/config` - Get data configuration
+
+**Schema Permission Examples:**
+
+```typescript
+// Role with full schema access
+{
+  roles: {
+    admin: {
+      is_default: false,
+      permissions: [
+        {
+          permission: "system.schema.read",
+          effect: "allow",
+        },
+      ],
+    },
+  },
+}
+```
+
+```typescript
+// Role with limited schema access (only data module)
+{
+  roles: {
+    data_admin: {
+      is_default: false,
+      permissions: [
+        {
+          permission: "system.schema.read",
+          effect: "allow",
+          policies: [
+            {
+              condition: { module: "data" },
+            },
+          ],
+        },
+      ],
+    },
+  },
+}
+```
+
+**Note:** Default user roles typically do not have schema permissions. Schema operations are restricted to admin roles.
+
 ## Session Management
 
 Bknd provides secure session management with JWT tokens and HTTP-only cookies.
@@ -420,19 +515,43 @@ Returns `403` if not authenticated.
 
 #### `GET /api/auth/logout`
 
-Logout the current user and clear the auth cookie.
+Logout the current user and clear auth cookie.
 
 **Behavior:**
 
 - Deletes auth cookie
 - Clears session
+- Invalidates JWT token
 - Redirects to referer or configured `pathLoggedOut`
 - Returns JSON `{ ok: true }` for JSON requests
 
+**Query Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|-----------|-------------|
+| `redirect` | string | No | Redirect URL after logout (overrides `pathLoggedOut`). |
+
 **Response Types:**
 
-- **Redirect:** Redirects to referer (default for browser requests)
-- **JSON:** Returns `{ ok: true }` for API requests
+- **Redirect:** Redirects to `redirect` query param, referer, or `pathLoggedOut` (default for browser requests)
+- **JSON:** Returns `{ ok: true }` for API requests with `Accept: application/json` header
+
+**Example:**
+
+```bash
+# Browser redirect (default)
+GET /api/auth/logout
+# Response: 302 redirect to configured pathLoggedOut
+
+# API logout with JSON response
+GET /api/auth/logout
+Headers: Accept: application/json
+# Response: 200 { "ok": true }
+
+# Custom redirect
+GET /api/auth/logout?redirect=/custom/logout/page
+# Response: 302 redirect to /custom/logout/page
+```
 
 ### Password Strategy Endpoints
 
@@ -855,13 +974,12 @@ process.env.DEBUG = "bknd:*";
 
 ## Limitations and TODOs
 
-Based on source code analysis, the following limitations are known:
+Based on source code analysis, following limitations are known:
 
-1. **Password length validation is hardcoded:** Minimum 8 characters, not configurable.
-2. **Password strategy cannot be disabled:** Always required, even if not used.
-3. **No refresh token rotation:** Only sliding session expiration is supported.
-4. **Password change via API:** Requires programmatic method, no HTTP endpoint.
-5. **User field configuration:** Limited to email, role, and strategy fields by default.
+1. **Password strategy cannot be disabled:** Always required, even if not used.
+2. **No refresh token rotation:** Only sliding session expiration is supported.
+3. **Password change via API:** Requires programmatic method, no HTTP endpoint.
+4. **User field configuration:** Limited to email, role, and strategy fields by default.
 
 ## Related Documentation
 
