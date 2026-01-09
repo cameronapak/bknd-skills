@@ -343,6 +343,7 @@ npm run dev
 
 - [Create First User](./how-to-guides/auth/create-first-user.md) - User creation methods (Admin UI, CLI, programmatic)
 - [Build Your First API](./getting-started/build-your-first-api.md) - Complete onboarding tutorial
+- [Configuration Reference](./reference/configuration.md) - Complete configuration options including auth settings
 - [Auth Module Reference](./reference/auth-module.md) - Complete authentication configuration
 - [Seed Database](./how-to-guides/data/seed-database.md) - Seed users and roles with seed function
 

@@ -244,10 +244,10 @@ Update the file after completing each sub-task, not just after completing an ent
    - [x] 20.11 Write "Migration Notes" section (changes from previous versions)
    - [x] 20.12 Add cross-references to all reference docs and how-to guides
 
-- [ ] 21.0 Week 2 Parallel: Navigation - Add Configuration Reference (Priority: MEDIUM)
-  - [ ] 21.1 Update `docs.json` to include configuration reference in Reference group
-  - [ ] 21.2 Position configuration reference first (before auth-module)
-  - [ ] 21.3 Add cross-links from existing docs to new config reference
+- [x] 21.0 Week 2 Parallel: Navigation - Add Configuration Reference (Priority: MEDIUM)
+   - [x] 21.1 Update `docs.json` to include configuration reference in Reference group
+   - [x] 21.2 Position configuration reference first (before auth-module)
+   - [x] 21.3 Add cross-links from existing docs to new config reference
 
 - [ ] 22.0 Week 2 Parallel: Release Notes (Priority: LOW)
   - [ ] 22.1 Create `/docs/releases/` directory

@@ -270,6 +270,7 @@ Before going live, verify:
 
 - [Next.js Integration Guide](./how-to-guides/setup/integrations/nextjs.md) - Set up Next.js integration
 - [Choose Your Mode](./how-to-guides/setup/choose-your-mode.md) - Learn about configuration modes
+- [Configuration Reference](./reference/configuration.md) - Review all configuration options
 - [Seed Database](./how-to-guides/data/seed-database.md) - Seed your production database
 - [Troubleshooting](./troubleshooting/common-issues.md) - Debug common issues
 

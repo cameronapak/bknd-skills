@@ -202,6 +202,7 @@ export default App;
 - Learn about [Authentication](./getting-started/add-authentication.md) - Add user auth with permissions
 - Explore [Data Module Reference](./reference/data-module.md) - Complete CRUD operations API
 - Read [Deploy to Production](./getting-started/deploy-to-production.md) - Launch your app
+- View [Configuration Reference](./reference/configuration.md) - All configuration options
 - Choose Your [Configuration Mode](./how-to-guides/setup/choose-your-mode.md) - Understand db vs code mode
 - Learn [Database Seeding](./how-to-guides/data/seed-database.md) - Populate initial data
 

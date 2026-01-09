@@ -392,6 +392,7 @@ Building a full-stack app?
 
 ## Related Guides
 
+- [Configuration Reference](../../reference/configuration.md) - Complete configuration options for all modes
 - [Next.js Integration](./integrations/nextjs.md) - Set up Next.js framework
 - [Vite + React Integration](./integrations/vite-react.md) - Standalone SPA setup
 - [React Router Integration](./integrations/react-router.md) - Loader/Action pattern
