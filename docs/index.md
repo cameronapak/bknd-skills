@@ -51,6 +51,14 @@ If you're upgrading from a previous version, read the migration guide for the Po
 
 </div>
 
+<div className="mt-4 p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
+
+### [📢 v0.20.0 Release Notes](./releases/v0.20.0-release-notes.md)
+
+Read about new features, improvements, and breaking changes in the latest release.
+
+</div>
+
   <div className="flex flex-col gap-2 p-4 rounded-lg border border-border">
     
 ### [Add Authentication](./getting-started/add-authentication.md)

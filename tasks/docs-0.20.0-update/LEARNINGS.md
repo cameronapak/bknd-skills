@@ -272,6 +272,34 @@
   - index.md: Main page links
 - **Incremental progress tracking**: The tasks file tracks all subtasks individually. When completing a task, mark all subtasks as complete with [x] even if they were already done in previous work.
 
+## Task 7.0: SvelteKit Integration Guide (v0.20.0)
+
+### What I learned:
+- **SvelteKit adapter provides two main functions**: `getApp()` for load functions and `serve()` for hooks.server.ts
+- **Runtime-agnostic environment variable access**: SvelteKit adapter uses `$env/dynamic/private` to access environment variables, making it compatible with Node.js, Bun, and Edge runtimes
+- **Hooks integration pattern**: The `serve()` function returns a handler that takes a SvelteKit event object and calls `bkndHandler(event)` to handle API requests
+- **API route handling**: API requests are filtered by pathname prefix (`/api/` or `/admin`) in hooks.server.ts before being passed to Bknd handler
+- **Server-side data fetching**: Use `getApp()` in SvelteKit load functions to get the Bknd app instance, then call `app.getApi()` to get the API client
+- **Authentication in load functions**: Pass request headers to `app.getApi({ headers: request.headers })` and call `await api.verifyAuth()` to authenticate requests
+- **Form actions pattern**: SvelteKit uses form actions for mutations (create, update, delete) - define actions in `+page.server.ts` and use `use:enhance` directive in Svelte components
+- **Admin UI static serving**: Requires a postinstall script (`bknd copy-assets --out static`) to copy Admin UI assets to the static folder
+- **SvelteKit-specific type**: `SvelteKitBkndConfig<Env>` extends `RuntimeBkndConfig<Env>` and only picks `adminOptions` property
+- **Svelte 5 syntax**: Example uses `$props()` runes for component props instead of `export let` declarations
+- **Type-safe routing**: SvelteKit provides auto-generated types (`./$types`) for load functions and actions
+- **Edge deployment support**: Can use `postgresJs` adapter and configure SvelteKit adapter for edge runtime via `adapter({ edge: true })`
+
+## Task 8.0: Navigation - Add SvelteKit Guide (v0.20.0)
+
+### What I learned:
+- **Navigation update coordination**: When adding a new integration guide, must update three places: docs.json navigation, framework comparison table, and index.md links
+- **docs.json structure**: Integration guides are nested under `How-to Guides` > `Setup` > `Integrations` group in the navigation hierarchy
+- **Framework comparison table placement**: SvelteKit should be added in the decision matrix between React Router and Astro (alphabetical order makes sense, but framework type grouping is more important)
+- **Framework comparison content**: Each framework section should include Integration Pattern, Best Use Cases, Strengths, Considerations, Key Integration Features (code examples), Deployment options
+- **SvelteKit key features for comparison**: SSR via load functions, runtime-agnostic env access, form actions, SEO-friendly with SSR, small bundle size
+- **Index.md link placement**: Integration guides link should be in "Integration Guides" section with other framework links
+- **Cross-reference consistency**: New integration guide should cross-reference framework comparison and other integration guides
+- **Task completion marking**: Related tasks (7.0 content creation and 8.0 navigation updates) can be completed in sequence and marked together
+
 ## Task 2.0: Week 1 Critical Path: Update Existing Files for Postgres Package Merge (Priority: HIGH)
 
 ### What I learned:
@@ -284,9 +312,23 @@
   4. Update deployment guides with PostgreSQL adapter guidance
   5. Update configuration reference with correct import paths and adapter names
   6. Cross-reference to the migration guide for detailed migration steps
-- **Migration guide already existed**: The migration guide (postgres-package-merge.md) was already complete from Task 1.0, which made this task much easier since I could reference it for migration steps and cross-link it from updated docs.
+ - **Migration guide already existed**: The migration guide (postgres-package-merge.md) was already complete from Task 1.0, which made this task much easier since I could reference it for migration steps and cross-link it from updated docs.
 - **Consistent note format**: Add a clear note box at the end of updated sections indicating "As of v0.20.0, PostgreSQL adapters (`pg`, `postgresJs`) are available directly from `bknd` package" with cross-link to the migration guide.
 - **Adapter choice guidance**: When documenting PostgreSQL adapters, always provide guidance on when to use each:
+  
+## Task 22.0: Release Notes (v0.20.0)
+
+### What I learned:
+- **Release notes structure**: A comprehensive release note should include: overview, what's new (major features), other improvements (minor features), migration guide (breaking changes), detailed changelog (PR list), contributors, and upgrading instructions
+- **Cross-referencing**: Release notes should link to migration guides, configuration reference, and feature documentation to help users find detailed information
+- **Breaking change visibility**: Use clear sections for breaking changes with migration steps and links to dedicated migration guides
+- **Feature documentation**: For each major feature, provide code examples and links to detailed documentation (integration guides, reference docs)
+- **Changelog format**: Include PR numbers and contributor links for transparency and to give credit to contributors
+- **New contributors section**: Highlight first-time contributors separately to acknowledge their contributions
+- **Navigation updates**: Add release notes to docs.json under Getting Started group (after index, before other pages) for visibility
+- **Index.md updates**: Add a prominent notice box in index.md linking to release notes to catch users before they start (similar to migration guide notice)
+- **Version-specific releases**: Create a `/docs/releases/` directory for version-specific release notes to maintain history
+- **Research approach**: Use GitHub release page as primary source for accurate release information, including full changelog, contributors, and PR links
   - `pg()` adapter: Best for traditional Node.js applications with connection pooling (uses Pool from pg package)
   - `postgresJs()` adapter: Best for edge runtimes (Vercel Edge Functions, Cloudflare Workers) - lightweight and minimal
   - Custom connections: For managed providers like Neon, Xata that provide their own dialects

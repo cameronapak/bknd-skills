@@ -31,6 +31,7 @@
         "group": "Getting Started",
         "pages": [
           "index",
+          "releases/v0.20.0-release-notes",
           "onboarding-flow",
           "architecture-and-concepts/what-is-bknd",
           "getting-started/build-your-first-api",

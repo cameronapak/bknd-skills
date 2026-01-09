@@ -249,14 +249,14 @@ Update the file after completing each sub-task, not just after completing an ent
    - [x] 21.2 Position configuration reference first (before auth-module)
    - [x] 21.3 Add cross-links from existing docs to new config reference
 
-- [ ] 22.0 Week 2 Parallel: Release Notes (Priority: LOW)
-  - [ ] 22.1 Create `/docs/releases/` directory
-  - [ ] 22.2 Create `/docs/releases/v0.20.0-release-notes.md`
-  - [ ] 22.3 Write quick summary of all changes
-  - [ ] 22.4 Add links to migration guides
-  - [ ] 22.5 Add links to new feature documentation
-  - [ ] 22.6 Format as changelog
-  - [ ] 22.7 Update `/docs/index.md` to link to release notes
+ - [x] 22.0 Week 2 Parallel: Release Notes (Priority: LOW)
+   - [x] 22.1 Create `/docs/releases/` directory
+   - [x] 22.2 Create `/docs/releases/v0.20.0-release-notes.md`
+   - [x] 22.3 Write quick summary of all changes
+   - [x] 22.4 Add links to migration guides
+   - [x] 22.5 Add links to new feature documentation
+   - [x] 22.6 Format as changelog
+   - [x] 22.7 Update `/docs/index.md` to link to release notes
 
 - [ ] 23.0 Final Polish: Cross-References (Priority: MEDIUM)
   - [ ] 23.1 Review all new files for required cross-references
