@@ -102,10 +102,10 @@ Update the file after completing each sub-task, not just after completing an ent
    - [x] 5.8 Update `/docs/reference/data-module.md` Mutator API (uploadToEntity overwrite parameter)
    - [x] 5.9 Add overwrite parameter documentation and examples
 
-- [ ] 6.0 Week 1 Critical Path: React SDK Updates (Priority: HIGH)
-  - [ ] 6.1 Update `/docs/reference/react-sdk-reference.md` API Methods (auth.logout())
-  - [ ] 6.2 Update `/docs/reference/react-sdk-reference.md` useAuth hook table
-  - [ ] 6.3 Update examples to include logout usage
+- [x] 6.0 Week 1 Critical Path: React SDK Updates (Priority: HIGH)
+  - [x] 6.1 Update `/docs/reference/react-sdk-reference.md` API Methods (auth.logout())
+  - [x] 6.2 Update `/docs/reference/react-sdk-reference.md` useAuth hook table
+  - [x] 6.3 Update examples to include logout usage
 
 - [ ] 7.0 Week 1 Critical Path: SvelteKit Integration Guide (Priority: HIGH)
   - [ ] 7.1 Create `/docs/how-to-guides/setup/integrations/sveltekit.md` with complete structure

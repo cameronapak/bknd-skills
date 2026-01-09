@@ -26,6 +26,15 @@
   4. Remove outdated TODO notes
   5. Add examples for new features
 
+## Task 6.0: React SDK Updates (v0.20.0)
+
+### What I learned:
+- **`useApi()` hook provides direct access to API modules**: The `api` object includes `data`, `auth`, `media`, and `system` modules
+- **Direct API usage vs. hooks**: While `useAuth()` provides `logout()` method, you can also access `api.auth.logout()` directly through `useApi()`
+- **Auth API logout behavior**: Calls `/api/auth/logout` endpoint with `Accept: application/json` header to prevent redirect, then triggers `onTokenUpdate` callback to clear token
+- **Documentation organization**: When documenting SDK methods, show both hook-level convenience methods (like `useAuth().logout()`) and direct API access (like `api.auth.logout()`)
+- **React SDK already had logout documented**: Task 6.0 items 6.2 and 6.3 were already complete - only needed to add direct API usage documentation in `useApi()` section
+
 ## Task 5.0: Data Module Updates (v0.20.0)
 
 ### What I learned:
