@@ -22,6 +22,12 @@
   "navigation": {
     "groups": [
       {
+        "group": "Migration Guides",
+        "pages": [
+          "migration-guides/postgres-package-merge"
+        ]
+      },
+      {
         "group": "Getting Started",
         "pages": [
           "index",

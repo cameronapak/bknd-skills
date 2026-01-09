@@ -58,17 +58,17 @@ Update the file after completing each sub-task, not just after completing an ent
   - [ ] 0.9 Research implementation priorities (experimental features, beta releases, breaking changes)
   - [ ] 0.10 Research release coordination (official release date, additional breaking changes, team consultation)
 
-- [ ] 1.0 Week 1 Critical Path: Postgres Package Migration Guide (Priority: HIGH)
-  - [ ] 1.1 Create `/docs/migration-guides/` directory
-  - [ ] 1.2 Create `/docs/migration-guides/postgres-package-merge.md` with complete structure
-  - [ ] 1.3 Write "Overview" section explaining the Postgres package merge
-  - [ ] 1.4 Write "Breaking Changes" section listing all changes
-  - [ ] 1.5 Write "Migration Steps" section with detailed instructions
-  - [ ] 1.6 Write "Adapter Comparison" section (pgPostgres vs postgresJs)
-  - [ ] 1.7 Write "Code Examples" section with before/after comparisons
-  - [ ] 1.8 Write "Troubleshooting" section for common migration issues
-  - [ ] 1.9 Add cross-references to integration guides and configuration reference
-  - [ ] 1.10 Review and validate migration guide for accuracy and completeness
+- [x] 1.0 Week 1 Critical Path: Postgres Package Migration Guide (Priority: HIGH)
+   - [x] 1.1 Create `/docs/migration-guides/` directory
+   - [x] 1.2 Create `/docs/migration-guides/postgres-package-merge.md` with complete structure
+   - [x] 1.3 Write "Overview" section explaining the Postgres package merge
+   - [x] 1.4 Write "Breaking Changes" section listing all changes
+   - [x] 1.5 Write "Migration Steps" section with detailed instructions
+   - [x] 1.6 Write "Adapter Comparison" section (pgPostgres vs postgresJs)
+   - [x] 1.7 Write "Code Examples" section with before/after comparisons
+   - [x] 1.8 Write "Troubleshooting" section for common migration issues
+   - [x] 1.9 Add cross-references to integration guides and configuration reference
+   - [x] 1.10 Review and validate migration guide for accuracy and completeness
 
 - [ ] 2.0 Week 1 Critical Path: Update Existing Files for Postgres Package Merge (Priority: HIGH)
   - [ ] 2.1 Update `/docs/architecture-and-concepts/how-bknd-works.md` line 250 (PostgreSQL adapter reference)

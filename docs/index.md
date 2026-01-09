@@ -17,9 +17,39 @@ Bknd is an embeddable backend framework that lets you build full-stack applicati
 
 Create a complete API in 15 minutes with Vite + React.
 
-Learn the fundamentals of defining entities, enabling authentication, and building a React UI that consumes your API.
+Learn fundamentals of defining entities, enabling authentication, and building a React UI that consumes your API.
 
   </div>
+
+  <div className="flex flex-col gap-2 p-4 rounded-lg border border-border">
+    
+### [Add Authentication](./getting-started/add-authentication.md)
+
+Add email/password authentication with role-based permissions in 20 minutes.
+
+Secure your API with user registration, login, roles, and protected endpoints.
+
+  </div>
+
+  <div className="flex flex-col gap-2 p-4 rounded-lg border border-border">
+    
+### [Deploy to Production](./getting-started/deploy-to-production.md)
+
+Deploy your Bknd application to Vercel in 15 minutes.
+
+Configure environment variables, choose the right mode, and go live.
+
+  </div>
+
+</div>
+
+<div className="mt-4 p-4 rounded-lg bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800">
+
+### [🚀 PostgreSQL Migration Guide (v0.20.0)](./migration-guides/postgres-package-merge.md)
+
+If you're upgrading from a previous version, read the migration guide for the PostgreSQL package merge.
+
+</div>
 
   <div className="flex flex-col gap-2 p-4 rounded-lg border border-border">
     
