@@ -274,7 +274,7 @@
 ## Task 13.0: Navigation - Add Browser Guide (v0.20.0)
 
 ### What I learned:
-- **Verification is key before starting**: Before completing Task 13.0, I verified what was already done by reading all relevant files (docs.json, choose-your-mode.md, framework-comparison.md, index.md). Most subtasks were already complete.
+- **Verification is key before starting**: Before completing Task 13.0, I verified what was already done by reading all relevant files (docs.json, choose-your-mode.md, framework-comparison.md, index). Most subtasks were already complete.
 - **Decision tree hierarchy matters**: When adding a new deployment mode to the decision tree, it should be placed at the appropriate decision point. Browser mode was added as the first branch after "Building a full-stack app?" because it's a distinct use case (offline/local-only) that should be considered before edge deployment.
 - **Decision tree flow logic**: The deployment decision tree follows a hierarchical decision structure:
    1. First decision: Full-stack app? (Framework Embedded vs others)
@@ -327,7 +327,7 @@
    4. Update deployment guides with PostgreSQL adapter guidance
    5. Update configuration reference with correct import paths and adapter names
    6. Cross-reference to the migration guide for detailed migration steps
-  - **Migration guide already existed**: The migration guide (postgres-package-merge.md) was already complete from Task 1.0, which made this task much easier since I could reference it for migration steps and cross-link it from updated docs.
+  - **Migration guide already existed**: The migration guide (postgres-package-merge) was already complete from Task 1.0, which made this task much easier since I could reference it for migration steps and cross-link it from updated docs.
 - **Consistent note format**: Add a clear note box at the end of updated sections indicating "As of v0.20.0, PostgreSQL adapters (`pg`, `postgresJs`) are available directly from `bknd` package" with cross-link to the migration guide.
 - **Adapter choice guidance**: When documenting PostgreSQL adapters, always provide guidance on when to use each:
   
@@ -440,7 +440,7 @@
 ### What I learned:
 - **Updated files verification approach**: Check file existence and content using bash loops with conditional checks
 - **File existence pattern**: Use `if [ -f "$file" ]; then ... fi` to safely check file existence in loops
-- **Line count baselines for updated files**: Updated files vary from 22 lines (README.md) to 1128 lines (schema.md) depending on scope
+- **Line count baselines for updated files**: Updated files vary from 22 lines (README) to 1128 lines (schema) depending on scope
 - **Content verification via grep**: Search for v0.20.0-specific keywords to verify updates are present across all files
 - **Keyword patterns for v0.20.0**: `v0\.20\.0`, `minLength`, `default_role_register`, `readOneBy`, `auto-join`, `overwrite`, `schema\.read`, `MCP`, `Email OTP`, `Plunk`
 - **Expected update count**: All 12 updated files should contain at least one v0.20.0-specific keyword
@@ -717,4 +717,3 @@
 - **Missing link detection**: Use `grep -q` in loops to check which files are missing specific links
 - **Priority for cross-reference fixes**: Focus on user-facing improvements first (getting-started guides, integration guides) before polishing internal reference doc links
 - **Comprehensive review approach**: Check both explicit `.md` links and conceptual references (feature names, guide titles) to ensure complete coverage
-

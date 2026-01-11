@@ -2823,31 +2823,31 @@ Cross-linking is essential for helping users navigate between different types of
 **Tutorial Pattern:**
 ```markdown
 ## Next Steps
-- [Related Tutorial](./getting-started/tutorial.md) - Brief description
-- [Reference Doc](./reference/doc.md) - Detailed API info
+- [Related Tutorial](/getting-started/tutorial) - Brief description
+- [Reference Doc](/reference/doc) - Detailed API info
 
 ## Related Guides
-- [Guide 1](./how-to-guides/guide1.md) - Specific topic
-- [Guide 2](./how-to-guides/guide2.md) - Related topic
+- [Guide 1](/how-to-guides/guide1) - Specific topic
+- [Guide 2](/how-to-guides/guide2) - Related topic
 ```
 
 **Reference Pattern:**
 ```markdown
 ## See Also
-- [Related Reference](./reference/other.md) - API connections
+- [Related Reference](/reference/other) - API connections
 
 ## Related Guides
-- [Practical Guide](./how-to-guides/guide.md) - How to use
-- [Tutorial](./getting-started/tutorial.md) - Learn by doing
+- [Practical Guide](/how-to-guides/guide) - How to use
+- [Tutorial](/getting-started/tutorial) - Learn by doing
 ```
 
 **Guide Pattern:**
 ```markdown
 ## Related Guides
-- [Similar Guide](./how-to-guides/other.md) - Related task
+- [Similar Guide](/how-to-guides/other) - Related task
 
 ## Related Reference
-- [API Docs](./reference/doc.md) - Implementation details
+- [API Docs](/reference/doc) - Implementation details
 ```
 
 ### Files Updated with Cross-links

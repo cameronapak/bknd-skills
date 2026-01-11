@@ -21,17 +21,17 @@
       {
         "group": "Getting Started",
         "pages": [
-          "docs/index",
-          "docs/onboarding-flow",
-          "docs/architecture-and-concepts/what-is-bknd",
-          "docs/getting-started/build-your-first-api",
-          "docs/getting-started/add-authentication",
-          "docs/getting-started/deploy-to-production"
+          "/index",
+          "/onboarding-flow",
+          "/architecture-and-concepts/what-is-bknd",
+          "/getting-started/build-your-first-api",
+          "/getting-started/add-authentication",
+          "/getting-started/deploy-to-production"
         ]
       },
       {
         "group": "Migration Guides",
-        "pages": ["docs/releases/v0.20.0-release-notes", "docs/migration-guides/postgres-package-merge"]
+        "pages": ["/releases/v0.20.0-release-notes", "/migration-guides/postgres-package-merge"]
       },
       {
         "group": "How-to Guides",
@@ -39,20 +39,20 @@
           {
             "group": "Setup",
             "pages": [
-              "docs/how-to-guides/setup/choose-your-mode",
+              "/how-to-guides/setup/choose-your-mode",
               {
                 "group": "Integrations",
                 "pages": [
-                  "docs/how-to-guides/setup/integrations/nextjs",
-                  "docs/how-to-guides/setup/integrations/vite-react",
-                  "docs/how-to-guides/setup/integrations/react-router",
-                  "docs/how-to-guides/setup/integrations/sveltekit",
-                  "docs/how-to-guides/setup/integrations/astro",
-                  "docs/how-to-guides/setup/integrations/bun-node",
-                  "docs/how-to-guides/setup/integrations/cloudflare-workers",
-                  "docs/how-to-guides/setup/integrations/aws-lambda",
-                  "docs/how-to-guides/setup/integrations/docker",
-                  "docs/how-to-guides/setup/integrations/browser-sqlocal"
+                  "/how-to-guides/setup/integrations/nextjs",
+                  "/how-to-guides/setup/integrations/vite-react",
+                  "/how-to-guides/setup/integrations/react-router",
+                  "/how-to-guides/setup/integrations/sveltekit",
+                  "/how-to-guides/setup/integrations/astro",
+                  "/how-to-guides/setup/integrations/bun-node",
+                  "/how-to-guides/setup/integrations/cloudflare-workers",
+                  "/how-to-guides/setup/integrations/aws-lambda",
+                  "/how-to-guides/setup/integrations/docker",
+                  "/how-to-guides/setup/integrations/browser-sqlocal"
                 ]
               }
             ]
@@ -60,49 +60,49 @@
           {
             "group": "Authentication",
             "pages": [
-              "docs/how-to-guides/auth/create-first-user",
-              "docs/how-to-guides/auth/email-otp",
-              "docs/how-to-guides/permissions/public-access-guard"
+              "/how-to-guides/auth/create-first-user",
+              "/how-to-guides/auth/email-otp",
+              "/how-to-guides/permissions/public-access-guard"
             ]
           },
           {
             "group": "Integrations",
-            "pages": ["docs/how-to-guides/integrations/plunk-email"]
+            "pages": ["/how-to-guides/integrations/plunk-email"]
           },
           {
             "group": "Data",
             "pages": [
-              "docs/how-to-guides/data/seed-database",
-              "docs/how-to-guides/data/entity-media-relationships",
-              "docs/how-to-guides/data/schema-ids-vs-uuids"
+              "/how-to-guides/data/seed-database",
+              "/how-to-guides/data/entity-media-relationships",
+              "/how-to-guides/data/schema-ids-vs-uuids"
             ]
           }
         ]
       },
       {
         "group": "Architecture & Concepts",
-        "pages": ["docs/architecture-and-concepts/what-is-bknd", "docs/architecture-and-concepts/how-bknd-works"]
+        "pages": ["/architecture-and-concepts/what-is-bknd", "/architecture-and-concepts/how-bknd-works"]
       },
       {
         "group": "Reference",
         "pages": [
-          "docs/reference/configuration",
-          "docs/reference/auth-module",
-          "docs/reference/data-module",
-          "docs/reference/react-sdk-reference",
-          "docs/reference/entity-manager-api",
-          "docs/reference/orm",
-          "docs/reference/query-system",
-          "docs/reference/schemd"
+          "/reference/configuration",
+          "/reference/auth-module",
+          "/reference/data-module",
+          "/reference/react-sdk-reference",
+          "/reference/entity-manager-api",
+          "/reference/orm",
+          "/reference/query-system",
+          "/reference/schemd"
         ]
       },
       {
         "group": "Troubleshooting",
-        "pages": ["docs/troubleshooting/common-issues", "docs/troubleshooting/known-issues"]
+        "pages": ["/troubleshooting/common-issues", "/troubleshooting/known-issues"]
       },
       {
         "group": "Comparisons",
-        "pages": ["docs/comparisons/bknd-comparison-pocketbase"]
+        "pages": ["/comparisons/bknd-comparison-pocketbase"]
       }
     ]
   }

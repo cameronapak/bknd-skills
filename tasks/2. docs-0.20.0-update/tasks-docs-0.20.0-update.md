@@ -55,7 +55,7 @@
 - **Critical Blocker:** Must fetch bknd source code before any verification tasks can begin
 - Use `npx opensrc bknd-io/bknd` to fetch the official source code
 - Import verification requires checking actual file structure in `opensrc/repos/github.com/bknd-io/bknd/`
-- Link verification: Use `grep -r "\[.*\](.*\.md)" docs/` for internal links and web tools for external
+- Link verification: Use `grep -r "\[.*\](.*\)" docs/` for internal links and web tools for external
 - Code verification: Compare import statements with actual exports in package.json and source files
 - Consistency checks: Use `grep -r "adminOptions\|adminBasepath" docs/` to find all instances
 - Terminology: Check source code for correct API naming before making changes
@@ -126,7 +126,7 @@ Update the file after completing each sub-task, not just after completing an ent
     - [ ] 1.9.5 Update examples to match source implementation
 
 - [ ] 2.0 Accuracy Corrections
-  - [ ] 2.1 Fix PostgreSQL adapter documentation (5 issues in postgres-package-merge.md)
+  - [ ] 2.1 Fix PostgreSQL adapter documentation (5 issues in postgres-package-merge)
     - [ ] 2.1.1 Read `docs/migration-guides/postgres-package-merge.md`
     - [ ] 2.1.2 Locate PostgreSQL adapter source code in opensrc directory
     - [ ] 2.1.3 Identify and document all 5 PostgreSQL adapter issues
@@ -136,7 +136,7 @@ Update the file after completing each sub-task, not just after completing an ent
     - [ ] 2.1.7 Update code examples to match current implementation
     - [ ] 2.1.8 Remove deprecated adapter usage patterns
     - [ ] 2.1.9 Verify all corrections align with source code
-  - [ ] 2.2 Fix Email OTP plugin documentation (5 issues in email-otp.md)
+  - [ ] 2.2 Fix Email OTP plugin documentation (5 issues in email-otp)
     - [ ] 2.2.1 Read `docs/how-to-guides/auth/email-otp.md`
     - [ ] 2.2.2 Locate Email OTP plugin source code in opensrc directory
     - [ ] 2.2.3 Identify and document all 5 Email OTP plugin issues
@@ -146,7 +146,7 @@ Update the file after completing each sub-task, not just after completing an ent
     - [ ] 2.2.7 Update code examples to match current implementation
     - [ ] 2.2.8 Fix configuration options for Email OTP
     - [ ] 2.2.9 Verify all corrections align with source code
-  - [ ] 2.3 Fix Plunk email driver documentation (3 issues in plunk-email.md)
+  - [ ] 2.3 Fix Plunk email driver documentation (3 issues in plunk-email)
     - [ ] 2.3.1 Read `docs/how-to-guides/integrations/plunk-email.md`
     - [ ] 2.3.2 Locate Plunk email driver source code in opensrc directory
     - [ ] 2.3.3 Identify and document all 3 Plunk email driver issues
@@ -155,7 +155,7 @@ Update the file after completing each sub-task, not just after completing an ent
     - [ ] 2.3.6 Correct API signatures for Plunk email driver
     - [ ] 2.3.7 Update code examples to match current implementation
     - [ ] 2.3.8 Verify all corrections align with source code
-  - [ ] 2.4 Fix SvelteKit adapter documentation (2 issues in sveltekit.md)
+  - [ ] 2.4 Fix SvelteKit adapter documentation (2 issues in sveltekit)
     - [ ] 2.4.1 Read `docs/how-to-guides/setup/integrations/sveltekit.md`
     - [ ] 2.4.2 Locate SvelteKit adapter source code in opensrc directory
     - [ ] 2.4.3 Identify and document all 2 SvelteKit adapter issues
@@ -164,7 +164,7 @@ Update the file after completing each sub-task, not just after completing an ent
     - [ ] 2.4.6 Correct API signatures for SvelteKit adapter
     - [ ] 2.4.7 Update code examples to match current implementation
     - [ ] 2.4.8 Verify all corrections align with source code
-  - [ ] 2.5 Verify and correct Browser/SQLocal mode documentation (browser-sqlocal.md)
+  - [ ] 2.5 Verify and correct Browser/SQLocal mode documentation (browser-sqlocal)
     - [ ] 2.5.1 Read `docs/how-to-guides/setup/integrations/browser-sqlocal.md`
     - [ ] 2.5.2 Locate browser mode and SQLocal source code in opensrc directory
     - [ ] 2.5.3 Identify all uncertain areas in browser mode documentation
@@ -227,7 +227,7 @@ Update the file after completing each sub-task, not just after completing an ent
     - [ ] 3.7.6 Verify all endpoints are now consistent
 
 - [ ] 4.0 Documentation Simplification
-  - [ ] 4.1 Simplify migration guide (reduce 30%, ~120 lines from postgres-package-merge.md)
+  - [ ] 4.1 Simplify migration guide (reduce 30%, ~120 lines from postgres-package-merge)
     - [ ] 4.1.1 Read `docs/migration-guides/postgres-package-merge.md` (409 lines)
     - [ ] 4.1.2 Identify redundant explanations and verbose sections
     - [ ] 4.1.3 Identify over-engineered scenarios that can be simplified
@@ -238,7 +238,7 @@ Update the file after completing each sub-task, not just after completing an ent
     - [ ] 4.1.8 Rewrite sections to be more direct and concise
     - [ ] 4.1.9 Target reduction to ~280 lines (30% reduction from 409)
     - [ ] 4.1.10 Verify content is still clear and actionable after simplification
-  - [ ] 4.2 Simplify email OTP guide (reduce 40%, ~324 lines from email-otp.md)
+  - [ ] 4.2 Simplify email OTP guide (reduce 40%, ~324 lines from email-otp)
     - [ ] 4.2.1 Read `docs/how-to-guides/auth/email-otp.md` (810 lines)
     - [ ] 4.2.2 Identify redundant explanations and verbose sections
     - [ ] 4.2.3 Identify over-engineered scenarios that can be simplified
@@ -249,7 +249,7 @@ Update the file after completing each sub-task, not just after completing an ent
     - [ ] 4.2.8 Rewrite sections to be more direct and concise
     - [ ] 4.2.9 Target reduction to ~480 lines (40% reduction from 810)
     - [ ] 4.2.10 Verify content is still clear and actionable after simplification
-  - [ ] 4.3 Simplify Plunk guide (reduce 35%, ~242 lines from plunk-email.md)
+  - [ ] 4.3 Simplify Plunk guide (reduce 35%, ~242 lines from plunk-email)
     - [ ] 4.3.1 Read `docs/how-to-guides/integrations/plunk-email.md` (691 lines)
     - [ ] 4.3.2 Identify redundant explanations and verbose sections
     - [ ] 4.3.3 Identify over-engineered scenarios that can be simplified
@@ -260,7 +260,7 @@ Update the file after completing each sub-task, not just after completing an ent
     - [ ] 4.3.8 Rewrite sections to be more direct and concise
     - [ ] 4.3.9 Target reduction to ~450 lines (35% reduction from 691)
     - [ ] 4.3.10 Verify content is still clear and actionable after simplification
-  - [ ] 4.4 Simplify browser mode guide (reduce 40%, ~369 lines from browser-sqlocal.md)
+  - [ ] 4.4 Simplify browser mode guide (reduce 40%, ~369 lines from browser-sqlocal)
     - [ ] 4.4.1 Read `docs/how-to-guides/setup/integrations/browser-sqlocal.md` (923 lines)
     - [ ] 4.4.2 Identify redundant explanations and verbose sections
     - [ ] 4.4.3 Identify over-engineered scenarios that can be simplified
