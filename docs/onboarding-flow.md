@@ -1,9 +1,7 @@
 ---
-title: Onboarding Flow
+title: I'm New Here
 description: First-time visitor guide for getting started with Bknd
 ---
-
-# Bknd Onboarding Flow
 
 Welcome to Bknd! This guide helps you get started quickly based on your goals and experience level.
 

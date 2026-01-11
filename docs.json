@@ -5,15 +5,12 @@
     "dark": "/logo/bknd_logo_white.svg",
     "light": "/logo/bknd_logo_black.svg"
   },
+  "theme": "mint",
   "favicon": "/logo/favicon.svg",
   "colors": {
     "primary": "#166E3F",
     "light": "#26BD6C",
-    "dark": "#0D4A29",
-    "background": {
-      "light": "#ffffff",
-      "dark": "#0a0d0d"
-    }
+    "dark": "#0D4A29"
   },
   "topbarCtaButton": {
     "name": "Get Started",
@@ -22,22 +19,19 @@
   "navigation": {
     "groups": [
       {
-        "group": "Migration Guides",
+        "group": "Getting Started",
         "pages": [
-          "migration-guides/postgres-package-merge"
+          "docs/index",
+          "docs/onboarding-flow",
+          "docs/architecture-and-concepts/what-is-bknd",
+          "docs/getting-started/build-your-first-api",
+          "docs/getting-started/add-authentication",
+          "docs/getting-started/deploy-to-production"
         ]
       },
       {
-        "group": "Getting Started",
-        "pages": [
-          "index",
-          "releases/v0.20.0-release-notes",
-          "onboarding-flow",
-          "architecture-and-concepts/what-is-bknd",
-          "getting-started/build-your-first-api",
-          "getting-started/add-authentication",
-          "getting-started/deploy-to-production"
-        ]
+        "group": "Migration Guides",
+        "pages": ["docs/releases/v0.20.0-release-notes", "docs/migration-guides/postgres-package-merge"]
       },
       {
         "group": "How-to Guides",
@@ -45,20 +39,20 @@
           {
             "group": "Setup",
             "pages": [
-              "how-to-guides/setup/choose-your-mode",
+              "docs/how-to-guides/setup/choose-your-mode",
               {
                 "group": "Integrations",
                 "pages": [
-                  "how-to-guides/setup/integrations/nextjs",
-                  "how-to-guides/setup/integrations/vite-react",
-                  "how-to-guides/setup/integrations/react-router",
-                  "how-to-guides/setup/integrations/sveltekit",
-                  "how-to-guides/setup/integrations/astro",
-                  "how-to-guides/setup/integrations/bun-node",
-                  "how-to-guides/setup/integrations/cloudflare-workers",
-                  "how-to-guides/setup/integrations/aws-lambda",
-                  "how-to-guides/setup/integrations/docker",
-                  "how-to-guides/setup/integrations/browser-sqlocal"
+                  "docs/how-to-guides/setup/integrations/nextjs",
+                  "docs/how-to-guides/setup/integrations/vite-react",
+                  "docs/how-to-guides/setup/integrations/react-router",
+                  "docs/how-to-guides/setup/integrations/sveltekit",
+                  "docs/how-to-guides/setup/integrations/astro",
+                  "docs/how-to-guides/setup/integrations/bun-node",
+                  "docs/how-to-guides/setup/integrations/cloudflare-workers",
+                  "docs/how-to-guides/setup/integrations/aws-lambda",
+                  "docs/how-to-guides/setup/integrations/docker",
+                  "docs/how-to-guides/setup/integrations/browser-sqlocal"
                 ]
               }
             ]
@@ -66,59 +60,49 @@
           {
             "group": "Authentication",
             "pages": [
-              "how-to-guides/auth/create-first-user",
-              "how-to-guides/auth/email-otp",
-              "how-to-guides/permissions/public-access-guard"
+              "docs/how-to-guides/auth/create-first-user",
+              "docs/how-to-guides/auth/email-otp",
+              "docs/how-to-guides/permissions/public-access-guard"
             ]
           },
           {
             "group": "Integrations",
-            "pages": [
-              "how-to-guides/integrations/plunk-email"
-            ]
+            "pages": ["docs/how-to-guides/integrations/plunk-email"]
           },
           {
             "group": "Data",
             "pages": [
-              "how-to-guides/data/seed-database",
-              "how-to-guides/data/entity-media-relationships",
-              "how-to-guides/data/schema-ids-vs-uuids"
+              "docs/how-to-guides/data/seed-database",
+              "docs/how-to-guides/data/entity-media-relationships",
+              "docs/how-to-guides/data/schema-ids-vs-uuids"
             ]
           }
         ]
       },
       {
         "group": "Architecture & Concepts",
+        "pages": ["docs/architecture-and-concepts/what-is-bknd", "docs/architecture-and-concepts/how-bknd-works"]
+      },
+      {
+        "group": "Reference",
         "pages": [
-          "architecture-and-concepts/what-is-bknd",
-          "architecture-and-concepts/how-bknd-works"
+          "docs/reference/configuration",
+          "docs/reference/auth-module",
+          "docs/reference/data-module",
+          "docs/reference/react-sdk-reference",
+          "docs/reference/entity-manager-api",
+          "docs/reference/orm",
+          "docs/reference/query-system",
+          "docs/reference/schemd"
         ]
       },
       {
-         "group": "Reference",
-         "pages": [
-           "reference/configuration",
-           "reference/auth-module",
-           "reference/data-module",
-           "reference/react-sdk-reference",
-           "reference/entity-manager-api",
-           "reference/orm",
-           "reference/query-system",
-           "reference/schema"
-         ]
+        "group": "Troubleshooting",
+        "pages": ["docs/troubleshooting/common-issues", "docs/troubleshooting/known-issues"]
       },
       {
-         "group": "Troubleshooting",
-         "pages": [
-           "troubleshooting/common-issues",
-           "troubleshooting/known-issues"
-         ]
-      },
-      {
-         "group": "Comparisons",
-         "pages": [
-           "bknd-comparison-pocketbase"
-         ]
+        "group": "Comparisons",
+        "pages": ["docs/comparisons/bknd-comparison-pocketbase"]
       }
     ]
   }
