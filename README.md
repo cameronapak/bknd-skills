@@ -1,4 +1,4 @@
-# Operation Moar Bknd
+# WIP: Supplemental Bknd Docs
 
 **I love [Bknd](https://bknd.io/), but I'm often perplexed on why it's not more widely adopted**. I think the main culprits are awareness and education.
 
@@ -11,12 +11,14 @@ That's why I'm taking it upon myself to create some docs in hopes that it helps 
 > [!NOTE]
 > > I'm no expert. However, I am a student who loves to learn and to help unlock others. 
 
+> [!WARNING]
+> Almost all of the docs are AI generated. 
+> I have used MCP tools like Zread and Grep.app to make sure I'm referencing the most up-to-date code for Bknd.
+> I am also using tools like `opensrc` to locally pull in the Bknd repo and grep against that. 
+> All plans were created through me riffing back and forth with AI.
+> My buddy [Ralph Wiggum](https://x.com/ryancarson/status/2008548371712135632) has written most of the code.
+> For now, consider all of this to be a work in progress. 
+
 — Cam
 
 ## [Open WIP Docs](./docs/index.md)
-
-## License
-
-This documentation repository and the Bknd project are licensed under the Apache-2.0 license. This means you're free to use, modify, and distribute the code and documentation, even for commercial purposes.
-
-For more information, see the [Apache-2.0 License](https://www.apache.org/licenses/LICENSE-2.0).
