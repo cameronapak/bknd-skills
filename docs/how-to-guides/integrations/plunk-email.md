@@ -370,7 +370,7 @@ emailOTP({
 - **Free Tier**: Stay within free tier limits when possible
 - **Email Size**: Optimize email size to reduce bandwidth costs
 - **Segmentation**: Use contact segmentation to target relevant users
-- **Unsubscribe Rate**: Maintain low unsubscribe rates (<1%)
+- **Unsubscribe Rate**: Maintain low unsubscribe rates
 
 ### Security
 

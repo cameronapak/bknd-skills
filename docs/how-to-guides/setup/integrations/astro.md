@@ -111,7 +111,6 @@ export default {
 # For production with PostgreSQL:
 # BKND_DB_URL=postgresql://user:password@host:5432/database
 ```
-```
 
 ## Helper File Setup
 
