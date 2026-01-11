@@ -364,6 +364,42 @@ export default function SystemStatus() {
 **Returns:**
 - `Api` - Full API instance with `data`, `auth`, `media`, `system` modules
 
+**API Modules:**
+
+The `Api` instance provides direct access to all backend modules:
+
+| Module | Description |
+|---------|-------------|
+| `api.data` | Data module for entity CRUD operations |
+| `api.auth` | Auth module for authentication operations |
+| `api.media` | Media module for file uploads |
+| `api.system` | System module for health checks |
+
+**Auth Methods:**
+
+```tsx
+const api = useApi();
+
+// Logout current user
+await api.auth.logout();
+```
+
+**Data Methods:**
+
+```tsx
+// Read entities
+const posts = await api.data.readMany("posts", { limit: 10 });
+
+// Create entity
+const newPost = await api.data.create("posts", { title: "Hello" });
+
+// Update entity
+const updated = await api.data.update("posts", 1, { title: "Updated" });
+
+// Delete entity
+await api.data.delete("posts", 1);
+```
+
 ### `useApiInfiniteQuery` (Experimental)
 
 **⚠️ Experimental - Use with caution**

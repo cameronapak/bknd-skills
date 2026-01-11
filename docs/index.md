@@ -17,7 +17,7 @@ Bknd is an embeddable backend framework that lets you build full-stack applicati
 
 Create a complete API in 15 minutes with Vite + React.
 
-Learn the fundamentals of defining entities, enabling authentication, and building a React UI that consumes your API.
+Learn fundamentals of defining entities, enabling authentication, and building a React UI that consumes your API.
 
   </div>
 
@@ -42,6 +42,19 @@ Configure environment variables, choose the right mode, and go live.
   </div>
 
 </div>
+
+<div className="mt-4 p-4 rounded-lg bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800">
+
+### [🚀 PostgreSQL Migration Guide (v0.20.0)](./migration-guides/postgres-package-merge.md)
+
+If you're upgrading from a previous version, read the migration guide for the PostgreSQL package merge.
+
+</div>
+
+  <div className="mt-4 p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
+  ### [📢 v0.20.0 Release Notes](./releases/v0.20.0-release-notes.md)
+  Read about new features, improvements, and breaking changes in latest release.
+ </div>
 
 ## What is Bknd?
 
@@ -78,11 +91,15 @@ Works with any frontend framework: React, Next.js, Vue, Svelte, Astro, and vanil
 - [Next.js Integration](./how-to-guides/setup/integrations/nextjs.md) - Server components and App Router
 - [Vite + React Integration](./how-to-guides/setup/integrations/vite-react.md) - Standalone SPA setup
 - [React Router Integration](./how-to-guides/setup/integrations/react-router.md) - Loader/Action pattern
+- [SvelteKit Integration](./how-to-guides/setup/integrations/sveltekit.md) - SSR and load functions
+- [Browser + SQLocal](./how-to-guides/setup/integrations/browser-sqlocal.md) - Local-first offline apps
 - [Cloudflare Workers](./how-to-guides/setup/integrations/cloudflare-workers.md) - Edge deployment
 
 ### Authentication & Permissions
 - [Create First User](./how-to-guides/auth/create-first-user.md) - Admin, CLI, or programmatic methods
+- [Email OTP Authentication](./how-to-guides/auth/email-otp.md) - Passwordless login via one-time codes
 - [Public Access with Guard](./how-to-guides/permissions/public-access-guard.md) - Guest access configuration
+- [Plunk Email Provider](./how-to-guides/integrations/plunk-email.md) - Open-source email platform for transactional emails
 - [Auth Module Reference](./reference/auth-module.md) - Complete authentication API
 
 ### Data Management
@@ -120,6 +137,7 @@ Running into issues? Check our troubleshooting resources:
 
 - [Bknd GitHub Repository](https://github.com/bknd-io/bknd) - Source code and releases
 - [Official Documentation](https://docs.bknd.io) - Latest docs and updates
+- [Apache-2.0 License](https://www.apache.org/licenses/LICENSE-2.0) - Bknd is licensed under Apache 2.0
 
 ## Next Steps
 

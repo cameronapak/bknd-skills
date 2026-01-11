@@ -99,6 +99,165 @@ Controllers handle business logic and interact with modules:
 - **MediaController** - File uploads and transformations
 - **FlowsController** - Workflow triggers and executions
 
+## MCP (Model Context Protocol) Integration
+
+Bknd includes a built-in MCP server that enables AI assistants and external tools to interact with your Bknd instance through a standardized protocol.
+
+### What is MCP?
+
+Model Context Protocol (MCP) is an open standard introduced by Anthropic for connecting AI applications to external data sources and tools. MCP provides:
+- Standardized tool discovery and invocation
+- Resource access for reading/writing data
+- Authentication and permission handling
+- Support for multiple transport types (HTTP, STDIO)
+
+### Enabling MCP
+
+**Via Configuration:**
+```typescript
+export default {
+  config: {
+    server: {
+      mcp: {
+        enabled: true,
+      }
+    }
+  }
+} satisfies BkndConfig;
+```
+
+**Via Admin UI:**
+1. Navigate to `/settings/server` or click user menu → Settings → Server
+2. Enable "Mcp" checkbox
+3. Save configuration
+
+### Accessing MCP UI
+
+Once enabled, MCP is accessible from:
+- **Direct URL**: `/mcp`
+- **Admin UI**: Click user menu → MCP (top right)
+
+The MCP UI provides:
+- Interactive tool testing and exploration
+- Live schema inspection
+- Resource browsing
+- Authentication status
+
+### MCP Request Handling
+
+MCP requests follow a special route pattern:
+
+```
+[AI Client/IDE] → [MCP Server] → [Bknd API] → [Database]
+```
+
+**MCP Endpoints:**
+- `POST /api/system/mcp` - Main MCP endpoint (Streamable HTTP transport)
+- STDIO transport via CLI: `npx bknd mcp`
+
+**Authentication:**
+MCP uses the same authentication as the main API, ensuring permissions work consistently:
+- **HTTP**: Pass `Authorization: Bearer <token>` header
+- **STDIO**: Use `--token <token>` or `BEARER_TOKEN` environment variable
+
+### MCP Tools and Resources
+
+Bknd dynamically generates MCP tools and resources from:
+- **Schema-defined entities** - Data operations for each entity
+- **Hono routes** - Custom API endpoints become tools
+- **Manual definitions** - Additional tools can be registered
+
+**Example: Using MCP Client**
+```typescript
+import { McpClient } from "bknd/utils";
+
+const client = new McpClient({
+  url: "http://localhost:1337/api/system/mcp",
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+});
+
+// Query posts via MCP
+const result = await client.callTool({
+  name: "data_entity_read_many",
+  arguments: {
+    entity: "posts",
+    limit: 10,
+    select: ["id", "title"],
+  },
+});
+```
+
+### Using MCP with External Tools
+
+Bknd's MCP server integrates with IDEs and AI assistants:
+
+**Cursor:**
+```json
+{
+  "mcpServers": {
+    "bknd": {
+      "command": "npx",
+      "args": ["-y", "bknd@latest", "mcp"]
+    }
+  }
+}
+```
+
+**VS Code:**
+```json
+{
+  "servers": {
+    "bknd": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "bknd@latest", "mcp"]
+    }
+  }
+}
+```
+
+**Claude Desktop:**
+```json
+{
+  "mcpServers": {
+    "bknd": {
+      "command": "npx",
+      "args": ["-y", "bknd@latest", "mcp"]
+    }
+  }
+}
+```
+
+### Route-Aware MCP Access
+
+MCP respects route-based configuration:
+- Admin UI route can be customized via `basepath` config
+- MCP endpoint is always accessible at `/api/system/mcp`
+- MCP UI location is always `/mcp` relative to Admin UI base
+
+**Example: Custom Admin Path**
+```typescript
+export default {
+  config: {
+    server: {
+      admin: {
+        basepath: "/my-admin",
+      },
+      mcp: {
+        enabled: true,
+      }
+    }
+  }
+} satisfies BkndConfig;
+```
+
+In this setup:
+- Admin UI: `http://localhost:3000/my-admin`
+- MCP UI: `http://localhost:3000/my-admin/mcp`
+- MCP API: `http://localhost:3000/api/system/mcp`
+
 ### 5. Database Interaction
 
 Controllers use the `EntityManager` to interact with the database:
@@ -243,13 +402,15 @@ hono.get("/api/data/posts", permission("posts.read"), async (c) => {
 
 Bknd supports multiple database backends through adapters:
 
-| Database | Adapter | Connection Type |
+ | Database | Adapter | Connection Type |
 |----------|---------|-----------------|
 | SQLite (node) | `nodeSqlite()` | `DatabaseSync` (node:sqlite) |
 | SQLite (Bun) | `bunSqlite()` | `Database` (bun:sqlite) |
-| PostgreSQL | `postgresJs()` | `node-postgres` |
+| PostgreSQL | `pg()` or `postgresJs()` | `node-postgres` or `postgres` |
 | Cloudflare D1 | Built-in | D1 binding |
 | Turso/LibSQL | Built-in | HTTP client |
+
+> **Note:** As of v0.20.0, PostgreSQL adapters are available directly from the `bknd` package (previously `@bknd/postgres`). Use `pg()` for node-postgres driver or `postgresJs()` for postgres-js driver.
 
 ### Transaction Handling
 

@@ -100,6 +100,30 @@ if (user.data) {
 }
 ```
 
+### readOneBy(where)
+
+Find a single record by conditions using `findMany` with limit. This is an alternative to `findOne` that provides more control over query options.
+
+```typescript
+const user = await userRepo.readOneBy({
+  where: { email: "user@example.com" },
+  select: ["id", "username", "email"]
+});
+
+if (user.data) {
+  console.log("Found user:", user.data);
+} else {
+  console.log("User not found");
+}
+```
+
+**Note:** `readOneBy` internally uses `findMany` with `limit: 1` and `offset: 0`, returning only the first result. It supports `where`, `select`, `join`, and `with` options, but excludes `limit`, `offset`, and `sort` (these are automatically set).
+
+**When to use readOneBy vs findOne:**
+- Use `findOne` for simple queries where you just need to find by ID or basic conditions
+- Use `readOneBy` when you need more control over field selection, relations, or joins in a single-record query
+- Both methods return the same result structure
+
 ### findId(id)
 
 Find a single record by primary key.
@@ -257,6 +281,56 @@ await postRepo.findMany({
 ```
 
 **UNKNOWN:** Cannot confirm maximum depth or complex nesting patterns. Documentation suggests simple relation name arrays.
+
+### Automatic Joins
+
+When filtering by related entity fields, Bknd automatically performs joins to optimize queries. This happens when you use dot notation in your `where` clause.
+
+```typescript
+// Filter posts by author's username (auto-join)
+const posts = await postRepo.findMany({
+  where: { "author.username": "john" }
+});
+
+// Filter posts by related entity status
+const publishedPosts = await postRepo.findMany({
+  where: { "author.status": "active" }
+});
+
+// Combine auto-join with manual field selection
+const posts = await postRepo.findMany({
+  where: { "author.email": "john@example.com" },
+  select: ["id", "title", "author.username"]
+});
+```
+
+**How auto-join works:**
+- When you reference a related field (e.g., `"author.username"`), Bknd automatically adds the necessary join
+- The join is added to the query behind the scenes, no manual `join` option needed
+- Auto-join checks if the related field exists in the relationship before adding the join
+- Index warnings are triggered for non-indexed related fields
+
+**Performance Considerations:**
+- Auto-joins are convenient but can impact query performance
+- Consider using manual `join` with explicit field selection for complex queries
+- Always index fields you filter on, including related entity fields
+- Use the `with` option for preloading relations instead of relying solely on auto-join
+
+**Example: Manual join for better performance:**
+
+```typescript
+// Auto-join (convenient but may load unnecessary data)
+const posts = await postRepo.findMany({
+  where: { "author.username": "john" }
+});
+
+// Manual join (explicit control over selected fields)
+const posts = await postRepo.findMany({
+  join: ["author"],
+  where: { "author.username": "john" },
+  select: ["posts.id", "posts.title", "author.username"]
+});
+```
 
 ### Pagination
 
@@ -431,6 +505,101 @@ await postMutator.updateOne(1, {
 ```
 
 **Note:** Many-to-Many queries default to a 5-record limit on related records.
+
+### Media Uploads (uploadToEntity)
+
+Upload files directly to entity media fields using the Media API's `uploadToEntity` method.
+
+```typescript
+import { createApp } from "bknd";
+
+const app = createApp({
+  config: {
+    data: {
+      entities: {
+        posts: {
+          fields: {
+            title: { type: "text", required: true },
+            content: { type: "text" },
+          },
+        },
+      },
+    },
+  },
+});
+
+await app.build();
+
+// Access Media API
+const media = app.media;
+
+// Upload file to entity field
+const result = await media.uploadToEntity(
+  "posts",      // entity name
+  1,            // entity ID
+  "cover",      // field name
+  file          // File object, Buffer, or ReadableStream
+);
+
+console.log(result.data); // Uploaded file metadata
+```
+
+**uploadToEntity Signature:**
+
+```typescript
+await media.uploadToEntity(
+  entity: string,
+  id: PrimaryFieldType,
+  field: string,
+  item: File | Buffer | ReadableStream,
+  options?: {
+    overwrite?: boolean;  // Allow overwriting existing files
+    _init?: RequestInit;  // Additional fetch options
+    fetcher?: typeof fetch; // Custom fetcher
+  }
+);
+```
+
+**Overwrite Behavior:**
+
+The `overwrite` parameter controls what happens when a file already exists for the entity field:
+
+```typescript
+// Default: Error if file exists (overwrite not set)
+const result = await media.uploadToEntity("posts", 1, "cover", file);
+// Error: File already exists for posts[1].cover
+
+// Allow overwriting existing file
+const result = await media.uploadToEntity("posts", 1, "cover", file, {
+  overwrite: true
+});
+// Success: Replaces existing file with new one
+```
+
+**Use Cases:**
+
+```typescript
+// Upload profile picture for user
+await media.uploadToEntity("users", userId, "avatar", avatarFile);
+
+// Update existing cover image (overwrite)
+await media.uploadToEntity("posts", postId, "cover", newCoverImage, {
+  overwrite: true
+});
+
+// Upload document with custom fetch options
+await media.uploadToEntity("documents", docId, "file", pdfBuffer, {
+  _init: {
+    headers: { "X-Custom-Header": "value" }
+  }
+});
+```
+
+**Best Practices:**
+- Use `overwrite: false` (default) for one-time uploads to prevent accidental data loss
+- Use `overwrite: true` for update operations where replacing existing files is expected
+- Always check if file exists before attempting to overwrite
+- Use appropriate file sizes and formats based on your use case
 
 ## Events
 

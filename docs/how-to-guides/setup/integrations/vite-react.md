@@ -62,6 +62,44 @@ export default {
 } satisfies ViteBkndConfig;
 ```
 
+### PostgreSQL Adapter Options
+
+For PostgreSQL connections, Bknd provides two adapters:
+
+#### pg Adapter (node-postgres)
+
+Best for traditional Node.js applications with connection pooling:
+
+```typescript
+import { pg } from "bknd";
+import { Pool } from "pg";
+
+export default {
+  connection: pg({
+    pool: new Pool({
+      connectionString: "postgresql://user:password@localhost:5432/dbname",
+    }),
+  }),
+} satisfies ViteBkndConfig;
+```
+
+#### postgresJs Adapter
+
+Best for edge runtimes:
+
+```typescript
+import { postgresJs } from "bknd";
+import postgres from "postgres";
+
+export default {
+  connection: postgresJs({
+    postgres: postgres("postgresql://user:password@localhost:5432/dbname"),
+  }),
+} satisfies ViteBkndConfig;
+```
+
+> **Note:** As of v0.20.0, PostgreSQL adapters (`pg`, `postgresJs`) are available directly from `bknd` package. See [PostgreSQL Migration Guide](../migration-guides/postgres-package-merge.md) for migrating from `@bknd/postgres`.
+
 ### 2. Create `server.ts`
 
 Create the server entry point in your root directory:
@@ -273,6 +311,36 @@ export default serve({
 });
 ```
 
+### Enabling MCP
+
+Model Context Protocol (MCP) allows AI assistants to interact with your Bknd instance:
+
+**Via Configuration:**
+```typescript
+export default {
+  config: {
+    server: {
+      mcp: {
+        enabled: true,
+      },
+    },
+  },
+} satisfies ViteBkndConfig;
+```
+
+**Via Admin UI:**
+1. Access Admin UI at `http://localhost:5174/`
+2. Click user menu (top right) → Settings → Server
+3. Enable "Mcp" checkbox
+4. Save configuration
+
+**Accessing MCP:**
+- MCP UI: `http://localhost:5174/mcp`
+- Admin menu: Click user menu → MCP
+- MCP API: `http://localhost:5174/api/system/mcp`
+
+**Note:** MCP is experimental in v0.20.0 and may change in future versions.
+
 ### Static File Serving
 
 Configure static file serving:
@@ -417,7 +485,8 @@ Should return JSON configuration.
 
 ## Next Steps
 
-- Learn about [Authentication](./getting-started/add-authentication)
-- Explore [Data Module](./reference/data-module)
-- Read about [Deployment](./getting-started/deploy-to-production)
-- Check [Query System](./reference/query-system)
+- Learn about [Authentication](../../getting-started/add-authentication)
+- Explore [Data Module](../../../reference/data-module)
+- Read about [Deployment](../../getting-started/deploy-to-production)
+- Check [Configuration Reference](../../../reference/configuration.md) - Complete configuration options
+- Check [Query System](../../../reference/query-system)

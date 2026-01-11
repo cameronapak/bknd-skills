@@ -100,6 +100,11 @@ export default {
 
 This mode allows you to configure your backend visually while in development, and uses the produced configuration in a Code-only mode for maximum performance.
 
+**New in v0.20.0:**
+- **Reader returns objects**: The `reader` function can now return objects directly (not just strings), enabling direct JSON imports
+- **Automatic schema syncing**: Development automatically syncs schema when `sync_required` flag is triggered
+- **Performance optimization**: Validation is skipped in production for faster startup
+
 **Setup:**
 ```typescript
 import type { BkndConfig } from "bknd";
@@ -116,10 +121,40 @@ export default {
 } satisfies BkndConfig;
 ```
 
+**v0.20.0 improvements:**
+```typescript
+import { hybrid, type HybridMode } from "bknd/modes";
+import { type BunBkndConfig, writer, reader } from "bknd/adapter/bun";
+
+const config = {
+  connection: { url: "file:test.db" },
+  writer,  // Required for type/config syncing
+  reader,  // Reader can return string OR object
+  secrets: await Bun.file(".env.local").json(),
+  isProduction: Bun.env.NODE_ENV === "production",
+  typesFilePath: "bknd-types.d.ts",
+  configFilePath: "bknd-config.json",
+  syncSecrets: {
+    outFile: ".env.local",
+    format: "env",
+    includeSecrets: true,
+  },
+  syncSchema: {
+    force: true,  // Syncs schema when sync_required flag is true
+    drop: true,
+  },
+} satisfies HybridMode<BunBkndConfig>;
+
+export default hybrid(config);
+```
+
 **Benefits:**
 - Best of both worlds: visual development + code-controlled production
 - Automatic mode switching based on environment
 - Built-in syncing tools for config, secrets, and types
+- v0.20.0: Automatic schema syncing in development
+- v0.20.0: Object-based config loading (no JSON.parse needed)
+- v0.20.0: Faster production startup (validation skipped)
 
 **Trade-offs:**
 - More complex setup
@@ -212,6 +247,38 @@ export default {
 - Platform-specific database adapters (D1, Neon, etc.)
 - Cold start optimization
 
+### Browser Mode
+
+Run Bknd entirely in browser using SQLocal for local-first, offline-capable applications.
+
+**Quick start:**
+```bash
+npx bknd create -i browser my-app
+cd my-app
+npm run dev
+```
+
+**When to use:**
+- Offline-first applications (Progressive Web Apps)
+- Local development without backend setup
+- Client-side demos and interactive tutorials
+- Privacy-focused apps (data never leaves browser)
+- Embedded tools and admin panels
+
+**What you get:**
+- Full CRUD operations in browser
+- SQLite database via WebAssembly (SQLocal)
+- Origin Private File System (OPFS) for media storage
+- Admin UI for visual management
+- Database export/import for backup and migration
+- No server required
+
+**Limitations:**
+- No authentication (auth plugins not supported)
+- No API routes (no HTTP server)
+- Performance limited by browser and WASM
+- Data can be cleared by browser
+
 ## Recommended Workflow: Mode Switching
 
 A common pattern is to use **UI-only mode in development** and **Code-only mode in production** (Hybrid mode).
@@ -298,7 +365,7 @@ import { type BunBkndConfig, writer, reader } from "bknd/adapter/bun";
 const config = {
   connection: { url: "file:test.db" },
   writer,  // Required for type/config syncing
-  reader,  // Required for reading config
+  reader,  // Reader can return string OR object (v0.20.0 improvement)
   secrets: await Bun.file(".env.local").json(),
   isProduction: Bun.env.NODE_ENV === "production",
   typesFilePath: "bknd-types.d.ts",
@@ -309,7 +376,7 @@ const config = {
     includeSecrets: true,
   },
   syncSchema: {
-    force: true,
+    force: true,  // Syncs schema when sync_required flag is true (v0.20.0)
     drop: true,
   },
 } satisfies HybridMode<BunBkndConfig>;
@@ -319,9 +386,10 @@ export default hybrid(config);
 
 Mode helpers provide:
 - Built-in syncing of config, types, and secrets
-- Automatic schema syncing in development
+- Automatic schema syncing in development (sync_required flag)
 - Automatic mode switching in hybrid (db → code)
-- Automatic config validation skip in production for performance
+- Automatic config validation skip in production for performance (v0.20.0)
+- Reader returns objects directly, no JSON.parse needed (v0.20.0)
 
 ## Decision Tree
 
@@ -347,15 +415,19 @@ Use this flow to decide on your deployment approach:
 Building a full-stack app?
 ├─ Yes → Framework Embedded
 │   └─ Next.js, React Router, Astro, etc.
-└─ No → Need global edge deployment?
-    ├─ Yes → Serverless/Edge
-    │   └─ Cloudflare Workers, Vercel Edge
-    └─ No → CLI Standalone
-        └─ Prototyping or shared backend
+└─ No → Need offline/local-only app?
+    ├─ Yes → Browser Mode
+    │   └─ Offline-first, local development, PWAs
+    └─ No → Need global edge deployment?
+        ├─ Yes → Serverless/Edge
+        │   └─ Cloudflare Workers, Vercel Edge
+        └─ No → CLI Standalone
+            └─ Prototyping or shared backend
 ```
 
 ## Related Guides
 
+- [Configuration Reference](../../reference/configuration.md) - Complete configuration options for all modes
 - [Next.js Integration](./integrations/nextjs.md) - Set up Next.js framework
 - [Vite + React Integration](./integrations/vite-react.md) - Standalone SPA setup
 - [React Router Integration](./integrations/react-router.md) - Loader/Action pattern

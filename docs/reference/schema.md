@@ -838,6 +838,243 @@ export default {
 | **Many-to-Many** | Junction table + relations | Implicit via arrays | `relation(table).manyToMany(other)` |
 | **Self-Reference** | `references((): any => table.id)` | Explicit relations | `relation(table).manyToOne(table)` |
 
+## Schema Security
+
+Schema operations (reading and modifying application schema) are protected by system-level permissions to ensure only authorized users can access sensitive configuration and schema information.
+
+### Permission Requirements
+
+Schema operations require `system.schema.read` permission:
+
+| Permission | Description | Context Filter |
+|------------|-------------|----------------|
+| `system.schema.read` | Read application schema and configuration | `{ module?: string }` - Optional filter to restrict access to specific module |
+
+**Context Filter:**
+
+The `module` context filter allows you to grant access to schema operations for specific modules only. For example, you can grant `system.schema.read` permission but restrict it to `data` module, preventing access to auth or system configuration.
+
+### Protected Endpoints
+
+The following schema-related endpoints are protected by `system.schema.read` permission:
+
+| Endpoint | Description | Module Scope |
+|----------|-------------|--------------|
+| `GET /api/system/schema` | Get current application schema | All modules |
+| `GET /api/system/config` | Get configuration (module-specific) | Respects `module` context filter |
+| `GET /api/data/schema` | Get data schema (entities, relationships, indices) | `data` module |
+| `GET /api/data/config` | Get data module configuration | `data` module |
+
+### Schema Permission Configuration
+
+#### Full Schema Access
+
+Grant complete schema access to admin users:
+
+```typescript
+{
+  auth: {
+    enabled: true,
+    roles: {
+      admin: {
+        is_default: false,
+        permissions: [
+          {
+            permission: "system.schema.read",
+            effect: "allow",
+          },
+        ],
+      },
+    },
+  },
+}
+```
+
+#### Module-Specific Schema Access
+
+Grant limited schema access to specific module only:
+
+```typescript
+{
+  auth: {
+    enabled: true,
+    roles: {
+      data_admin: {
+        is_default: false,
+        permissions: [
+          {
+            permission: "system.schema.read",
+            effect: "allow",
+            policies: [
+              {
+                condition: { module: "data" },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  },
+}
+```
+
+In this example, `data_admin` role can read data schema (`/api/data/schema`) but cannot read auth configuration (`/api/system/config`).
+
+#### No Schema Access
+
+Default user roles typically do not have schema permissions. This restricts schema operations to admin roles only:
+
+```typescript
+{
+  auth: {
+    enabled: true,
+    roles: {
+      user: {
+        is_default: true,
+        permissions: [
+          {
+            permission: "entityRead",
+            effect: "allow",
+          },
+        ],
+      },
+    },
+  },
+}
+```
+
+### Security Considerations
+
+- **Schema access is sensitive**: Schema operations expose application structure and configuration
+- **Restrict to admin roles**: Only grant `system.schema.read` to trusted administrators
+- **Use module filtering**: When necessary, grant access to specific modules only
+- **Audit schema access**: Monitor who accesses schema endpoints via logs
+- **Default users don't have access**: Default roles typically lack schema permissions for security
+
+### Related Documentation
+
+- [Auth Module - Schema Permissions](./auth-module.md#schema-permissions)
+- [Guard and RBAC](../architecture-and-concepts/guard-rbac.md)
+- [Roles and Permissions](./auth-module.md#roles-and-permissions)
+
+---
+
+## Admin Configuration
+
+The Admin UI provides a visual interface for managing your Bknd application, including schema, authentication, and configuration settings.
+
+### Enabling Admin UI
+
+Admin UI is enabled by default. Access it via:
+
+**Direct URL:**
+```
+http://localhost:3000/admin
+```
+
+**Programmatic (Next.js example):**
+```typescript
+import { Admin } from "bknd/ui";
+import { getApi } from "@/bknd";
+import "bknd/dist/styles.css";
+
+export default async function AdminPage() {
+  const api = await getApi({ verify: true });
+
+  return (
+    <Admin
+      withProvider={{ user: api.getUser() }}
+      config={{
+        basepath: "/admin",
+        logo_return_path: "/../",
+        theme: "system",
+      }}
+    />
+  );
+}
+```
+
+### Admin Configuration Options
+
+```typescript
+export default {
+  config: {
+    server: {
+      admin: {
+        basepath: "/admin",
+      },
+      mcp: {
+        enabled: true,
+      },
+    }
+  }
+} satisfies BkndConfig;
+```
+
+| Option | Type | Default | Description |
+|--------|------|----------|-------------|
+| `basepath` | string | `"/admin"` | Admin UI route path |
+| `mcp.enabled` | boolean | `false` | Enable MCP server integration |
+
+### MCP Navigation
+
+Model Context Protocol (MCP) is an open standard for connecting AI applications to external systems. When enabled, MCP is accessible from:
+
+**Direct URL:** `/mcp` (relative to Admin basepath)
+**Admin UI Menu:** Click user menu (top right) → "MCP"
+
+**Example URLs:**
+- Default: `http://localhost:3000/admin/mcp`
+- Custom path: `http://localhost:3000/my-admin/mcp`
+
+**Enabling MCP via Config:**
+```typescript
+export default {
+  config: {
+    server: {
+      mcp: {
+        enabled: true,
+      }
+    }
+  }
+} satisfies BkndConfig;
+```
+
+**Enabling MCP via Admin UI:**
+1. Navigate to `/settings/server` or user menu → Settings → Server
+2. Enable "Mcp" checkbox
+3. Save configuration
+
+**Important:** MCP server is currently experimental and may change in future versions.
+
+### Route-Aware Access
+
+Admin UI respects route configuration:
+- **Admin UI location:** Controlled by `config.server.admin.basepath`
+- **MCP UI location:** Always `{adminBasepath}/mcp`
+- **MCP API endpoint:** Always `/api/system/mcp` (independent of Admin path)
+
+**Example: Custom Admin Path**
+```typescript
+export default {
+  config: {
+    server: {
+      admin: {
+        basepath: "/my-admin",
+      },
+      mcp: {
+        enabled: true,
+      }
+    }
+  }
+} satisfies BkndConfig;
+```
+
+Resulting URLs:
+- Admin UI: `http://localhost:3000/my-admin`
+- MCP UI: `http://localhost:3000/my-admin/mcp`
+- MCP API: `http://localhost:3000/api/system/mcp`
+
 ---
 
 ## Syntax Comparison Cheat Sheet

@@ -22,9 +22,16 @@
   "navigation": {
     "groups": [
       {
+        "group": "Migration Guides",
+        "pages": [
+          "migration-guides/postgres-package-merge"
+        ]
+      },
+      {
         "group": "Getting Started",
         "pages": [
           "index",
+          "releases/v0.20.0-release-notes",
           "onboarding-flow",
           "architecture-and-concepts/what-is-bknd",
           "getting-started/build-your-first-api",
@@ -45,11 +52,13 @@
                   "how-to-guides/setup/integrations/nextjs",
                   "how-to-guides/setup/integrations/vite-react",
                   "how-to-guides/setup/integrations/react-router",
+                  "how-to-guides/setup/integrations/sveltekit",
                   "how-to-guides/setup/integrations/astro",
                   "how-to-guides/setup/integrations/bun-node",
                   "how-to-guides/setup/integrations/cloudflare-workers",
                   "how-to-guides/setup/integrations/aws-lambda",
-                  "how-to-guides/setup/integrations/docker"
+                  "how-to-guides/setup/integrations/docker",
+                  "how-to-guides/setup/integrations/browser-sqlocal"
                 ]
               }
             ]
@@ -58,7 +67,14 @@
             "group": "Authentication",
             "pages": [
               "how-to-guides/auth/create-first-user",
+              "how-to-guides/auth/email-otp",
               "how-to-guides/permissions/public-access-guard"
+            ]
+          },
+          {
+            "group": "Integrations",
+            "pages": [
+              "how-to-guides/integrations/plunk-email"
             ]
           },
           {
@@ -81,6 +97,7 @@
       {
          "group": "Reference",
          "pages": [
+           "reference/configuration",
            "reference/auth-module",
            "reference/data-module",
            "reference/react-sdk-reference",

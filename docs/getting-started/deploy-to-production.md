@@ -56,9 +56,56 @@ DATABASE_URL="libsql://bknd-prod.turso.io"
 TURSO_AUTH_TOKEN="your-auth-token"
 ```
 
-### Option B: PostgreSQL (Recommended for Traditional)
+ ### Option B: PostgreSQL (Recommended for Traditional)
 
 Use a PostgreSQL provider like Neon, Supabase, or Railway.
+
+**Choose an adapter:**
+
+For traditional Node.js deployments (connection pooling):
+
+```typescript
+import { pg } from "bknd";
+import { Pool } from "pg";
+
+export default {
+  connection: pg({
+    pool: new Pool({
+      connectionString: "postgresql://user:password@host:5432/dbname",
+    }),
+  }),
+} satisfies BkndConfig;
+```
+
+For edge runtimes (Vercel Edge Functions, Cloudflare Workers):
+
+```typescript
+import { postgresJs } from "bknd";
+import postgres from "postgres";
+
+export default {
+  connection: postgresJs({
+    postgres: postgres("postgresql://user:password@host:5432/dbname"),
+  }),
+} satisfies BkndConfig;
+```
+
+For managed providers (Neon, Xata, etc.):
+
+```typescript
+import { createCustomPostgresConnection } from "bknd";
+import { NeonDialect } from "kysely-neon";
+
+const neon = createCustomPostgresConnection("neon", NeonDialect);
+
+export default {
+  connection: neon({
+    connectionString: process.env.NEON_URL,
+  }),
+} satisfies BkndConfig;
+```
+
+> **Note:** As of v0.20.0, PostgreSQL adapters (`pg`, `postgresJs`) are available directly from `bknd` package. See [PostgreSQL Migration Guide](../migration-guides/postgres-package-merge.md) for migrating from `@bknd/postgres`.
 
 ```env
 DATABASE_URL="postgresql://user:password@host:5432/dbname"
@@ -270,13 +317,14 @@ Before going live, verify:
 
 - [Next.js Integration Guide](./how-to-guides/setup/integrations/nextjs.md) - Set up Next.js integration
 - [Choose Your Mode](./how-to-guides/setup/choose-your-mode.md) - Learn about configuration modes
+- [Configuration Reference](./reference/configuration.md) - Review all configuration options
 - [Seed Database](./how-to-guides/data/seed-database.md) - Seed your production database
 - [Troubleshooting](./troubleshooting/common-issues.md) - Debug common issues
 
 ## Related Guides
 
-- [Add Authentication with Permissions](./getting-started/add-authentication.md) - Complete auth setup before deployment
-- [Build Your First API](./getting-started/build-your-first-api.md) - Complete onboarding tutorial
+- [Add Authentication with Permissions](./add-authentication.md) - Complete auth setup before deployment
+- [Build Your First API](./build-your-first-api.md) - Complete onboarding tutorial
 - [Create First User](./how-to-guides/auth/create-first-user.md) - Set up admin users for production
 - [Cloudflare Workers Guide](./how-to-guides/setup/integrations/cloudflare-workers.md) - Alternative edge deployment
 - [AWS Lambda Guide](./how-to-guides/setup/integrations/aws-lambda.md) - Serverless deployment

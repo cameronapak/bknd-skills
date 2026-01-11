@@ -186,6 +186,27 @@ export default async function AdminPage() {
 }
 ```
 
+**Accessing Admin UI:**
+- Navigate to `http://localhost:3000/admin`
+- MCP integration available at `/admin/mcp` (if enabled)
+- User menu (top right) → MCP for AI assistant integration
+
+**Enabling MCP:**
+```typescript
+// In bknd.config.ts
+export default {
+  config: {
+    server: {
+      mcp: {
+        enabled: true,
+      },
+    },
+  },
+} satisfies NextjsBkndConfig;
+```
+
+Or enable via Admin UI: Settings → Server → Enable "Mcp" checkbox.
+
 ## Client-Side with React SDK
 
 ### Setup Client Provider
@@ -299,6 +320,61 @@ export default function TodoList() {
 }
 ```
 
+## PostgreSQL Adapter Options
+
+Bknd provides two PostgreSQL adapters available from the main `bknd` package:
+
+### pg Adapter (node-postgres)
+
+Best for traditional Node.js applications with connection pooling:
+
+```typescript
+import { pg } from "bknd";
+import { Pool } from "pg";
+
+export default {
+  connection: pg({
+    pool: new Pool({
+      connectionString: process.env.POSTGRES_URL,
+    }),
+  }),
+} satisfies NextjsBkndConfig;
+```
+
+### postgresJs Adapter
+
+Best for edge runtimes (Vercel Edge Functions, Cloudflare Workers):
+
+```typescript
+import { postgresJs } from "bknd";
+import postgres from "postgres";
+
+export default {
+  connection: postgresJs({
+    postgres: postgres(process.env.POSTGRES_URL),
+  }),
+} satisfies NextjsBkndConfig;
+```
+
+### Custom PostgreSQL (Neon, Xata, etc.)
+
+For managed PostgreSQL providers:
+
+```typescript
+import { createCustomPostgresConnection } from "bknd";
+import { NeonDialect } from "kysely-neon";
+
+const neon = createCustomPostgresConnection("neon", NeonDialect);
+
+export default {
+  connection: neon({
+    connectionString: process.env.NEON_URL,
+  }),
+} satisfies NextjsBkndConfig;
+```
+
+> **Note:** As of v0.20.0, PostgreSQL adapters are available directly from `bknd` package. Previously they were in a separate `@bknd/postgres` package.
+
 ## Deployment
 
 ### Environment Variables
@@ -389,7 +465,8 @@ Some features may not work with edge runtime. Remove `export const runtime = "ed
 
 ## Next Steps
 
-- [React SDK Reference](./reference/react-sdk-reference.md) - Client-side hooks documentation
-- [Data Module Reference](./reference/data-module.md) - Complete API documentation
-- [Authentication Guide](./getting-started/add-authentication.md) - Set up auth with permissions
-- [Deploy to Production](./getting-started/deploy-to-production.md) - Production deployment guide
+- [React SDK Reference](../../../reference/react-sdk-reference.md) - Client-side hooks documentation
+- [Data Module Reference](../../../reference/data-module.md) - Complete API documentation
+- [Authentication Guide](../../../getting-started/add-authentication.md) - Set up auth with permissions
+- [Configuration Reference](../../../reference/configuration.md) - Complete configuration options
+- [Deploy to Production](../../../getting-started/deploy-to-production.md) - Production deployment guide

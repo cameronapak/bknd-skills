@@ -65,6 +65,39 @@ WhereBuilder supports a clean set of query operators, all field queries are in o
 { name: { $like: 'John*' } }  // LIKE 'John%' (supports * wildcard)
 ```
 
+### Auto-Join Filtering
+
+Filter by related entity fields using **dot notation** - Bknd automatically adds necessary joins:
+
+```typescript
+// Filter comments by post title (auto-joins posts table)
+const comments = await em.repo('comments').findMany({
+  where: { 'posts.title': 'My Post' }
+});
+// Automatically performs: SELECT c.* FROM comments c JOIN posts p ON c.posts_id = p.id WHERE p.title = 'My Post'
+
+// Filter posts by author username
+const posts = await em.repo('posts').findMany({
+  where: { 'author.username': 'john' }
+});
+// Automatically joins author relationship
+
+// Filter by multiple related fields
+const comments = await em.repo('comments').findMany({
+  where: {
+    'posts.title': { $like: '*Tutorial*' },
+    'author.status': 'active'
+  }
+});
+```
+
+**When auto-join triggers:**
+- Related entity exists and has a defined relationship to current entity
+- Field exists on the related entity
+- Uses dot notation: `"{relationName}.{fieldName}"`
+
+**Important:** Auto-join issues a warning if the related field is not indexed (for query performance).
+
 ### Compound Conditions
 
 ```typescript
@@ -219,7 +252,77 @@ Supported parameter formats:
 
 ---
 
-## 6. Type Safety
+## 6. Performance Considerations
+
+### Auto-Join Performance
+
+Auto-join is convenient but may load unnecessary data. Consider:
+
+**Use explicit joins for better control:**
+```typescript
+// Auto-join: Simple but loads all columns from posts table
+const comments = await em.repo('comments').findMany({
+  where: { 'posts.title': 'My Post' }
+});
+
+// Explicit join: Use `select` to load only needed columns
+const commentsOptimized = await em.repo('comments').findMany({
+  join: ['posts'],
+  select: ['id', 'content', 'posts.title'],
+  where: { 'posts.title': 'My Post' }
+});
+```
+
+**Index warnings for auto-join:**
+```typescript
+// If 'posts.title' is not indexed, you'll see:
+// Warning: Field "posts.title" used in "where" is not indexed
+
+// Add index to your schema definition
+const posts = entity('posts', {
+  title: text().index(),  // Add .index() to improve join performance
+  content: text()
+});
+```
+
+**Best practices:**
+- Index fields used in auto-join filters
+- Use explicit `select` when joining large tables
+- Limit auto-join depth (nested joins can be expensive)
+- Consider `with` for eagerly loading related data instead of filtering
+
+### Indexing for Better Performance
+
+Always index fields used in filters and joins:
+
+```typescript
+const users = entity('users', {
+  email: text().unique().index(),  // Index for login queries
+  status: text().index(),           // Index for status filters
+  createdAt: timestamp().index(),   // Index for date range queries
+});
+```
+
+### Pagination Limits
+
+Use appropriate `limit` and `offset` values:
+
+```typescript
+// Good: Reasonable page size
+const page1 = await em.repo('posts').findMany({
+  limit: 20,
+  offset: 0
+});
+
+// Avoid: Large limits slow down queries
+const allPosts = await em.repo('posts').findMany({
+  limit: 10000  // ⚠️ Performance risk
+});
+```
+
+---
+
+## 7. Type Safety
 
 All queries have complete TypeScript type support:
 

@@ -14,9 +14,11 @@ Choose the right framework for your Bknd integration based on your project requi
 | **Next.js** | Full-stack apps, production SaaS | Framework | ✅ Yes | ✅ Yes | Medium |
 | **React Router** | Full-stack React apps | Framework | ✅ Yes | ✅ Yes | Medium |
 | **Vite + React** | SPAs, rapid prototyping | Runtime | ❌ No | ✅ Yes | Low |
+| **SvelteKit** | Full-stack apps, SEO optimization | Framework | ✅ Yes | ✅ Yes | Medium |
 | **Astro** | Content sites, marketing pages | Framework | ✅ Yes | ✅ Yes | Low |
 | **Bun/Node** | Standalone APIs, microservices | Runtime | ❌ No | ✅ Watch | Low |
 | **Cloudflare Workers** | Edge deployment, global APIs | Runtime | ❌ No | ❌ No | High |
+| **Browser Mode** | Offline apps, local dev, PWAs | Browser-only | ❌ No | ✅ Yes | Low |
 
 ## Detailed Framework Comparison
 
@@ -119,6 +121,70 @@ export const action = async (args: ActionFunctionArgs) => {
 **Deployment:**
 - **Primary:** Vercel, Netlify
 - **Alternatives:** Any Node.js hosting
+
+---
+
+### SvelteKit
+
+**Integration Pattern:** Framework adapter with `bknd/adapter/sveltekit`
+
+**Best Use Cases:**
+- Full-stack applications with SSR
+- Projects requiring SEO optimization
+- Teams familiar with Svelte and SvelteKit conventions
+- Edge deployment with Vercel or Cloudflare
+
+**Strengths:**
+- ✅ Server-side data fetching via load functions
+- ✅ Runtime-agnostic (Node.js, Bun, Edge)
+- ✅ Built-in type safety with TypeScript
+- ✅ Svelte's reactive programming model
+- ✅ Form actions for mutations
+- ✅ Excellent performance (small bundle size)
+- ✅ SEO-friendly with SSR
+
+**Considerations:**
+- ⚠️ Requires postinstall script for Admin UI assets
+- ⚠️ Smaller ecosystem compared to React/Next.js
+- ⚠️ Requires Node.js 22+ for Node.js runtime
+
+**Key Integration Features:**
+```typescript
+// Hooks server
+import { serve } from "bknd/adapter/sveltekit";
+const bkndHandler = serve(config, env);
+
+export const handle: Handle = async ({ event, resolve }) => {
+  if (event.url.pathname.startsWith("/api/")) {
+    const res = await bkndHandler(event);
+    if (res.status !== 404) return res;
+  }
+  return resolve(event);
+};
+
+// Load function
+import { getApp } from "bknd/adapter/sveltekit";
+export const load = async () => {
+  const app = await getApp(config, env);
+  const api = app.getApi();
+  const { data } = await api.data.readMany("todos");
+  return { todos: data };
+};
+
+// Action
+export const actions = {
+  createTodo: async ({ request }) => {
+    const formData = await request.formData();
+    const app = await getApp(config, env);
+    const api = app.getApi();
+    await api.data.create("todos", { title: formData.get("title") });
+  }
+};
+```
+
+**Deployment:**
+- **Primary:** Vercel (native)
+- **Alternatives:** Netlify, Cloudflare Workers, Railway
 
 ---
 
@@ -321,6 +387,82 @@ serve({ connection: { url: "file:data.db" } });
 
 ---
 
+### Browser Mode
+
+**Integration Pattern:** Browser adapter with `BkndBrowserApp` component
+
+**Best Use Cases:**
+- Offline-first applications (Progressive Web Apps)
+- Local development without backend
+- Client-side demos and interactive tutorials
+- Privacy-focused apps (data never leaves browser)
+- Embedded tools and admin panels
+
+**Strengths:**
+- ✅ No server required
+- ✅ Works offline
+- ✅ Full CRUD operations
+- ✅ Admin UI for visual management
+- ✅ Database export/import for backup
+- ✅ SQLite in browser via WASM (SQLocal)
+- ✅ OPFS for media storage
+
+**Considerations:**
+- ❌ No authentication (auth plugins not supported)
+- ❌ No API routes (no HTTP server)
+- ⚠️ Performance limited by browser and WASM
+- ⚠️ Data can be cleared by browser
+- ⚠️ Storage limits vary by browser
+
+**Key Integration Features:**
+```typescript
+// App setup
+import { BkndBrowserApp, type BrowserBkndConfig } from "bknd/adapter/browser";
+
+const config: BrowserBkndConfig = {
+  config: {
+    data: schema.toJSON(),
+  },
+  adminConfig: {
+    basepath: "/admin",
+  },
+};
+
+export default function App() {
+  return (
+    <BkndBrowserApp {...config}>
+      <Route path="/" component={HomePage} />
+    </BkndBrowserApp>
+  );
+}
+
+// Data operations
+const { app } = useApp();
+const { data } = await app.em.findMany("todos");
+
+// Database export
+const connection = app.em.connection as SQLocalConnection;
+const file = await connection.client.getDatabaseFile();
+```
+
+**Database Options:**
+- **Storage:** SQLocal (SQLite WASM) + OPFS for media
+- **Connection:** `:localStorage:` (default), `:memory:`, or custom path
+- **Export/Import:** `getDatabaseFile()` / `loadDatabaseFile()`
+
+**Limitations:**
+- No auth plugins or user management
+- No HTTP API endpoints
+- No MCP integration
+- Performance depends on browser capabilities
+
+**Deployment:**
+- **Primary:** Vercel, Netlify, GitHub Pages (static hosting)
+- **PWA:** Can be converted to Progressive Web App
+- **Storage:** Browser-local only (can export for backup)
+
+---
+
 ## Integration Pattern Comparison
 
 ### Data Fetching Approaches
@@ -332,6 +474,7 @@ serve({ connection: { url: "file:data.db" } });
 | **Astro** | ✅ Frontmatter | ⚠️ Unknown | `getApi(Astro)` in pages |
 | **Vite + React** | ❌ No | ✅ SDK | `new Api()` client-side |
 | **Bun/Node** | N/A (backend only) | Client SDK | REST API calls |
+| **Browser Mode** | N/A (browser only) | useApp() hook | `app.em.findMany()` in browser |
 
 ### API Route Setup
 
@@ -399,6 +542,14 @@ serve({ connection: { url: "file:data.db" } });
 - ✅ Want pay-per-use pricing
 - ✅ Comfortable with Workers
 
+
+### Choose Browser Mode if:
+- ✅ Building offline-first application (PWA)
+- ✅ Need local development without backend
+- ✅ Creating client-side demos or tutorials
+- ✅ Want privacy-focused app (data never leaves browser)
+- ✅ Building embedded tools or admin panels
+
 ---
 
 ## Migration Paths
@@ -442,6 +593,7 @@ serve({ connection: { url: "file:data.db" } });
 | **Vite + React** | ❌ | ❌ | ~300-500ms |
 | **Bun/Node** | N/A | ❌ | ~50-100ms |
 
+| **Browser Mode** | ❌ | ❌ | ~200-400ms |
 ---
 
 ## Team Expertise Matrix
@@ -499,3 +651,4 @@ The following aspects need further investigation:
 - [Bun/Node Standalone Setup](./how-to-guides/setup/integrations/bun-node.md)
 - [Choose Your Mode](./how-to-guides/setup/choose-your-mode.md)
 - [Deploy to Production](./getting-started/deploy-to-production.md)
+- [Browser + SQLocal Integration Guide](../browser-sqlocal.md) - Local-first offline apps
