@@ -9,3 +9,13 @@
 I'm going to create [skills](https://agentskills.io) that make it easier to develop with Bknd.
 
 — Cam
+
+## Available Skills
+
+### [btca-bknd-repo-learn](https://github.com/cameronapak/supplemental-bknd-docs/tree/main/.opencode/skills/btca-bknd-repo-learn.md)
+
+Query the bknd source code with `btca` (Better Context App). Perfect for understanding schemas, auth, media handling, adapters, and learning from examples.
+
+- Setup instructions, configuration options
+- Query patterns for common bknd use cases
+- Performance optimization & advanced workflows
