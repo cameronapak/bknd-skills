@@ -10,30 +10,21 @@ I'm going to create [skills](https://agentskills.io) that make it easier to deve
 
 — Cam
 
-## Available Skills
+## Get Started
 
-Start Claude Code CLI
-
-```bash
-claude
-```
-
-Install via Claude Code
+Easiest and best way to get started is through using Vercel's `[add-skill](https://github.com/vercel-labs/add-skill)` package. 
 
 ```bash
-/plugin marketplace add cameronapak/supplemental-bknd-docs
+# Local repo installation
+npx add-skill cameronapak/bknd-expert
+
+# Install to specific agents
+npx add-skill cameronapak/bknd-expert -a cursor -a claude-code
+
+# Global installation
+npx add-skill cameronapak/bknd-expert -g
 ```
 
-Then install the research skill
+## Attribution
 
-```bash
-/plugin install bknd-research-skills@bknd-expert
-```
-
-### [btca-bknd-repo-learn](https://github.com/cameronapak/supplemental-bknd-docs/tree/main/.opencode/skills/btca-bknd-repo-learn.md)
-
-Query the bknd source code with `btca` (Better Context App). Perfect for understanding schemas, auth, media handling, adapters, and learning from examples.
-
-- Setup instructions, configuration options
-- Query patterns for common bknd use cases
-- Performance optimization & advanced workflows
+I've gained a lot of inspiration for these Bknd skills from [encoredev/skills](https://github.com/encoredev/skills/tree/main)
