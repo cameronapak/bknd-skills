@@ -59,17 +59,40 @@
   - Type safety extends to query filters - TypeScript checks if fields exist on entities
 
 ## Task 2.4 Completion (auth skill)
- - Auth skill is 376 lines, fits 200-400 line guideline
- - Three main strategies: password (email/password), OAuth (Google, GitHub, Discord, Facebook), and custom OAuth
- - Email OTP is a separate plugin, requires email driver (Resend, Plunk)
- - JWT configuration supports HS256/HS384/HS512 algorithms, auto-generates secret if not provided
- - Cookie configuration includes sliding session via `renew: true` - refreshes expiration on activity
- - Users created via CLI (`npx bknd user create`), programmatic (`app.auth.createUser`), or OAuth auto-creation
- - Password hashing options: plain (dev only), sha256 (default), bcrypt (rounds 1-10)
- - OAuth stores `strategy_value` as provider's unique user ID (sub claim), not password
- - Hidden fields: `strategy` and `strategy_value` are hidden from API queries for security
- - Cookie `pathSuccess` and `pathLoggedOut` control post-login/logout redirects
- - `allow_register` enables public registration endpoint for password strategy
- - OAuth flow: /{strategy}/login → provider → /{strategy}/callback → session creation
+  - Auth skill is 376 lines, fits 200-400 line guideline
+  - Three main strategies: password (email/password), OAuth (Google, GitHub, Discord, Facebook), and custom OAuth
+  - Email OTP is a separate plugin, requires email driver (Resend, Plunk)
+  - JWT configuration supports HS256/HS384/HS512 algorithms, auto-generates secret if not provided
+  - Cookie configuration includes sliding session via `renew: true` - refreshes expiration on activity
+  - Users created via CLI (`npx bknd user create`), programmatic (`app.auth.createUser`), or OAuth auto-creation
+  - Password hashing options: plain (dev only), sha256 (default), bcrypt (rounds 1-10)
+  - OAuth stores `strategy_value` as provider's unique user ID (sub claim), not password
+  - Hidden fields: `strategy` and `strategy_value` are hidden from API queries for security
+  - Cookie `pathSuccess` and `pathLoggedOut` control post-login/logout redirects
+  - `allow_register` enables public registration endpoint for password strategy
+  - OAuth flow: /{strategy}/login → provider → /{strategy}/callback → session creation
+
+## Task 2.5 Completion (permissions skill)
+   - Permissions skill is 435 lines, acceptable for complex topic (data-schema was 470)
+   - Guard is automatically enabled when auth.enabled: true - no separate Guard configuration needed
+   - Three permission effects: allow (grants access), deny (revokes access, takes precedence), filter (row-level security)
+   - Policy variables use @variable syntax: @user.id, @user.role, @user.*, @ctx.*
+   - implicit_allow: true is a security risk - always use implicit_allow: false for production roles
+   - Guest access configured via is_default: true on a role, assigns to users without explicit role
+   - Data permissions: entityRead, entityCreate, entityUpdate, entityDelete (filterable: Read/Update/Delete)
+   - Schema permissions: system.schema.read protects /api/system/schema and /api/data/schema endpoints
+   - Filter effect enables row-level security by adding WHERE clauses based on user context
+
+## Task 3.1 Completion (nextjs skill)
+   - Nextjs skill is 388 lines, fits 200-400 line guideline
+   - Helper file pattern: src/bknd.ts exports getApp() and getApi({ verify?: boolean }) for easy reuse
+   - getApi({ verify: true }) is critical for protected server components - must pass verify flag
+   - Admin UI requires import of "bknd/dist/styles.css" for styling
+   - ClientProvider from bknd/client wraps app for client-side hooks (useAuth, useEntityQuery)
+   - useEntityQuery takes entity name, optional context, and options (limit, sort, filters)
+   - PostgreSQL adapters available: pg (node-postgres, connection pooling), postgresJs (edge runtime), custom (Neon/Xata via kysely dialects)
+   - Edge runtime optional: export const runtime = "edge" - some features incompatible
+   - Catch-all route must be at src/app/api/[[...bknd]]/route.ts for REST API to work
+
 
 
