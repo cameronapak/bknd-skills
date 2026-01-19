@@ -19,3 +19,4 @@
 - When testing skill triggers, verify YAML frontmatter validity with `head -3` check on each SKILL.md file
 - Skill line counts can be checked with `wc -l` - target 200-400 lines per PRD, but variance acceptable if content is focused
 - Semantic matching in Claude Code relies heavily on description field containing "Use when..." trigger phrases
+- When reviewing keyword coverage, add framework-specific keywords (e.g., "Remix, Nuxt") to integration skills and cloud provider keywords (e.g., "Supabase, PlanetScale") to infrastructure skills to improve semantic matching for users mentioning related technologies
