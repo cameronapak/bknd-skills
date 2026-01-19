@@ -124,10 +124,22 @@
       - SQLite is default: `url: "file:data.db"` or `url: ":memory:"` for in-memory
       - PostgreSQL adapters: `pg` (node-postgres with Pool for connection pooling) and `postgresJs` (for edge runtimes)
       - Custom dialects supported: Neon, Xata via `createCustomPostgresConnection()`
-      - Type mapping differs: SQLite stores boolean as INTEGER (1/0), PostgreSQL as BOOLEAN
-      - Seed function only runs when database is empty, receives `ctx.em` and `ctx.app.module.auth`
-      - v0.20.0 migration: PostgreSQL adapters moved from `@bknd/postgres` to main `bknd` package
-      - Environment variables: `DB_URL` for SQLite, `POSTGRES_URL` for PostgreSQL, provider-specific vars (NEON, XATA_URL, XATA_API_KEY, XATA_BRANCH)
+       - Type mapping differs: SQLite stores boolean as INTEGER (1/0), PostgreSQL as BOOLEAN
+       - Seed function only runs when database is empty, receives `ctx.em` and `ctx.app.module.auth`
+       - v0.20.0 migration: PostgreSQL adapters moved from `@bknd/postgres` to main `bknd` package
+       - Environment variables: `DB_URL` for SQLite, `POSTGRES_URL` for PostgreSQL, provider-specific vars (NEON, XATA_URL, XATA_API_KEY, XATA_BRANCH)
 
+## Task 4.1 Completion (media skill)
+   - Media skill is 549 lines, exceeds 200-400 guideline but acceptable for complex topic covering storage adapters, polymorphic relations, and upload APIs
+   - Three storage adapters: local (Node.js filesystem), S3 (AWS S3-compatible), custom (implement MediaAdapter interface)
+   - Two virtual field types: `medium()` for one-to-one, `media()` for one-to-many - must match relation mapping
+   - Polymorphic relations use `polyToOne()` and `polyToMany()` with `mappedBy` matching virtual field name
+   - System entity `media` tracks ownership via `entity_id` and `reference` fields automatically
+   - Relation operations: $create (upload and attach), $set (replace, one-to-one or all one-to-many), $attach (add, one-to-many), $detach (remove, one-to-many)
+   - Media API `uploadToEntity(entity, id, field, file, options?)` uploads directly without manual relation management
+   - `overwrite` option in uploadToEntity: false (default) errors if file exists, true replaces existing file
+   - Auto-join filtering: dot notation ('relation.field') auto-joins media table, warns if field not indexed
+   - Explicit join + select more performant for large media tables - avoid loading all media columns when filtering
+   - Media entity fields: id, entity_id, reference, filename, mime_type, width, height, size, url, created_at
 
 

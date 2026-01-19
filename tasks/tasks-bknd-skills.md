@@ -65,7 +65,7 @@
      - [x] 3.4 `database` - Adapt from `archive/reference/configuration.md` + official docs on SQLite/Postgres/Turso/D1
 
 - [ ] 4.0 Implement Advanced Skills (6 skills)
-  - [ ] 4.1 `media` - Adapt from `archive/how-to-guides/data/entity-media-relationships.md`
+   - [x] 4.1 `media` - Adapt from `archive/how-to-guides/data/entity-media-relationships.md`
   - [ ] 4.2 `config-modes` - Adapt from `archive/how-to-guides/setup/choose-your-mode.md`
   - [ ] 4.3 `api-sdk` - Adapt from `archive/reference/react-sdk-reference.md`
   - [ ] 4.4 `plugins` - Research from official Bknd docs (less archive content)
