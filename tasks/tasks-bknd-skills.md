@@ -70,7 +70,7 @@
      - [x] 4.3 `api-sdk` - Adapt from `archive/reference/react-sdk-reference.md`
      - [x] 4.4 `plugins` - Research from official Bknd docs (less archive content)
     - [x] 4.5 `deploy` - Adapt from `archive/getting-started/deploy-to-production.md` + `archive/how-to-guides/setup/integrations/docker.md` + cloudflare/aws-lambda guides
-    - [ ] 4.6 `code-review` - Adapt from `archive/troubleshooting/common-issues.md` + `archive/troubleshooting/known-issues.md`
+     - [x] 4.6 `code-review` - Adapt from `archive/troubleshooting/common-issues.md` + `archive/troubleshooting/known-issues.md`
 
 - [ ] 5.0 Testing and Verification
   - [ ] 5.1 Install plugin locally in Claude Code
