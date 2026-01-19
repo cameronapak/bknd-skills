@@ -54,7 +54,7 @@
 - [ ] 2.0 Implement Core Skills (5 skills)
   - [x] 2.1 `getting-started` - Adapt from `archive/getting-started/build-your-first-api.md` + `archive/architecture-and-concepts/`
   - [x] 2.2 `data-schema` - Adapt from `archive/reference/data-module.md` + `archive/reference/schema.md` + `archive/reference/entity-manager-api.md`
-  - [ ] 2.3 `query` - Adapt from `archive/reference/query-system.md`
+  - [x] 2.3 `query` - Adapt from `archive/reference/query-system.md`
   - [ ] 2.4 `auth` - Adapt from `archive/reference/auth-module.md` + `archive/how-to-guides/auth/`
   - [ ] 2.5 `permissions` - Adapt from `archive/how-to-guides/permissions/public-access-guard.md` + official docs
 
