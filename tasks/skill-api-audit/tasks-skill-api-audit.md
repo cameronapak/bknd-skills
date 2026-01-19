@@ -48,7 +48,7 @@
   - [x] 1.11 Verify WhereBuilder operators against bknd source (all correct)
   - [x] 1.12 Verify RepoQuery options against bknd source (all correct)
 
-  - [ ] 2.0 Audit Core Concept Skills (getting-started, auth, permissions)
+   - [x] 2.0 Audit Core Concept Skills (getting-started, auth, permissions)
     - [x] 2.1 Read `getting-started/SKILL.md`, list all code examples
     - [x] 2.2 Verify `em()`, `entity()` imports and usage
     - [x] 2.3 Verify `schema.toJSON()` pattern

@@ -30,7 +30,7 @@ Use three sources:
 
 ## Success Criteria
 
-- [ ] All code examples compile against bknd v0.20.0 types
+- [x] All code examples compile against bknd v0.20.0 types
 - [ ] Manual review of each skill against opensrc/bknd source
 - [ ] Code examples match patterns in official bknd repo
 - [ ] LEARNINGS.md updated with all new findings
