@@ -51,7 +51,7 @@
   - [x] 1.3 Create all 15 skill directories under `plugins/bknd-skills/skills/`
 
 - [ ] 2.0 Implement Core Skills (5 skills)
-  - [ ] 2.1 `getting-started` - Adapt from `archive/getting-started/build-your-first-api.md` + `archive/architecture-and-concepts/`
+  - [x] 2.1 `getting-started` - Adapt from `archive/getting-started/build-your-first-api.md` + `archive/architecture-and-concepts/`
   - [ ] 2.2 `data-schema` - Adapt from `archive/reference/data-module.md` + `archive/reference/schema.md` + `archive/reference/entity-manager-api.md`
   - [ ] 2.3 `query` - Adapt from `archive/reference/query-system.md`
   - [ ] 2.4 `auth` - Adapt from `archive/reference/auth-module.md` + `archive/how-to-guides/auth/`
