@@ -132,18 +132,29 @@
 ## Task 4.1 Completion (media skill)
     - Media skill is 549 lines, exceeds 200-400 guideline but acceptable for complex topic covering storage adapters, polymorphic relations, and upload APIs
 
-## Task 4.2 Completion (config-modes skill)
-    - Config-modes skill is 299 lines, fits 200-400 line guideline
-    - Three modes: UI-only (db), Code-only (code), Hybrid (mode switching)
-    - UI-only mode stores config in `__bknd` database table, allows runtime changes via Admin UI
-    - Code-only mode loads config from TypeScript, runs in read-only mode, requires manual `npx bknd sync --force`
-    - Hybrid mode: db mode in development (visual config), code mode in production (immutable)
-    - Mode helpers: `code()` and `hybrid()` from `bknd/modes` automate syncing of config, types, secrets, and schema
-    - v0.20.0 improvements: reader returns objects (no JSON.parse needed), auto-sync on sync_required flag, faster production startup (validation skipped)
-    - Mode helpers require `writer` for syncing, hybrid mode also requires `reader`
-    - Export workflow: `npx bknd config --out appconfig.json`, `npx bknd secrets --out .env.local --format env`, `npx bknd types --out bknd-types.d.ts`
+  ## Task 4.2 Completion (config-modes skill)
+     - Config-modes skill is 299 lines, fits 200-400 line guideline
+     - Three modes: UI-only (db), Code-only (code), Hybrid (mode switching)
+     - UI-only mode stores config in `__bknd` database table, allows runtime changes via Admin UI
+     - Code-only mode loads config from TypeScript, runs in read-only mode, requires manual `npx bknd sync --force`
+     - Hybrid mode: db mode in development (visual config), code mode in production (immutable)
+     - Mode helpers: `code()` and `hybrid()` from `bknd/modes` automate syncing of config, types, secrets, and schema
+     - v0.20.0 improvements: reader returns objects (no JSON.parse needed), auto-sync on sync_required flag, faster production startup (validation skipped)
+     - Mode helpers require `writer` for syncing, hybrid mode also requires `reader`
+     - Export workflow: `npx bknd config --out appconfig.json`, `npx bknd secrets --out .env.local --format env`, `npx bknd types --out bknd-types.d.ts`
 
    - Three storage adapters: local (Node.js filesystem), S3 (AWS S3-compatible), custom (implement MediaAdapter interface)
+
+   ## Task 4.3 Completion (api-sdk skill)
+     - Api-sdk skill is 360 lines, fits 200-400 line guideline
+     - Api class supports multiple initialization patterns: direct token, user object (server-side), request (auto-extract), or storage-based (client-side with persistence)
+     - Token transport modes: "header" (Bearer token), "cookie" (auth cookie), or "none" (user object only, no token)
+     - Data API methods: readOne, readMany, readOneBy, readManyByReference, createOne, createMany, updateOne, updateMany, deleteOne, deleteMany, count, exists
+     - Auth API methods: login, register, me, logout, strategies, action (for custom OAuth actions), actionSchema
+     - Storage interface requires getItem, setItem, removeItem - all async even if sync storage provided
+     - onAuthStateChange callback fires on token updates (login, logout, verify)
+     - getAuthState() returns { token, user, verified }, isAuthenticated() checks both token and user
+     - updateToken() accepts opts: rebuild (rebuild APIs), verified (mark as verified), trigger (emit callback)
    - Two virtual field types: `medium()` for one-to-one, `media()` for one-to-many - must match relation mapping
    - Polymorphic relations use `polyToOne()` and `polyToMany()` with `mappedBy` matching virtual field name
    - System entity `media` tracks ownership via `entity_id` and `reference` fields automatically
