@@ -145,16 +145,28 @@
 
    - Three storage adapters: local (Node.js filesystem), S3 (AWS S3-compatible), custom (implement MediaAdapter interface)
 
-   ## Task 4.3 Completion (api-sdk skill)
-     - Api-sdk skill is 360 lines, fits 200-400 line guideline
-     - Api class supports multiple initialization patterns: direct token, user object (server-side), request (auto-extract), or storage-based (client-side with persistence)
-     - Token transport modes: "header" (Bearer token), "cookie" (auth cookie), or "none" (user object only, no token)
-     - Data API methods: readOne, readMany, readOneBy, readManyByReference, createOne, createMany, updateOne, updateMany, deleteOne, deleteMany, count, exists
-     - Auth API methods: login, register, me, logout, strategies, action (for custom OAuth actions), actionSchema
-     - Storage interface requires getItem, setItem, removeItem - all async even if sync storage provided
-     - onAuthStateChange callback fires on token updates (login, logout, verify)
-     - getAuthState() returns { token, user, verified }, isAuthenticated() checks both token and user
-     - updateToken() accepts opts: rebuild (rebuild APIs), verified (mark as verified), trigger (emit callback)
+## Task 4.3 Completion (api-sdk skill)
+      - Api-sdk skill is 360 lines, fits 200-400 line guideline
+      - Api class supports multiple initialization patterns: direct token, user object (server-side), request (auto-extract), or storage-based (client-side with persistence)
+      - Token transport modes: "header" (Bearer token), "cookie" (auth cookie), or "none" (user object only, no token)
+      - Data API methods: readOne, readMany, readOneBy, readManyByReference, createOne, createMany, updateOne, updateMany, deleteOne, deleteMany, count, exists
+      - Auth API methods: login, register, me, logout, strategies, action (for custom OAuth actions), actionSchema
+      - Storage interface requires getItem, setItem, removeItem - all async even if sync storage provided
+      - onAuthStateChange callback fires on token updates (login, logout, verify)
+      - getAuthState() returns { token, user, verified }, isAuthenticated() checks both token and user
+      - updateToken() accepts opts: rebuild (rebuild APIs), verified (mark as verified), trigger (emit callback)
+
+   ## Task 4.4 Completion (plugins skill)
+      - Plugins skill is 528 lines, exceeds 200-400 guideline but acceptable for complex topic covering lifecycle hooks, event system, and built-in plugins
+      - Plugin structure: function receiving App instance returning { name, schema?, beforeBuild?, onBuilt?, onServerInit?, onBoot?, onFirstBoot? }
+      - Lifecycle hooks: beforeBuild (config), onBuilt (routes/listeners), onServerInit (Hono), onBoot (each startup), onFirstBoot (only once)
+      - Event system: app.emgr.onEvent() with AppEvents, DatabaseEvents, MediaEvents - use { mode: "sync" } for blocking, { id: "plugin-name" } to prevent HMR duplicates
+      - Database events: Mutator* (insert/update/delete before/after), Repository* (find before/after) - sync events can modify data
+      - Built-in plugins: timestamps (auto created_at/updated_at), emailOTP (passwordless auth), syncTypes/syncConfig/syncSecrets (auto exports), showRoutes (debugging), cloudflareImageOptimization (image transforms)
+      - Important limitation: timestamps plugin prevents indexing created_at/updated_at fields - define manually if indexes needed
+      - Event listener registration must use unique { id } option to prevent memory leaks in development HMR scenarios
+      - Custom endpoints registered in onBuilt with app.server.get/post/put/delete() - avoid /api/* path conflicts
+
    - Two virtual field types: `medium()` for one-to-one, `media()` for one-to-many - must match relation mapping
    - Polymorphic relations use `polyToOne()` and `polyToMany()` with `mappedBy` matching virtual field name
    - System entity `media` tracks ownership via `entity_id` and `reference` fields automatically
