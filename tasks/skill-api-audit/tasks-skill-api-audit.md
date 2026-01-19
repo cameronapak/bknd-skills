@@ -31,7 +31,10 @@
 
 ## Tasks
 
-- [x] 1.0 Audit Critical Skills (data-schema, query)
+- [x] 3.0 Audit Framework Integration Skills (nextjs, vite-react, astro)
+  - [x] 3.1 Read `nextjs/SKILL.md`, list all code examples
+  - [x] 3.2 Verify `getBkndApp()` import and usage
+  - [x] 3.3 Verify `app.getApi()` method (correct - matches official example)
   - [x] 1.1 Read `data-schema/SKILL.md`, list all code examples
   - [x] 1.2 Remove `import { primary } from "bknd"` - not exported
   - [x] 1.3 Remove `id: primary({ format: "uuid" })` example
