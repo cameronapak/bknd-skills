@@ -56,7 +56,7 @@
   - [x] 2.2 `data-schema` - Adapt from `archive/reference/data-module.md` + `archive/reference/schema.md` + `archive/reference/entity-manager-api.md`
   - [x] 2.3 `query` - Adapt from `archive/reference/query-system.md`
   - [x] 2.4 `auth` - Adapt from `archive/reference/auth-module.md` + `archive/how-to-guides/auth/`
-  - [ ] 2.5 `permissions` - Adapt from `archive/how-to-guides/permissions/public-access-guard.md` + official docs
+  - [x] 2.5 `permissions` - Adapt from `archive/how-to-guides/permissions/public-access-guard.md` + official docs
 
 - [ ] 3.0 Implement Integration Skills (4 skills)
   - [ ] 3.1 `nextjs` - Adapt from `archive/how-to-guides/setup/integrations/nextjs.md`
