@@ -31,19 +31,19 @@
 
 ## Tasks
 
-- [ ] 1.0 Audit Critical Skills (data-schema, query)
+- [x] 1.0 Audit Critical Skills (data-schema, query)
   - [x] 1.1 Read `data-schema/SKILL.md`, list all code examples
   - [x] 1.2 Remove `import { primary } from "bknd"` - not exported
   - [x] 1.3 Remove `id: primary({ format: "uuid" })` example
   - [x] 1.4 Add `entity(..., { primary_format: "uuid" })` pattern
   - [x] 1.5 Verify field types (`text`, `number`, `boolean`, `date`, `enumm`, `json`) against bknd source
-  - [ ] 1.6 Read `query/SKILL.md`, list all code examples
-  - [ ] 1.7 Remove `em.repo('Entity')` / `em.repository('Entity')` examples
-  - [ ] 1.8 Clarify `em()` returns schema definition, not queryable EntityManager
-  - [ ] 1.9 Add `app.em.repo()` pattern for Hybrid Mode (after `app.build()`)
-  - [ ] 1.10 Add `api.data.readMany()` pattern for Code Mode queries
-  - [ ] 1.11 Verify WhereBuilder operators against bknd source
-  - [ ] 1.12 Verify RepoQuery options against bknd source
+  - [x] 1.6 Read `query/SKILL.md`, list all code examples
+  - [x] 1.7 Remove `em.repo('Entity')` / `em.repository('Entity')` examples (already correct - uses `app.em.repo()`)
+  - [x] 1.8 Clarify `em()` returns schema definition, not queryable EntityManager
+  - [x] 1.9 Add `app.em.repo()` pattern for Hybrid Mode (after `app.build()`) (already correct)
+  - [x] 1.10 Add `api.data.readMany()` pattern for Code Mode queries (already correct)
+  - [x] 1.11 Verify WhereBuilder operators against bknd source (all correct)
+  - [x] 1.12 Verify RepoQuery options against bknd source (all correct)
 
 - [ ] 2.0 Audit Core Concept Skills (getting-started, auth, permissions)
   - [ ] 2.1 Read `getting-started/SKILL.md`, list all code examples
