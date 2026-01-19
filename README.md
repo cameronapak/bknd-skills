@@ -1,6 +1,6 @@
 # Bknd Skills
 
-![Banner](/.banner.png)
+![Banner](./banner.png)
 
 **I love [Bknd](https://bknd.io/), but I'm often perplexed on why it's not more widely adopted**. I think the main culprits are awareness and education.
 
