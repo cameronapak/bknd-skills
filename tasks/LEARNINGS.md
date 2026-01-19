@@ -115,9 +115,19 @@
      - Admin UI requires client:only directive and import of "bknd/dist/styles.css"
      - PostgreSQL adapters identical to Next.js: pg and postgresJs from main bknd package
      - Server-side data fetching via getApi(Astro) in frontmatter, client SDK not supported
-     - Form handling: check request.method, use Astro.request.formData(), return Astro.redirect()
-     - Middleware pattern requires onBuilt handler for static assets and cp -r for public/_bknd
-     - SSR required: export const prerender = false; on routes or output: 'server' in astro.config.mjs
+      - Form handling: check request.method, use Astro.request.formData(), return Astro.redirect()
+      - Middleware pattern requires onBuilt handler for static assets and cp -r for public/_bknd
+      - SSR required: export const prerender = false; on routes or output: 'server' in astro.config.mjs
+
+   ## Task 3.4 Completion (database skill)
+      - Database skill is 283 lines, fits 200-400 line guideline
+      - SQLite is default: `url: "file:data.db"` or `url: ":memory:"` for in-memory
+      - PostgreSQL adapters: `pg` (node-postgres with Pool for connection pooling) and `postgresJs` (for edge runtimes)
+      - Custom dialects supported: Neon, Xata via `createCustomPostgresConnection()`
+      - Type mapping differs: SQLite stores boolean as INTEGER (1/0), PostgreSQL as BOOLEAN
+      - Seed function only runs when database is empty, receives `ctx.em` and `ctx.app.module.auth`
+      - v0.20.0 migration: PostgreSQL adapters moved from `@bknd/postgres` to main `bknd` package
+      - Environment variables: `DB_URL` for SQLite, `POSTGRES_URL` for PostgreSQL, provider-specific vars (NEON, XATA_URL, XATA_API_KEY, XATA_BRANCH)
 
 
 
