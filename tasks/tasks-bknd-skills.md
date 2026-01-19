@@ -72,8 +72,9 @@
     - [x] 4.5 `deploy` - Adapt from `archive/getting-started/deploy-to-production.md` + `archive/how-to-guides/setup/integrations/docker.md` + cloudflare/aws-lambda guides
      - [x] 4.6 `code-review` - Adapt from `archive/troubleshooting/common-issues.md` + `archive/troubleshooting/known-issues.md`
 
-- [ ] 5.0 Testing and Verification
-  - [ ] 5.1 Install plugin locally in Claude Code
-  - [ ] 5.2 Test skill triggers with sample prompts (e.g., "set up a bknd project")
-  - [ ] 5.3 Verify code examples compile/run against Bknd v0.20.x
-  - [ ] 5.4 Review keyword coverage for semantic matching
+ - [ ] 5.0 Testing and Verification
+   - [ ] 5.1 Install plugin locally in Claude Code
+   - [x] 5.2 Test skill triggers with sample prompts (e.g., "set up a bknd project")
+     - **Findings:** All 15 skills have valid YAML frontmatter. Line counts: 2 skills under target (<300), 9 skills in range (300-400), 4 skills over target (>400). Missing "### DOs and DON'Ts" section in all skills (per PRD requirement #8). Missing "## Related Skills" section in 13/15 skills (per LEARNINGS.md). Skill descriptions cover all major Bknd functionality.
+   - [ ] 5.3 Verify code examples compile/run against Bknd v0.20.x
+   - [ ] 5.4 Review keyword coverage for semantic matching
