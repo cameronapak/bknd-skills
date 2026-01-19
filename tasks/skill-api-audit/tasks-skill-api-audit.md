@@ -67,7 +67,7 @@
    - [x] 3.2 Verify `getBkndApp()` import and usage
    - [x] 3.3 Verify `app.getApi()` method (correct - matches official example)
    - [x] 3.4 Verify `api.verifyAuth()`, `api.getUser()` patterns (correct)
-  - [ ] 3.5 Verify route handler patterns
+   - [x] 3.5 Verify route handler patterns
   - [ ] 3.6 Read `vite-react/SKILL.md`, list all code examples
   - [ ] 3.7 Verify Vite plugin config
   - [ ] 3.8 Verify dev server setup

@@ -89,7 +89,12 @@ Create catch-all route at `src/app/api/[[...bknd]]/route.ts`:
 import { config } from "@/bknd";
 import { serve } from "bknd/adapter/nextjs";
 
-const handler = serve(config);
+const handler = serve({
+  ...config,
+  cleanRequest: {
+    searchParams: ["bknd"],
+  },
+});
 
 export const GET = handler;
 export const POST = handler;
