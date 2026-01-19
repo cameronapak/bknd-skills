@@ -130,7 +130,19 @@
        - Environment variables: `DB_URL` for SQLite, `POSTGRES_URL` for PostgreSQL, provider-specific vars (NEON, XATA_URL, XATA_API_KEY, XATA_BRANCH)
 
 ## Task 4.1 Completion (media skill)
-   - Media skill is 549 lines, exceeds 200-400 guideline but acceptable for complex topic covering storage adapters, polymorphic relations, and upload APIs
+    - Media skill is 549 lines, exceeds 200-400 guideline but acceptable for complex topic covering storage adapters, polymorphic relations, and upload APIs
+
+## Task 4.2 Completion (config-modes skill)
+    - Config-modes skill is 299 lines, fits 200-400 line guideline
+    - Three modes: UI-only (db), Code-only (code), Hybrid (mode switching)
+    - UI-only mode stores config in `__bknd` database table, allows runtime changes via Admin UI
+    - Code-only mode loads config from TypeScript, runs in read-only mode, requires manual `npx bknd sync --force`
+    - Hybrid mode: db mode in development (visual config), code mode in production (immutable)
+    - Mode helpers: `code()` and `hybrid()` from `bknd/modes` automate syncing of config, types, secrets, and schema
+    - v0.20.0 improvements: reader returns objects (no JSON.parse needed), auto-sync on sync_required flag, faster production startup (validation skipped)
+    - Mode helpers require `writer` for syncing, hybrid mode also requires `reader`
+    - Export workflow: `npx bknd config --out appconfig.json`, `npx bknd secrets --out .env.local --format env`, `npx bknd types --out bknd-types.d.ts`
+
    - Three storage adapters: local (Node.js filesystem), S3 (AWS S3-compatible), custom (implement MediaAdapter interface)
    - Two virtual field types: `medium()` for one-to-one, `media()` for one-to-many - must match relation mapping
    - Polymorphic relations use `polyToOne()` and `polyToMany()` with `mappedBy` matching virtual field name
