@@ -21,8 +21,8 @@
 
 ### Notes
 
-- Use `npx opensrc bknd` to fetch/verify bknd source exports
-- Use ZRead MCP (`mcp__zread__*`) to search bknd repo for usage patterns
+- First course of action is to use ZRead MCP (`mcp__zread__*`) to search bknd repo for usage patterns or for questions you have. 
+- If you still need info after Zread, then use `npx opensrc bknd` to fetch/verify bknd source exports
 - All code examples must compile against bknd v0.20.0 types
 
 ## Instructions for Completing Tasks
