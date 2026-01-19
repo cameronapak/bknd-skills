@@ -37,4 +37,11 @@
      - **Api.getUser() method:** The `Api.getUser()` method (line 245-247 in app/src/Api.ts) returns the current authenticated user as `TApiUser | null` (type `SafeUser` from bknd package). Returns null if no user is authenticated. This is a synchronous method that accesses the internal `user` property directly.
      - **Next.js route handler pattern verified:** The `serve()` function from `bknd/adapter/nextjs` takes config (with optional `cleanRequest` option) and returns a handler function that accepts a `Request` object and returns a `Response`. Export as `GET`, `POST`, `PUT`, `PATCH`, `DELETE` methods for catch-all routes. Pattern matches official example at `examples/nextjs/src/app/api/[[...bknd]]/route.ts`.
      - **Next.js cleanRequest option:** The `serve()` function in the Next.js adapter accepts a `cleanRequest` option with a `searchParams` array to remove specific query parameters from the incoming request before processing. This is useful for filtering out framework-specific parameters like `bknd`. Example: `serve({ ...config, cleanRequest: { searchParams: ["bknd"] } })`.
-    
+     - **Vite adapter configuration:** The vite adapter exports `serve()`, `devServer()`, and `addViteScript()` from `bknd/adapter/vite`. The `devServer()` plugin wraps `@hono/vite-dev-server` and requires an `entry` pointing to the server file. The `serve()` function creates the Bknd app and returns a fetch handler. Official example also uses `tsconfigPaths()` plugin in vite.config.ts.
+     - **Client SDK hooks available:** Bknd client SDK (`bknd/client`) exports numerous React hooks:
+       - Core: `useApi()`, `useBaseUrl()`, `useClientContext()`, `useInvalidate()`
+       - Data: `useEntity()`, `useEntityQuery()`, `useEntityMutate()`, `useApiQuery()`, `useApiInfiniteQuery()`
+       - Auth: `useAuth()` - returns `{ user, token, verified, login, register, logout, verify, setToken, local }`
+       - Module-specific: `useBkndData()`, `useBkndAuth()`, `useBkndMedia()`, `useFlows()`, `useBkndSystem()`
+       The `useEntityQuery()` hook is the primary data fetching hook for React, returning `{ data, create, update, _delete, error, isLoading }` and accepts query options like `limit`, `sort`, `where`.
+
