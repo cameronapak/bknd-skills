@@ -45,10 +45,10 @@
 
 ## Tasks
 
-- [ ] 1.0 Setup Plugin Structure
-  - [ ] 1.1 Create `.claude-plugin/marketplace.json` at repo root
-  - [ ] 1.2 Create `plugins/bknd-skills/.claude-plugin/plugin.json`
-  - [ ] 1.3 Create all 15 skill directories under `plugins/bknd-skills/skills/`
+- [x] 1.0 Setup Plugin Structure
+  - [x] 1.1 Create `.claude-plugin/marketplace.json` at repo root
+  - [x] 1.2 Create `plugins/bknd-skills/.claude-plugin/plugin.json`
+  - [x] 1.3 Create all 15 skill directories under `plugins/bknd-skills/skills/`
 
 - [ ] 2.0 Implement Core Skills (5 skills)
   - [ ] 2.1 `getting-started` - Adapt from `archive/getting-started/build-your-first-api.md` + `archive/architecture-and-concepts/`
