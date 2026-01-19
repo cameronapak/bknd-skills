@@ -1,5 +1,4 @@
 {
-  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "bknd-expert",
   "version": "1.0.0",
   "description": "Bknd framework skills for Claude Code",
