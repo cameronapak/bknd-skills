@@ -109,7 +109,7 @@ Grants access when conditions are met:
 
 ```typescript
 {
-  permission: "entityRead",
+  permission: "data.entity.read",
   effect: "allow",
   policies: [
     {
@@ -126,7 +126,7 @@ Revokes access (takes precedence over allow):
 
 ```typescript
 {
-  permission: "entityDelete",
+  permission: "data.entity.delete",
   effect: "deny",
   policies: [
     {
@@ -143,13 +143,13 @@ Filters data based on query criteria (row-level security):
 
 ```typescript
 {
-  permission: "entityRead",
+  permission: "data.entity.read",
   effect: "allow",
   policies: [
     {
       condition: { entity: "posts" },
       effect: "filter",
-      filter: { author_id: "@user.id" },
+      filter: { author_id: "@auth.user.id" },
     },
   ],
 }
@@ -170,7 +170,7 @@ Filters data based on query criteria (row-level security):
         implicit_allow: false,
         permissions: [
           {
-            permission: "entityRead",
+            permission: "data.entity.read",
             effect: "allow",
             policies: [
               {
@@ -188,7 +188,7 @@ Filters data based on query criteria (row-level security):
         implicit_allow: false,
         permissions: [
           {
-            permission: "entityCreate",
+            permission: "data.entity.create",
             effect: "allow",
             policies: [
               {
@@ -198,13 +198,13 @@ Filters data based on query criteria (row-level security):
             ],
           },
           {
-            permission: "entityUpdate",
+            permission: "data.entity.update",
             effect: "allow",
             policies: [
               {
                 condition: { entity: "posts" },
                 effect: "filter",
-                filter: { author_id: "@user.id" },
+                filter: { author_id: "@auth.user.id" },
               },
             ],
           },
@@ -224,35 +224,35 @@ Users can only read and modify their own data:
   name: "user",
   permissions: [
     {
-      permission: "entityRead",
+      permission: "data.entity.read",
       effect: "allow",
       policies: [
         {
           condition: { entity: "posts" },
           effect: "filter",
-          filter: { author_id: "@user.id" },
+          filter: { author_id: "@auth.user.id" },
         },
       ],
     },
     {
-      permission: "entityUpdate",
+      permission: "data.entity.update",
       effect: "allow",
       policies: [
         {
           condition: { entity: "posts" },
           effect: "filter",
-          filter: { author_id: "@user.id" },
+          filter: { author_id: "@auth.user.id" },
         },
       ],
     },
     {
-      permission: "entityDelete",
+      permission: "data.entity.delete",
       effect: "allow",
       policies: [
         {
           condition: { entity: "posts" },
           effect: "filter",
-          filter: { author_id: "@user.id" },
+          filter: { author_id: "@auth.user.id" },
         },
       ],
     },
@@ -269,13 +269,13 @@ Each tenant sees only their data:
   name: "user",
   permissions: [
     {
-      permission: "entityRead",
+      permission: "data.entity.read",
       effect: "allow",
       policies: [
         {
           condition: { entity: "*" },
           effect: "filter",
-          filter: { tenant_id: "@user.tenant_id" },
+          filter: { tenant_id: "@auth.user.tenant_id" },
         },
       ],
     },
@@ -291,16 +291,16 @@ Policies support dynamic variable substitution using `@variable` syntax:
 
 | Variable | Source | Example |
 |----------|--------|---------|
-| `@user.id` | Authenticated user's ID | `@user.id` |
-| `@user.role` | User's role name | `@user.role` |
-| `@user.*` | Any user property | `@user.email`, `@user.tenant_id` |
+| `@auth.user.id` | Authenticated user's ID | `@auth.user.id` |
+| `@auth.user.role` | User's role name | `@auth.user.role` |
+| `@auth.user.*` | Any user property | `@auth.user.email`, `@auth.user.tenant_id` |
 | `@ctx.*` | Guard config context | Custom context variables |
 
 ### Example: User-Owned Data
 
 ```typescript
 filter: {
-  author_id: "@user.id",
+  author_id: "@auth.user.id",
 }
 ```
 
@@ -319,7 +319,7 @@ filter: {
 filter: {
   $or: [
     { published: true },
-    { tenant_id: "@user.tenant_id" },
+    { tenant_id: "@auth.user.tenant_id" },
   ],
 }
 ```
@@ -330,12 +330,12 @@ Bknd provides built-in permissions for data operations:
 
 | Permission | Description | Filterable |
 |------------|-------------|------------|
-| `entityRead` | Read entity data | Yes |
-| `entityCreate` | Create new entity records | No |
-| `entityUpdate` | Update entity records | Yes |
-| `entityDelete` | Delete entity records | Yes |
+| `data.entity.read` | Read entity data | Yes |
+| `data.entity.create` | Create new entity records | Yes |
+| `data.entity.update` | Update entity records | Yes |
+| `data.entity.delete` | Delete entity records | Yes |
 
-Filterable permissions support the `filter` effect for row-level security.
+All data permissions support the `filter` effect for row-level security.
 
 ## Schema Permissions
 
@@ -355,44 +355,55 @@ Protects:
 
 ## Testing Permissions
 
-Create test users to verify access control:
+Create test users to verify access control. Use HTTP API to test with auth context:
 
 ```typescript
-import { createBknd } from "bknd";
+import { createApp } from "bknd";
 
-const app = await createBknd({
+const app = createApp({
   connection: { url: "file:test.db" },
   config: {
     data: schema.toJSON(),
     auth: {
       enabled: true,
+      jwt: {
+        secret: "test-secret",
+      },
       roles: [
         // Your roles configuration
       ],
     },
   },
 });
+await app.build();
 
-// Create test data
+// Create test data via mutator (bypasses permissions)
 await app.em.mutator("posts").insertMany([
   { title: "Public Post", published: true },
   { title: "Private Post", published: false },
 ]);
 
 // Test as guest (no authentication)
-const guestPosts = await app.em.repository("posts").findMany({});
-console.log("Guest sees:", guestPosts); // Only published posts
+const guestResponse = await app.server.request("/api/data/entity/posts");
+const guestPosts = await guestResponse.json();
+console.log("Guest sees:", guestPosts.data); // Only published posts
 
-// Create authenticated user context
-const userContext = {
-  user: { id: 1, email: "user@example.com", role: "user" },
-};
+// Create authenticated user and test
+const user = await app.createUser({
+  email: "user@example.com",
+  password: "password123",
+});
 
-// Test as authenticated user
-const userPosts = await app.em.repository("posts").findMany(
-  {},
-  { auth: userContext }
-);
+const token = await app.auth.login(user.email, "password123");
+
+// Test as authenticated user with JWT
+const userResponse = await app.server.request("/api/data/entity/posts", {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+});
+const userPosts = await userResponse.json();
+console.log("User sees:", userPosts.data);
 ```
 
 ## DOs and DON'Ts
@@ -420,7 +431,7 @@ const userPosts = await app.em.repository("posts").findMany(
 
 **Users accessing protected data:**
 - Check `filter` conditions match your data structure
-- Verify policy variables (`@user.id`) are resolving correctly
+- Verify policy variables (`@auth.user.id`) are resolving correctly
 - Ensure no `implicit_allow: true` roles are assigned
 
 **Public endpoints returning 403:**

@@ -45,19 +45,19 @@
   - [x] 1.11 Verify WhereBuilder operators against bknd source (all correct)
   - [x] 1.12 Verify RepoQuery options against bknd source (all correct)
 
- - [ ] 2.0 Audit Core Concept Skills (getting-started, auth, permissions)
-   - [x] 2.1 Read `getting-started/SKILL.md`, list all code examples
-   - [x] 2.2 Verify `em()`, `entity()` imports and usage
-   - [x] 2.3 Verify `schema.toJSON()` pattern
-   - [x] 2.4 Verify project setup commands (`bun create bknd`, etc.)
-    - [x] 2.5 Read `auth/SKILL.md`, list all code examples
-   - [x] 2.6 Verify auth strategies config structure
-   - [x] 2.7 Verify `api.auth.me()`, `api.auth.login()` signatures
-   - [x] 2.8 Verify session handling patterns
-  - [ ] 2.9 Read `permissions/SKILL.md`, list all code examples
-  - [ ] 2.10 Verify Guard system API
-  - [ ] 2.11 Verify role definitions syntax
-  - [ ] 2.12 Verify policy syntax and row-level security patterns
+  - [ ] 2.0 Audit Core Concept Skills (getting-started, auth, permissions)
+    - [x] 2.1 Read `getting-started/SKILL.md`, list all code examples
+    - [x] 2.2 Verify `em()`, `entity()` imports and usage
+    - [x] 2.3 Verify `schema.toJSON()` pattern
+    - [x] 2.4 Verify project setup commands (`bun create bknd`, etc.)
+     - [x] 2.5 Read `auth/SKILL.md`, list all code examples
+    - [x] 2.6 Verify auth strategies config structure
+    - [x] 2.7 Verify `api.auth.me()`, `api.auth.login()` signatures
+    - [x] 2.8 Verify session handling patterns
+   - [x] 2.9 Read `permissions/SKILL.md`, list all code examples
+   - [x] 2.10 Verify Guard system API
+   - [x] 2.11 Verify role definitions syntax
+   - [x] 2.12 Verify policy syntax and row-level security patterns
 
 - [ ] 3.0 Audit Framework Integration Skills (nextjs, vite-react, astro)
   - [ ] 3.1 Read `nextjs/SKILL.md`, list all code examples
