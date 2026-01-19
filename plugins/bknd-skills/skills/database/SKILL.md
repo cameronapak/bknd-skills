@@ -1,6 +1,6 @@
 ---
 name: database
-description: Use when configuring database connections for Bknd, setting up SQLite or PostgreSQL databases, using database adapters, or configuring database-related settings like connection pooling and custom dialects. Covers SQLite (file-based, in-memory), PostgreSQL (pg, postgresJs), and custom dialects (Neon, Xata, Turso, Cloudflare D1).
+description: Use when configuring database connections for Bknd, setting up SQLite or PostgreSQL databases, using database adapters, or configuring database-related settings like connection pooling and custom dialects. Covers SQLite (file-based, in-memory), PostgreSQL (pg, postgresJs), and custom dialects for cloud providers (Neon, Xata, Supabase, Turso, Cloudflare D1, PlanetScale).
 ---
 
 ## Database Configuration

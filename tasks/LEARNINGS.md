@@ -16,3 +16,6 @@
 - Skill files use YAML frontmatter with `name` and `description` fields; description should include trigger phrases like "Use when..."
 - Skills should include DOs and DON'Ts sections for best practices
 - Skills should end with "Related Skills" section linking to other relevant skills
+- When testing skill triggers, verify YAML frontmatter validity with `head -3` check on each SKILL.md file
+- Skill line counts can be checked with `wc -l` - target 200-400 lines per PRD, but variance acceptable if content is focused
+- Semantic matching in Claude Code relies heavily on description field containing "Use when..." trigger phrases

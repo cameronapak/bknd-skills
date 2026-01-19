@@ -1,6 +1,6 @@
 ---
 name: nextjs
-description: Use when integrating Bknd with Next.js App Router, setting up API routes, server components, authentication, admin UI, and deploying to Vercel. Covers both server-side and client-side data access with React SDK hooks.
+description: Use when integrating Bknd with Next.js App Router, setting up API routes, server components, authentication, admin UI, and deploying to Vercel. Covers both server-side and client-side data access with React SDK hooks. Also applicable to Remix, Nuxt, and React Router frameworks with adaptation.
 ---
 
 # Next.js Integration
