@@ -62,7 +62,7 @@
 - [ ] 3.0 Audit Framework Integration Skills (nextjs, vite-react, astro)
   - [x] 3.1 Read `nextjs/SKILL.md`, list all code examples
   - [x] 3.2 Verify `getBkndApp()` import and usage
-  - [ ] 3.3 Verify `app.getApi()` method
+  - [x] 3.3 Verify `app.getApi()` method (correct - matches official example)
   - [ ] 3.4 Verify `api.verifyAuth()`, `api.getUser()` patterns
   - [ ] 3.5 Verify route handler patterns
   - [ ] 3.6 Read `vite-react/SKILL.md`, list all code examples
