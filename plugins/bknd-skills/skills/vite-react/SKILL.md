@@ -18,12 +18,13 @@ Bknd provides a streamlined integration with Vite and React for standalone Singl
 ## Quick Start
 
 ```bash
-npx bknd create -i vite
+npm create vite@latest my-app -- --template react
 cd my-app
+npm install bknd @hono/vite-dev-server
 npm run dev
 ```
 
-Your Bknd backend is now ready with:
+Then follow the Manual Setup section below to configure Bknd. This creates a Vite + React project with Bknd backend providing:
 - REST API at `/api/*`
 - Admin UI at `/`
 - Auto-generated types
