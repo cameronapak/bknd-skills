@@ -36,3 +36,13 @@
 - Include DOs and DON'Ts section at the end
 - Structure: Quick Start → Project Setup → Configuration Modes → CLI Commands → Architecture → Next Steps
 - Adapt content from archive docs but rewrite as focused guidance, not tutorial walkthrough
+
+## Task 2.2 Completion (data-schema skill)
+- Complex topics like data schema may exceed 200-400 line guideline (data-schema is 470 lines - acceptable)
+- Bknd field types: primary, text, number, boolean, date, enum, json, jsonschema, media
+- Relationship types: many-to-one, one-to-one, many-to-many, polymorphic
+- Index creation supports chaining: `index(users).on(["email"], true).on(["username"], true)`
+- Second parameter `true` in index creation creates unique index
+- Self-referencing relations need `inversedBy` and `mappedBy` for parent/child relationships
+- Many-to-many with custom fields requires third parameter to schema with additional fields
+- Use plural snake_case for entity names (users, posts) not singular (user, post)
