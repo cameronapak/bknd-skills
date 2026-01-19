@@ -45,8 +45,8 @@ export default serve({
     media: {
       enabled: true,
       adapter: {
-        provider: "local",
-        url: "./uploads",
+        type: "local",
+        config: { path: "./uploads" },
       },
     },
   },
@@ -65,8 +65,8 @@ export default serve({
     media: {
       enabled: true,
       adapter: {
-        provider: "local",
-        url: "./public/uploads",  // Directory path
+        type: "local",
+        config: { path: "./public/uploads" },
       },
     },
   },
@@ -79,24 +79,20 @@ export default serve({
 ### S3 Storage
 
 ```typescript
-import { registerS3MediaAdapter } from "bknd/adapter/node";
-
-const s3 = registerS3MediaAdapter();
+import { serve } from "bknd/adapter/node";
 
 export default serve({
   config: {
     media: {
       enabled: true,
-      adapter: s3({
-        endpoint: "https://s3.amazonaws.com",
-        region: "us-east-1",
-        bucket: "my-bucket",
-        credentials: {
-          accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-          secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      adapter: {
+        type: "s3",
+        config: {
+          access_key: process.env.AWS_ACCESS_KEY_ID,
+          secret_access_key: process.env.AWS_SECRET_ACCESS_KEY,
+          url: "https://my-bucket.s3.amazonaws.com",
         },
-        publicUrl: "https://my-bucket.s3.amazonaws.com",
-      }),
+      },
     },
   },
 });
@@ -105,8 +101,8 @@ export default serve({
 **Environment Variables:**
 - `AWS_ACCESS_KEY_ID` - AWS access key
 - `AWS_SECRET_ACCESS_KEY` - AWS secret key
-- `AWS_REGION` - AWS region (optional)
-- `S3_BUCKET` - S3 bucket name (optional)
+
+**Note:** The `url` should be the full S3 endpoint with bucket name. For Cloudflare R2, use format like `https://{account_id}.r2.cloudflarestorage.com/{bucket}`.
 
 ### Custom Adapters
 
@@ -334,36 +330,13 @@ const schema = em({
 });
 ```
 
-```typescript
-// Upload once, reference in multiple places
-const media = await app.module.media.upload(file);
-
-await app.em.mutator("posts").updateOne(1, {
-  images: { $attach: [media.id] },
-});
-
-await app.em.mutator("pages").updateOne(1, {
-  images: { $attach: [media.id] },
-});
-```
-
 ## Media API: uploadToEntity
 
 Upload files directly to entity fields without manual relation management:
 
 ```typescript
-import { createApp } from "bknd";
-
-const app = createApp({
-  config: {
-    media: { enabled: true },
-    // ... other config
-  },
-});
-
-await app.build();
-
-const { data, error } = await app.module.media.uploadToEntity(
+// Using TypeScript SDK (client)
+const { data, error } = await api.media.uploadToEntity(
   "users",      // entity name
   userId,       // entity ID
   "avatar",     // field name
@@ -481,15 +454,16 @@ The system media entity includes these fields:
 | Field | Type | Description |
 |-------|------|-------------|
 | `id` | primary | Unique identifier |
-| `entity_id` | number | Owning entity ID |
-| `reference` | string | Entity name and field |
-| `filename` | text | Original filename |
+| `entity_id` | text | Owning entity ID |
+| `reference` | text | Entity name and field |
+| `path` | text | File path |
+| `folder` | boolean | Is directory |
 | `mime_type` | text | File MIME type |
-| `width` | number | Image width (if applicable) |
-| `height` | number | Image height (if applicable) |
 | `size` | number | File size in bytes |
-| `url` | text | File URL |
-| `created_at` | date | Upload timestamp |
+| `scope` | text | Field name (hidden) |
+| `etag` | text | File hash |
+| `modified_at` | date | Last modified timestamp |
+| `metadata` | json | Metadata (includes width/height for images) |
 
 ## Complete Example: E-Commerce Product
 
@@ -519,8 +493,8 @@ export default serve({
     media: {
       enabled: true,
       adapter: {
-        provider: "local",
-        url: "./uploads",
+        type: "local",
+        config: { path: "./uploads" },
       },
     },
   },
@@ -554,7 +528,7 @@ const fullProduct = await app.em.repository("products").findOne({
   where: { id: product.id },
   with: {
     thumbnail: true,
-    gallery: { orderBy: { created_at: "desc" } },
+    gallery: { sort: "-created_at" },
     documents: { where: { mime_type: { $like: "application/%" } } },
   },
 });
@@ -565,7 +539,7 @@ const fullProduct = await app.em.repository("products").findOne({
 **DO:**
 - Use `medium()` for one-to-one (avatar, cover, thumbnail)
 - Use `media()` for one-to-many (gallery, attachments)
-- Order media with `orderBy` for consistent display
+- Sort media with `sort` option for consistent display
 - Filter media by type (`mime_type`, file extensions)
 - Use `uploadToEntity` for direct field uploads
 - Index media fields used in queries
@@ -583,7 +557,10 @@ const fullProduct = await app.em.repository("products").findOne({
 **Media not appearing in queries:**
 ```typescript
 // Wrong - media not loaded
-const post = await api.data.readOneBy("posts", { where: { id: 1 } });
+const post = await api.data.readMany("posts", {
+  limit: 1,
+  where: { id: 1 },
+});
 
 // Correct - load media with with: {}
 const post = await api.data.readOneBy("posts", {
