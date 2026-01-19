@@ -18,13 +18,13 @@ Easiest and best way to get started is through using Vercel's `[add-skill](https
 
 ```bash
 # Local repo installation
-npx add-skill cameronapak/bknd-expert
+npx add-skill cameronapak/bknd-skills
 
 # Install to specific agents
-npx add-skill cameronapak/bknd-expert -a cursor -a claude-code
+npx add-skill cameronapak/bknd-skills -a cursor -a claude-code
 
 # Global installation
-npx add-skill cameronapak/bknd-expert -g
+npx add-skill cameronapak/bknd-skills -g
 ```
 
 ## Attribution
