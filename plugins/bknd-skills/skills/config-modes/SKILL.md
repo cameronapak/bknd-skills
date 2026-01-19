@@ -1,6 +1,6 @@
 ---
 name: config-modes
-description: Use when choosing a Bknd configuration mode (UI-only, Code-only, Hybrid), setting up mode switching between development and production, or using mode helpers for automated syncing. Covers when to use each mode, setup patterns, and v0.20.0 improvements.
+description: Use when choosing a Bknd configuration mode (UI-only, Code-only, Hybrid), setting up mode switching between development and production, running Bknd CLI commands with TypeScript config files, or using mode helpers for automated syncing. Covers when to use each mode, setup patterns, CLI execution (bknd run, bknd sync), and v0.20.0 improvements.
 ---
 
 # Configuration Modes
@@ -203,6 +203,35 @@ export default hybrid(config);
 - Automatic schema sync in development
 - Object-based config loading (no JSON.parse needed)
 - Production validation skip for performance
+
+## Running CLI with TypeScript Config
+
+If your config file uses a `.ts` extension (e.g., `bknd.config.ts`), the CLI requires a TypeScript-aware runtime.
+
+### Node.js (>=v22.6.0)
+
+```bash
+node --experimental-strip-types node_modules/.bin/bknd run
+node --experimental-strip-types node_modules/.bin/bknd sync --force
+```
+
+### Using tsx
+
+```bash
+npx tsx node_modules/.bin/bknd run
+npx tsx node_modules/.bin/bknd sync --force
+```
+
+### Using Bun
+
+Required if your config uses Bun-specific APIs or the Bun adapter:
+
+```bash
+bun node_modules/.bin/bknd run
+bun node_modules/.bin/bknd sync --seed --force
+```
+
+**Note:** Standard `npx bknd` commands work if your config is `.js` or `.mjs`.
 
 ## Recommended Workflow
 
