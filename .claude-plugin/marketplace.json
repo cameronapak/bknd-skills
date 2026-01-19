@@ -1,20 +1,22 @@
 {
-  "name": "bknd-expert",
+  "name": "bknd-skills",
+  "version": "0.0.1",
+  "description": "Bknd framework skills for Claude Code",
   "owner": {
     "name": "Cameron Pak",
     "email": "cameronandrewpak@gmail.com"
   },
-  "metadata": {
-    "description": "bknd framework documentation skills",
-    "version": "1.0.0"
-  },
   "plugins": [
     {
-      "name": "bknd-research-skills",
-      "description": "Skills for learning and working with the bknd backend framework using btca (Better Context App)",
-      "source": "./",
-      "strict": false,
-      "skills": ["./.opencode/skills/btca-bknd-repo-learn"]
+      "name": "bknd-skills",
+      "description": "Skills for working with the bknd backend framework",
+      "version": "0.0.1",
+      "author": {
+        "name": "Cameron Pak",
+        "email": "cameronandrewpak@gmail.com"
+      },
+      "source": "./plugins/bknd-skills",
+      "category": "development"
     }
   ]
 }

@@ -1,0 +1,14 @@
+{
+  "name": "bknd-skills",
+  "private": true,
+  "version": "0.0.1",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "bknd": "^0.20.0"
+  }
+}

@@ -1,2 +1,3 @@
-# opensrc - source code for packages
+node_modules/
 opensrc/
+.DS_STORE
