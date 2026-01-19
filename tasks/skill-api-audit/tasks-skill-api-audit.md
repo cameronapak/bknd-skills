@@ -45,12 +45,12 @@
   - [x] 1.11 Verify WhereBuilder operators against bknd source (all correct)
   - [x] 1.12 Verify RepoQuery options against bknd source (all correct)
 
-- [ ] 2.0 Audit Core Concept Skills (getting-started, auth, permissions)
-  - [ ] 2.1 Read `getting-started/SKILL.md`, list all code examples
-  - [ ] 2.2 Verify `em()`, `entity()` imports and usage
-  - [ ] 2.3 Verify `schema.toJSON()` pattern
-  - [ ] 2.4 Verify project setup commands (`bun create bknd`, etc.)
-  - [ ] 2.5 Read `auth/SKILL.md`, list all code examples
+ - [ ] 2.0 Audit Core Concept Skills (getting-started, auth, permissions)
+   - [x] 2.1 Read `getting-started/SKILL.md`, list all code examples
+   - [x] 2.2 Verify `em()`, `entity()` imports and usage
+   - [x] 2.3 Verify `schema.toJSON()` pattern
+   - [x] 2.4 Verify project setup commands (`bun create bknd`, etc.)
+   - [ ] 2.5 Read `auth/SKILL.md`, list all code examples
   - [ ] 2.6 Verify auth strategies config structure
   - [ ] 2.7 Verify `api.auth.me()`, `api.auth.login()` signatures
   - [ ] 2.8 Verify session handling patterns

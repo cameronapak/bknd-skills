@@ -38,9 +38,8 @@ Bknd works with any JavaScript framework. Here are common starting points:
 
 **Vite + React:**
 ```bash
-npm create vite@latest my-bknd-app -- --template react
+npx bknd create my-bknd-app --integration vite --template react
 cd my-bknd-app
-npm install bknd @hono/vite-dev-server
 ```
 
 **Next.js:**
@@ -52,9 +51,8 @@ npm install bknd
 
 **Bun (Standalone):**
 ```bash
-mkdir my-bknd-app && cd my-bknd-app
-npm init -y
-npm install bknd
+npx bknd create my-bknd-app --integration bun
+cd my-bknd-app
 ```
 
 ### Step 2: Create Configuration File
