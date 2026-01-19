@@ -1,6 +1,6 @@
 ---
 name: database
-description: Use when configuring database connections for Bknd, setting up SQLite or PostgreSQL databases, using database adapters, or configuring database-related settings like connection pooling and custom dialects. Covers SQLite (file-based, in-memory), PostgreSQL (pg, postgresJs), and custom dialects for cloud providers (Neon, Xata, Supabase, Turso, Cloudflare D1, PlanetScale).
+description: Use when configuring database connections for Bknd, setting up SQLite or PostgreSQL databases, using database adapters, or configuring database-related settings like connection pooling and custom dialects. Covers SQLite (file-based, in-memory), PostgreSQL (pg, postgresJs), and custom dialects for cloud providers (Neon, Xata, Supabase, Turso, Cloudflare D1).
 ---
 
 ## Database Configuration
@@ -126,16 +126,24 @@ connection: {
 
 ```typescript
 import { createCustomPostgresConnection } from "bknd";
-import { XataDialect } from "kysely-xata";
+import { XataDialect } from "@xata.io/kysely";
+import { buildClient } from "@xata.io/client";
 
-const xata = createCustomPostgresConnection("xata", XataDialect);
+const client = buildClient();
+const xata = new client({
+  databaseURL: process.env.XATA_URL,
+  apiKey: process.env.XATA_API_KEY,
+  branch: process.env.XATA_BRANCH ?? "main",
+});
+
+const xataConnection = createCustomPostgresConnection("xata", XataDialect, {
+  supports: {
+    batching: false,
+  },
+});
 
 connection: {
-  url: xata({
-    databaseUrl: process.env.XATA_URL,
-    apiKey: process.env.XATA_API_KEY,
-    branch: process.env.XATA_BRANCH ?? "main",
-  }),
+  url: xataConnection({ xata }),
 }
 ```
 
@@ -143,6 +151,36 @@ connection: {
 - `XATA_URL` - Xata database URL
 - `XATA_API_KEY` - Xata API key
 - `XATA_BRANCH` - Xata database branch (default: `"main"`)
+
+### Cloudflare D1
+
+Cloudflare D1 is a SQLite-based edge database that works with the Cloudflare Workers adapter. Configure D1 bindings in `wrangler.json` and use the `d1()` function from the Cloudflare adapter:
+
+```typescript
+import { d1 } from "bknd/adapter/cloudflare";
+
+export default {
+  app: (env) => d1({ binding: env.D1_BINDING }),
+};
+```
+
+The `d1()` function automatically detects the first available D1 binding. To specify a binding explicitly, pass it via the `binding` option:
+
+**wrangler.json:**
+```json
+{
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "my-database",
+      "database_id": "your-database-id"
+    }
+  ]
+}
+```
+
+**Environment Variables:**
+- `D1_BINDING` - Cloudflare D1 binding name (optional if using first available binding)
 
 ## Type Registration
 

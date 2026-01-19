@@ -77,11 +77,11 @@
    - [x] 3.12 Verify SSR patterns (fixed `getApi(Astro, { verify: true })` → `getApi(Astro, { mode: "dynamic", verify: true })`)
    - [x] 3.13 Verify middleware setup (removed non-existent middleware pattern with registerController)
 
-- [ ] 4.0 Audit Infrastructure Skills (database, media, config-modes)
-  - [ ] 4.1 Read `database/SKILL.md`, list all code examples
-  - [ ] 4.2 Verify `pg` adapter import and config
-  - [ ] 4.3 Verify `postgresJs` adapter import and config
-  - [ ] 4.4 Verify dialect setup for cloud providers (Neon, Turso, D1, etc.)
+ - [x] 4.0 Audit Infrastructure Skills (database, media, config-modes)
+   - [x] 4.1 Read `database/SKILL.md`, list all code examples
+   - [x] 4.2 Verify `pg` adapter import and config
+   - [x] 4.3 Verify `postgresJs` adapter import and config
+   - [x] 4.4 Verify dialect setup for cloud providers (Neon, Turso, D1, etc.) - Fixed Xata config (needs client build), added Cloudflare D1 section with d1() from 'bknd/adapter/cloudflare'
   - [ ] 4.5 Read `media/SKILL.md`, list all code examples
   - [ ] 4.6 Verify media module config structure
   - [ ] 4.7 Verify storage adapter patterns
