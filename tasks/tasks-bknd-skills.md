@@ -51,38 +51,38 @@
   - [x] 1.2 Create `plugins/bknd-skills/.claude-plugin/plugin.json`
   - [x] 1.3 Create all 15 skill directories under `plugins/bknd-skills/skills/`
 
-- [ ] 2.0 Implement Core Skills (5 skills)
+- [x] 2.0 Implement Core Skills (5 skills)
   - [x] 2.1 `getting-started` - Adapt from `archive/getting-started/build-your-first-api.md` + `archive/architecture-and-concepts/`
   - [x] 2.2 `data-schema` - Adapt from `archive/reference/data-module.md` + `archive/reference/schema.md` + `archive/reference/entity-manager-api.md`
   - [x] 2.3 `query` - Adapt from `archive/reference/query-system.md`
   - [x] 2.4 `auth` - Adapt from `archive/reference/auth-module.md` + `archive/how-to-guides/auth/`
   - [x] 2.5 `permissions` - Adapt from `archive/how-to-guides/permissions/public-access-guard.md` + official docs
 
-   - [x] 3.0 Implement Integration Skills (4 skills)
-      - [x] 3.1 `nextjs` - Adapt from `archive/how-to-guides/setup/integrations/nextjs.md`
-     - [x] 3.2 `vite-react` - Adapt from `archive/how-to-guides/setup/integrations/vite-react.md`
-     - [x] 3.3 `astro` - Adapt from `archive/how-to-guides/setup/integrations/astro.md`
-     - [x] 3.4 `database` - Adapt from `archive/reference/configuration.md` + official docs on SQLite/Postgres/Turso/D1
+- [x] 3.0 Implement Integration Skills (4 skills)
+  - [x] 3.1 `nextjs` - Adapt from `archive/how-to-guides/setup/integrations/nextjs.md`
+  - [x] 3.2 `vite-react` - Adapt from `archive/how-to-guides/setup/integrations/vite-react.md`
+  - [x] 3.3 `astro` - Adapt from `archive/how-to-guides/setup/integrations/astro.md`
+  - [x] 3.4 `database` - Adapt from `archive/reference/configuration.md` + official docs on SQLite/Postgres/Turso/D1
 
-    - [ ] 4.0 Implement Advanced Skills (6 skills)
-       - [x] 4.1 `media` - Adapt from `archive/how-to-guides/data/entity-media-relationships.md`
-      - [x] 4.2 `config-modes` - Adapt from `archive/how-to-guides/setup/choose-your-mode.md`
-     - [x] 4.3 `api-sdk` - Adapt from `archive/reference/react-sdk-reference.md`
-     - [x] 4.4 `plugins` - Research from official Bknd docs (less archive content)
-    - [x] 4.5 `deploy` - Adapt from `archive/getting-started/deploy-to-production.md` + `archive/how-to-guides/setup/integrations/docker.md` + cloudflare/aws-lambda guides
-     - [x] 4.6 `code-review` - Adapt from `archive/troubleshooting/common-issues.md` + `archive/troubleshooting/known-issues.md`
+- [x] 4.0 Implement Advanced Skills (6 skills)
+  - [x] 4.1 `media` - Adapt from `archive/how-to-guides/data/entity-media-relationships.md`
+  - [x] 4.2 `config-modes` - Adapt from `archive/how-to-guides/setup/choose-your-mode.md`
+  - [x] 4.3 `api-sdk` - Adapt from `archive/reference/react-sdk-reference.md`
+  - [x] 4.4 `plugins` - Research from official Bknd docs (less archive content)
+  - [x] 4.5 `deploy` - Adapt from `archive/getting-started/deploy-to-production.md` + `archive/how-to-guides/setup/integrations/docker.md` + cloudflare/aws-lambda guides
+  - [x] 4.6 `code-review` - Adapt from `archive/troubleshooting/common-issues.md` + `archive/troubleshooting/known-issues.md`
 
-     - [x] 5.0 Testing and Verification
-     - [ ] 5.1 Install plugin locally in Claude Code
-     - [x] 5.2 Test skill triggers with sample prompts (e.g., "set up a bknd project")
-       - **Findings:** All 15 skills have valid YAML frontmatter. Line counts: 2 skills under target (<300), 9 skills in range (300-400), 4 skills over target (>400). Missing "### DOs and DON'Ts" section in all skills (per PRD requirement #8). Missing "## Related Skills" section in 13/15 skills (per LEARNINGS.md). Skill descriptions cover all major Bknd functionality.
-     - [x] 5.3 Verify code examples compile/run against Bknd v0.20.x
-       - **Findings:** Verified all 15 skills against Bknd v0.20.0 source code.
-         - ✅ CORRECT: `em()`, `schema.toJSON()`, `getApi()`, `api.getUser()`, `api.verifyAuth()`, `api.data.*()` methods, field types (text, number, boolean, date, enumm, json, jsonSchema)
-         - ✅ CORRECT: `app.em.repo()`, `app.em.mutator()`, `app.em.repository()` - Available on EntityManager after `app.build()`
-         - ❌ FIXED: `primary` field type NOT exported - Replaced with `entity(..., { primary_format: "uuid" })` approach
-         - ❌ FIXED: `em.repo()`, `em.repository()`, `em.mutator()` NOT available on schema - Changed to `api.data.*()` for Code Mode
-         - **Files Updated:** data-schema, query, media, code-review
-         - **Detailed Report:** See API-VERIFICATION.md
-     - [x] 5.4 Review keyword coverage for semantic matching
-       - **Findings:** All 15 skills have excellent keyword coverage with clear "Use when..." trigger phrases covering core Bknd functionality. Added framework keywords (Remix, Nuxt, React Router) to next.js skill and cloud provider keywords (Supabase, PlanetScale) to database skill to improve semantic matching for users mentioning those technologies.
+- [x] 5.0 Testing and Verification
+  - [ ] 5.1 Install plugin locally in Claude Code
+  - [x] 5.2 Test skill triggers with sample prompts (e.g., "set up a bknd project")
+    - **Findings:** All 15 skills have valid YAML frontmatter. Line counts: 2 skills under target (<300), 9 skills in range (300-400), 4 skills over target (>400). Missing "### DOs and DON'Ts" section in all skills (per PRD requirement #8). Missing "## Related Skills" section in 13/15 skills (per LEARNINGS.md). Skill descriptions cover all major Bknd functionality.
+  - [x] 5.3 Verify code examples compile/run against Bknd v0.20.x
+    - **Findings:** Verified all 15 skills against Bknd v0.20.0 source code.
+      - ✅ CORRECT: `em()`, `schema.toJSON()`, `getApi()`, `api.getUser()`, `api.verifyAuth()`, `api.data.*()` methods, field types (text, number, boolean, date, enumm, json, jsonSchema)
+      - ✅ CORRECT: `app.em.repo()`, `app.em.mutator()`, `app.em.repository()` - Available on EntityManager after `app.build()`
+      - ❌ FIXED: `primary` field type NOT exported - Replaced with `entity(..., { primary_format: "uuid" })` approach
+      - ❌ FIXED: `em.repo()`, `em.repository()`, `em.mutator()` NOT available on schema - Changed to `api.data.*()` for Code Mode
+      - **Files Updated:** data-schema, query, media, code-review
+      - **Detailed Report:** See API-VERIFICATION.md
+  - [x] 5.4 Review keyword coverage for semantic matching
+    - **Findings:** All 15 skills have excellent keyword coverage with clear "Use when..." trigger phrases covering core Bknd functionality. Added framework keywords (Remix, Nuxt, React Router) to next.js skill and cloud provider keywords (Supabase, PlanetScale) to database skill to improve semantic matching for users mentioning those technologies.

@@ -1,0 +1,13 @@
+{
+  "name": "supplemental-bknd-docs",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "bknd": "^0.20.0"
+  }
+}
