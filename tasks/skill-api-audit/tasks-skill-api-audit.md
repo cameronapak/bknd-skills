@@ -48,26 +48,26 @@
   - [x] 1.11 Verify WhereBuilder operators against bknd source (all correct)
   - [x] 1.12 Verify RepoQuery options against bknd source (all correct)
 
-   - [x] 2.0 Audit Core Concept Skills (getting-started, auth, permissions)
-    - [x] 2.1 Read `getting-started/SKILL.md`, list all code examples
-    - [x] 2.2 Verify `em()`, `entity()` imports and usage
-    - [x] 2.3 Verify `schema.toJSON()` pattern
-    - [x] 2.4 Verify project setup commands (`bun create bknd`, etc.)
-     - [x] 2.5 Read `auth/SKILL.md`, list all code examples
-    - [x] 2.6 Verify auth strategies config structure
-    - [x] 2.7 Verify `api.auth.me()`, `api.auth.login()` signatures
-    - [x] 2.8 Verify session handling patterns
-   - [x] 2.9 Read `permissions/SKILL.md`, list all code examples
-   - [x] 2.10 Verify Guard system API
-   - [x] 2.11 Verify role definitions syntax
-   - [x] 2.12 Verify policy syntax and row-level security patterns
+- [x] 2.0 Audit Core Concept Skills (getting-started, auth, permissions)
+  - [x] 2.1 Read `getting-started/SKILL.md`, list all code examples
+  - [x] 2.2 Verify `em()`, `entity()` imports and usage
+  - [x] 2.3 Verify `schema.toJSON()` pattern
+  - [x] 2.4 Verify project setup commands (`bun create bknd`, etc.)
+  - [x] 2.5 Read `auth/SKILL.md`, list all code examples
+  - [x] 2.6 Verify auth strategies config structure
+  - [x] 2.7 Verify `api.auth.me()`, `api.auth.login()` signatures
+  - [x] 2.8 Verify session handling patterns
+  - [x] 2.9 Read `permissions/SKILL.md`, list all code examples
+  - [x] 2.10 Verify Guard system API
+  - [x] 2.11 Verify role definitions syntax
+  - [x] 2.12 Verify policy syntax and row-level security patterns
 
-   - [ ] 3.0 Audit Framework Integration Skills (nextjs, vite-react, astro)
-   - [x] 3.1 Read `nextjs/SKILL.md`, list all code examples
-   - [x] 3.2 Verify `getBkndApp()` import and usage
-   - [x] 3.3 Verify `app.getApi()` method (correct - matches official example)
-   - [x] 3.4 Verify `api.verifyAuth()`, `api.getUser()` patterns (correct)
-   - [x] 3.5 Verify route handler patterns
+- [ ] 3.0 Audit Framework Integration Skills (nextjs, vite-react, astro)
+  - [x] 3.1 Read `nextjs/SKILL.md`, list all code examples
+  - [x] 3.2 Verify `getBkndApp()` import and usage
+  - [x] 3.3 Verify `app.getApi()` method (correct - matches official example)
+  - [x] 3.4 Verify `api.verifyAuth()`, `api.getUser()` patterns (correct)
+  - [x] 3.5 Verify route handler patterns
   - [ ] 3.6 Read `vite-react/SKILL.md`, list all code examples
   - [ ] 3.7 Verify Vite plugin config
   - [ ] 3.8 Verify dev server setup
