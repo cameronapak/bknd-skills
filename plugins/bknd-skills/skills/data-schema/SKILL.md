@@ -55,73 +55,22 @@ const schema = em({
 
 ### Primary Field
 
-Primary key is automatically added. Customize if needed:
+Primary key is automatically added to every entity:
 
 ```typescript
-import { primary } from "bknd";
-
 entity("users", {
-  id: primary({ format: "uuid" }), // Default: "integer" or "uuid"
   email: text().required(),
 })
+// Auto-generated: id (integer or UUID)
 ```
 
-### Text Field
+**Customize primary key format:**
 
 ```typescript
-import { text } from "bknd";
-
 entity("users", {
-  email: text().required(),              // Required field
-  name: text(),                          // Optional field
-  bio: text({
-    min_length: 10,
-    max_length: 500,
-    pattern: "^[a-zA-Z0-9 ]*$",         // Regex validation
-    default_value: "No bio provided",
-  }),
-})
-```
-
-### Number Field
-
-```typescript
-import { number } from "bknd";
-
-entity("products", {
-  price: number().required(),
-  quantity: number({
-    minimum: 0,
-    maximum: 1000,
-    multiple_of: 10,                     // Must be divisible by 10
-    default_value: 1,
-  }),
-})
-```
-
-### Boolean Field
-
-```typescript
-import { boolean } from "bknd";
-
-entity("users", {
-  active: boolean({
-    default_value: true,
-  }),
-  email_verified: boolean(),
-})
-```
-
-### Date Field
-
-```typescript
-import { date } from "bknd";
-
-entity("posts", {
-  published_at: date({
-    default_value: () => new Date().toISOString(),
-  }),
-  expires_at: date(),
+  email: text().required(),
+}, {
+  primary_format: "uuid",  // "integer" | "uuid" (default: "integer")
 })
 ```
 
@@ -379,10 +328,10 @@ entity("users", {
 
 ### Validation Errors
 
-Invalid data returns validation errors:
+For server-side mutations, use the API:
 
 ```typescript
-const result = await em.mutator("users").insertOne({
+const result = await api.data.createOne("users", {
   email: "invalid-email", // Fails pattern validation
   age: 15,               // Fails minimum validation
 });

@@ -153,20 +153,47 @@ const schema = em({
 
 **Operations:**
 
+For Code Mode (recommended), use API endpoints:
+
 ```typescript
 // Create with media
-await em.mutator("users").insertOne({
+await api.data.createOne("users", {
   username: "john",
   avatar: { $create: { file: uploadedFile } },
 });
 
 // Set existing media
-await em.mutator("users").updateOne(1, {
+await api.data.updateOne("users", 1, {
   avatar: { $set: { id: mediaId } },
 });
 
 // Query with media
-const user = await em.repository("users").findOne({
+const user = await api.data.readOneBy("users", {
+  where: { id: 1 },
+  with: { avatar: true },
+});
+```
+
+For Hybrid Mode (direct database access):
+
+```typescript
+// After app.build()
+const app = createApp(config);
+await app.build();
+
+// Create with media
+await app.em.mutator("users").insertOne({
+  username: "john",
+  avatar: { $create: { file: uploadedFile } },
+});
+
+// Set existing media
+await app.em.mutator("users").updateOne(1, {
+  avatar: { $set: { id: mediaId } },
+});
+
+// Query with media
+const user = await app.em.repository("users").findOne({
   where: { id: 1 },
   with: { avatar: true },
 });
@@ -192,38 +219,77 @@ const schema = em({
 
 **Operations:**
 
+For Code Mode (recommended), use API endpoints:
+
 ```typescript
 // Create with media
-await em.mutator("products").insertOne({
+await api.data.createOne("products", {
   name: "Laptop",
   images: {
     $create: [
       { file: image1 },
       { file: image2 },
-      { file: image3 },
     ],
   },
 });
 
-// Attach existing media
-await em.mutator("products").updateOne(1, {
-  images: { $attach: [mediaId1, mediaId2] },
+// Add more images
+await api.data.updateOne("products", 1, {
+  images: {
+    $append: { file: image3 },
+  },
 });
 
-// Detach specific media
-await em.mutator("products").updateOne(1, {
-  images: { $detach: [mediaId3] },
-});
-
-// Replace all media
-await em.mutator("products").updateOne(1, {
-  images: { $set: [mediaId1, mediaId4] },
+// Remove image
+await api.data.updateOne("products", 1, {
+  images: {
+    $remove: imageId,
+  },
 });
 
 // Query with media
-const product = await em.repository("products").findOne({
+const product = await api.data.readOneBy("products", {
   where: { id: 1 },
-  with: { images: { orderBy: { created_at: "desc" } } },
+  with: { images: { limit: 5 } },
+});
+```
+
+For Hybrid Mode (direct database access):
+
+```typescript
+// After app.build()
+const app = createApp(config);
+await app.build();
+
+// Create with media
+await app.em.mutator("products").insertOne({
+  name: "Laptop",
+  images: {
+    $create: [
+      { file: image1 },
+      { file: image2 },
+    ],
+  },
+});
+
+// Add more images
+await app.em.mutator("products").updateOne(1, {
+  images: {
+    $append: { file: image3 },
+  },
+});
+
+// Remove image
+await app.em.mutator("products").updateOne(1, {
+  images: {
+    $remove: imageId,
+  },
+});
+
+// Query with media
+const product = await app.em.repository("products").findOne({
+  where: { id: 1 },
+  with: { images: { limit: 5 } },
 });
 ```
 
@@ -272,11 +338,11 @@ const schema = em({
 // Upload once, reference in multiple places
 const media = await app.module.media.upload(file);
 
-await em.mutator("posts").updateOne(1, {
+await app.em.mutator("posts").updateOne(1, {
   images: { $attach: [media.id] },
 });
 
-await em.mutator("pages").updateOne(1, {
+await app.em.mutator("pages").updateOne(1, {
   images: { $attach: [media.id] },
 });
 ```
@@ -359,13 +425,13 @@ await media.uploadToEntity("contracts", contractId, "pdf", pdfBuffer);
 
 ```typescript
 // Find posts with cover image
-const postsWithCover = await em.repository("posts").findMany({
+const postsWithCover = await api.data.readMany("posts", {
   where: { 'cover.mime_type': { $isnull: false } }
 });
 // Auto-joins media table
 
 // Find products with specific image type
-const products = await em.repository("products").findMany({
+const products = await api.data.readMany("products", {
   where: { 'gallery.mime_type': { $like: 'image/%' } }
 });
 ```
@@ -374,7 +440,7 @@ const products = await em.repository("products").findMany({
 
 ```typescript
 // Find posts with cover image AND large thumbnail
-const posts = await em.repository("posts").findMany({
+const posts = await api.data.readMany("posts", {
   where: {
     'cover.mime_type': { $like: 'image/%' },
     'thumbnail.width': { $gte: 1200 }
@@ -387,7 +453,7 @@ const posts = await em.repository("posts").findMany({
 **Auto-join warnings:**
 ```typescript
 // Warning if media field not indexed
-const posts = await em.repository("posts").findMany({
+const posts = await api.data.readMany("posts", {
   where: { 'cover.mime_type': 'image/jpeg' }
 });
 // Warning: Field "media.mime_type" used in "where" is not indexed
@@ -396,12 +462,12 @@ const posts = await em.repository("posts").findMany({
 **Explicit join for better control:**
 ```typescript
 // Auto-join: Loads all media columns
-const posts = await em.repository("posts").findMany({
+const posts = await api.data.readMany("posts", {
   where: { 'cover.mime_type': 'image/jpeg' }
 });
 
 // Explicit join: Load only needed columns
-const postsOptimized = await em.repository("posts").findMany({
+const postsOptimized = await api.data.readMany("posts", {
   join: ['cover'],
   select: ['id', 'title', 'cover.mime_type', 'cover.width'],
   where: { 'cover.mime_type': 'image/jpeg' }
@@ -463,7 +529,7 @@ export default serve({
 
 ```typescript
 // Create product with all media
-const product = await em.mutator("products").insertOne({
+const product = await app.em.mutator("products").insertOne({
   name: "Laptop",
   description: "Powerful laptop",
   price: 999,
@@ -484,7 +550,7 @@ const product = await em.mutator("products").insertOne({
 });
 
 // Query product with all media
-const fullProduct = await em.repository("products").findOne({
+const fullProduct = await app.em.repository("products").findOne({
   where: { id: product.id },
   with: {
     thumbnail: true,
@@ -517,10 +583,10 @@ const fullProduct = await em.repository("products").findOne({
 **Media not appearing in queries:**
 ```typescript
 // Wrong - media not loaded
-const post = await em.repository("posts").findOne({ where: { id: 1 } });
+const post = await api.data.readOneBy("posts", { where: { id: 1 } });
 
 // Correct - load media with with: {}
-const post = await em.repository("posts").findOne({
+const post = await api.data.readOneBy("posts", {
   where: { id: 1 },
   with: { cover: true },
 });
@@ -537,12 +603,14 @@ cover: medium(),
 **Wrong operation type:**
 ```typescript
 // One-to-one: Use $set, not $attach
-await em.mutator("users").updateOne(1, {
+await app.em.mutator("users").updateOne(1, {
   avatar: { $set: { id: mediaId } },
 });
 
 // One-to-many: Use $attach/$detach, not just $set
-await em.mutator("products").updateOne(1, {
-  images: { $attach: [mediaId1] },
+await app.em.mutator("products").updateOne(1, {
+  gallery: {
+    $attach: [mediaId1, mediaId2],
+  },
 });
 ```

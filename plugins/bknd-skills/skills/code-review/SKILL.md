@@ -33,7 +33,7 @@ const schema = em(
 **Correct:**
 ```typescript
 // Option 1: Don't index timestamp fields (query without index)
-const posts = await em.repo("posts").findMany({
+const posts = await api.data.readMany("posts", {
   sort: { by: "created_at", dir: "desc" }
 });
 

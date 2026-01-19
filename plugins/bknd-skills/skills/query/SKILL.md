@@ -7,6 +7,10 @@ description: Use when querying Bknd data, building filters with WhereBuilder, so
 
 Bknd provides a type-safe query builder built on top of Kysely. All queries start from a Repository and use WhereBuilder for filters.
 
+**Important:** The `em()` function is used for schema definition in Code Mode. For runtime queries, use:
+- **API endpoints** (Code Mode recommended): `api.data.readMany()`, `api.data.createOne()`, etc.
+- **Direct database access** (Hybrid Mode): `app.em.repo()`, `app.em.mutator()` after `app.build()`
+
 ## What You'll Learn
 
 - Get a Repository from EntityManager
@@ -18,11 +22,30 @@ Bknd provides a type-safe query builder built on top of Kysely. All queries star
 
 ## Repository - Query Entry Point
 
-Get a Repository through EntityManager:
+**For Code Mode (recommended):**
+
+Use the TypeScript SDK via API endpoints:
 
 ```typescript
-const userRepo = em.repository('User');
-const userRepo = em.repo('User'); // Shorthand
+import { Api } from "bknd";
+
+const api = new Api({ host: "http://localhost:3000" });
+
+// Three main query methods
+await api.data.readOne("users", 1);              // Find single by primary key
+await api.data.readOneBy("users", { id: 1 });   // Find single by conditions
+await api.data.readMany("users", { limit: 10 });  // Find multiple
+```
+
+**For Hybrid Mode (direct database access):**
+
+Get a Repository through EntityManager after `app.build()`:
+
+```typescript
+const app = createApp(config);
+await app.build();
+
+const userRepo = app.em.repo('User'); // Shorthand for app.em.repository('User')
 
 // Three main query methods
 await userRepo.findId(1);              // Find single by primary key
@@ -69,17 +92,17 @@ Filter by related entity fields using **dot notation** - Bknd automatically adds
 
 ```typescript
 // Filter comments by post title (auto-joins posts table)
-const comments = await em.repo('comments').findMany({
+const comments = await api.data.readMany("comments", {
   where: { 'posts.title': 'My Post' }
 });
 
 // Filter posts by author username
-const posts = await em.repo('posts').findMany({
+const posts = await api.data.readMany("posts", {
   where: { 'author.username': 'john' }
 });
 
 // Filter by multiple related fields
-const comments = await em.repo('comments').findMany({
+const comments = await api.data.readMany("comments", {
   where: {
     'posts.title': { $like: '*Tutorial*' },
     'author.status': 'active'
@@ -141,19 +164,19 @@ interface RepoQuery {
 
 ```typescript
 // Find active users, sorted by creation time descending
-const users = await em.repo('User').findMany({
+const users = await api.data.readMany("users", {
   where: { status: 'active' },
   sort: '-createdAt',
   limit: 20
 });
 
 // Find users aged 18-65
-const adults = await em.repo('User').findMany({
-  where: { age: { $between: [18, 65] } }
+const adults = await api.data.readMany("users", {
+  where: { age: { $between: [18, 65] }
 });
 
 // Fuzzy search
-const results = await em.repo('Post').findMany({
+const results = await api.data.readMany("posts", {
   where: { title: { $like: '*tutorial*' } },
   limit: 10
 });
@@ -163,7 +186,7 @@ const results = await em.repo('Post').findMany({
 
 ```typescript
 // Find users with their posts (max 5 per user)
-const usersWithPosts = await em.repo('User').findMany({
+const usersWithPosts = await api.data.readMany("users", {
   limit: 10,
   with: {
     posts: {
@@ -175,7 +198,7 @@ const usersWithPosts = await em.repo('User').findMany({
 });
 
 // Nested relations: User → Posts → Comments
-const deepQuery = await em.repo('User').findMany({
+const deepQuery = await api.data.readMany("users", {
   with: {
     posts: {
       with: {
@@ -193,7 +216,7 @@ const deepQuery = await em.repo('User').findMany({
 
 ```typescript
 // Query only needed fields
-const lightUsers = await em.repo('User').findMany({
+const lightUsers = await api.data.readMany("users", {
   select: ['id', 'name', 'email'],
   limit: 100
 });
@@ -203,7 +226,7 @@ const lightUsers = await em.repo('User').findMany({
 
 ```typescript
 // Find active users from 2024, sorted by post count
-const activeUsers = await em.repo('User').findMany({
+const activeUsers = await api.data.readMany("users", {
   where: {
     status: 'active',
     createdAt: { $gte: '2024-01-01' }
@@ -223,12 +246,12 @@ Auto-join is convenient but may load unnecessary data:
 
 ```typescript
 // Auto-join: Simple but loads all columns
-const comments = await em.repo('comments').findMany({
+const comments = await api.data.readMany("comments", {
   where: { 'posts.title': 'My Post' }
 });
 
 // Explicit join: Use select to load only needed columns
-const commentsOptimized = await em.repo('comments').findMany({
+const commentsOptimized = await api.data.readMany("comments", {
   join: ['posts'],
   select: ['id', 'content', 'posts.title'],
   where: { 'posts.title': 'My Post' }
@@ -253,13 +276,13 @@ Use reasonable limits:
 
 ```typescript
 // Good: Reasonable page size
-const page1 = await em.repo('posts').findMany({
+const page1 = await api.data.readMany("posts", {
   limit: 20,
   offset: 0
 });
 
 // Avoid: Large limits slow down queries
-const allPosts = await em.repo('posts').findMany({
+const allPosts = await api.data.readMany("posts", {
   limit: 10000  // ⚠️ Performance risk
 });
 ```
