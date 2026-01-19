@@ -25,7 +25,10 @@ Enable media with local storage:
 
 ```typescript
 import { em, entity, text, systemEntity, medium, media } from "bknd";
-import { serve } from "bknd/adapter/node";
+import { registerLocalMediaAdapter } from "bknd/adapter/node";
+import type { BkndConfig } from "bknd/adapter";
+
+const local = registerLocalMediaAdapter();
 
 const schema = em({
   posts: entity("posts", {
@@ -39,18 +42,15 @@ const schema = em({
   relation(posts).polyToMany(media, { mappedBy: "gallery" });
 });
 
-export default serve({
+export default {
   config: {
     data: schema.toJSON(),
     media: {
       enabled: true,
-      adapter: {
-        type: "local",
-        config: { path: "./uploads" },
-      },
+      adapter: local({ path: "./uploads" }),
     },
   },
-});
+} satisfies BkndConfig;
 ```
 
 ## Media Configuration
@@ -58,23 +58,25 @@ export default serve({
 ### Local Storage (Node.js)
 
 ```typescript
-import { serve } from "bknd/adapter/node";
+import { registerLocalMediaAdapter } from "bknd/adapter/node";
+import type { BkndConfig } from "bknd/adapter";
 
-export default serve({
+const local = registerLocalMediaAdapter();
+
+export default {
   config: {
     media: {
       enabled: true,
-      adapter: {
-        type: "local",
-        config: { path: "./public/uploads" },
-      },
+      adapter: local({ path: "./public/uploads" }),
     },
   },
-});
+} satisfies BkndConfig;
 ```
 
-**Environment Variables:**
-- None required for local storage
+**Notes:**
+- Files accessible at `/api/media/file/{filename}` or your public path
+- Supports uploads up to 5GB
+- No environment variables required
 
 ### S3 Storage
 
@@ -469,7 +471,10 @@ The system media entity includes these fields:
 
 ```typescript
 import { em, entity, text, number, systemEntity, medium, media } from "bknd";
-import { serve } from "bknd/adapter/node";
+import { registerLocalMediaAdapter } from "bknd/adapter/node";
+import type { BkndConfig } from "bknd/adapter";
+
+const local = registerLocalMediaAdapter();
 
 const schema = em({
   products: entity("products", {
@@ -487,18 +492,15 @@ const schema = em({
   relation(products).polyToMany(media, { mappedBy: "documents" });
 });
 
-export default serve({
+export default {
   config: {
     data: schema.toJSON(),
     media: {
       enabled: true,
-      adapter: {
-        type: "local",
-        config: { path: "./uploads" },
-      },
+      adapter: local({ path: "./uploads" }),
     },
   },
-});
+} satisfies BkndConfig;
 ```
 
 ```typescript
