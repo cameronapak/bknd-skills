@@ -38,6 +38,7 @@
 - Each skill: ~200-400 lines, YAML frontmatter + Instructions
 - Repurpose archive docs, don't write from scratch
 - Follow Encore's SKILL.md format exactly
+- Use Zread MCP Server or `opensrc` cli command when you have questions about Bknd.io bknd-io/bknd
 
 ## Instructions for Completing Tasks
 
