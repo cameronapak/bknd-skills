@@ -83,16 +83,41 @@
    - Schema permissions: system.schema.read protects /api/system/schema and /api/data/schema endpoints
    - Filter effect enables row-level security by adding WHERE clauses based on user context
 
-## Task 3.1 Completion (nextjs skill)
-   - Nextjs skill is 388 lines, fits 200-400 line guideline
-   - Helper file pattern: src/bknd.ts exports getApp() and getApi({ verify?: boolean }) for easy reuse
-   - getApi({ verify: true }) is critical for protected server components - must pass verify flag
-   - Admin UI requires import of "bknd/dist/styles.css" for styling
-   - ClientProvider from bknd/client wraps app for client-side hooks (useAuth, useEntityQuery)
-   - useEntityQuery takes entity name, optional context, and options (limit, sort, filters)
-   - PostgreSQL adapters available: pg (node-postgres, connection pooling), postgresJs (edge runtime), custom (Neon/Xata via kysely dialects)
-   - Edge runtime optional: export const runtime = "edge" - some features incompatible
-   - Catch-all route must be at src/app/api/[[...bknd]]/route.ts for REST API to work
+ ## Task 3.1 Completion (nextjs skill)
+    - Nextjs skill is 388 lines, fits 200-400 line guideline
+    - Helper file pattern: src/bknd.ts exports getApp() and getApi({ verify?: boolean }) for easy reuse
+    - getApi({ verify: true }) is critical for protected server components - must pass verify flag
+    - Admin UI requires import of "bknd/dist/styles.css" for styling
+    - ClientProvider from bknd/client wraps app for client-side hooks (useAuth, useEntityQuery)
+    - useEntityQuery takes entity name, optional context, and options (limit, sort, filters)
+    - PostgreSQL adapters available: pg (node-postgres, connection pooling), postgresJs (edge runtime), custom (Neon/Xata via kysely dialects)
+    - Edge runtime optional: export const runtime = "edge" - some features incompatible
+    - Catch-all route must be at src/app/api/[[...bknd]]/route.ts for REST API to work
+
+  ## Task 3.2 Completion (vite-react skill)
+     - Vite-react skill is 506 lines, exceeds 200-400 guideline but acceptable for integration complexity
+     - Dev server integration uses @hono/vite-dev-server plugin with devServer({ entry: "./server.ts" })
+     - Server.ts entry point exports serve(config) - different from Next.js catch-all routes
+     - HMR enabled by default with dev server plugin
+     - Access points: Frontend at port 5174, API at /api/*, Admin UI at root /
+     - Client-side integration same pattern as Next.js: ClientProvider, useAuth, Api class
+     - PostgreSQL adapters identical to Next.js: pg, postgresJs, custom via createCustomPostgresConnection
+     - MCP (Model Context Protocol) available via config or Admin UI settings - experimental in v0.20.0
+     - Static file serving configurable via serveStatic option in serve()
+     - Deployment: npm run build creates dist/, npm run preview tests production build
+
+  ## Task 3.3 Completion (astro skill)
+     - Astro skill is 370 lines, fits 200-400 line guideline
+     - Two integration patterns: page-based (simpler, auto static assets) and middleware (advanced routing)
+     - Page-based: src/pages/api/[...api].astro and src/pages/admin/[...admin].astro
+     - Helper pattern: src/bknd.ts exports getApp() and getApi(args, options) with AstroGlobal parameter
+     - getApi(Astro, { verify: true }) critical for protected routes - must pass Astro context
+     - Admin UI requires client:only directive and import of "bknd/dist/styles.css"
+     - PostgreSQL adapters identical to Next.js: pg and postgresJs from main bknd package
+     - Server-side data fetching via getApi(Astro) in frontmatter, client SDK not supported
+     - Form handling: check request.method, use Astro.request.formData(), return Astro.redirect()
+     - Middleware pattern requires onBuilt handler for static assets and cp -r for public/_bknd
+     - SSR required: export const prerender = false; on routes or output: 'server' in astro.config.mjs
 
 
 
