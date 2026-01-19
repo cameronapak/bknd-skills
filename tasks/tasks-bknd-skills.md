@@ -64,13 +64,13 @@
      - [x] 3.3 `astro` - Adapt from `archive/how-to-guides/setup/integrations/astro.md`
      - [x] 3.4 `database` - Adapt from `archive/reference/configuration.md` + official docs on SQLite/Postgres/Turso/D1
 
-   - [ ] 4.0 Implement Advanced Skills (6 skills)
-      - [x] 4.1 `media` - Adapt from `archive/how-to-guides/data/entity-media-relationships.md`
-     - [x] 4.2 `config-modes` - Adapt from `archive/how-to-guides/setup/choose-your-mode.md`
-    - [x] 4.3 `api-sdk` - Adapt from `archive/reference/react-sdk-reference.md`
-    - [x] 4.4 `plugins` - Research from official Bknd docs (less archive content)
-   - [ ] 4.5 `deploy` - Adapt from `archive/getting-started/deploy-to-production.md` + `archive/how-to-guides/setup/integrations/docker.md` + cloudflare/aws-lambda guides
-   - [ ] 4.6 `code-review` - Adapt from `archive/troubleshooting/common-issues.md` + `archive/troubleshooting/known-issues.md`
+    - [ ] 4.0 Implement Advanced Skills (6 skills)
+       - [x] 4.1 `media` - Adapt from `archive/how-to-guides/data/entity-media-relationships.md`
+      - [x] 4.2 `config-modes` - Adapt from `archive/how-to-guides/setup/choose-your-mode.md`
+     - [x] 4.3 `api-sdk` - Adapt from `archive/reference/react-sdk-reference.md`
+     - [x] 4.4 `plugins` - Research from official Bknd docs (less archive content)
+    - [x] 4.5 `deploy` - Adapt from `archive/getting-started/deploy-to-production.md` + `archive/how-to-guides/setup/integrations/docker.md` + cloudflare/aws-lambda guides
+    - [ ] 4.6 `code-review` - Adapt from `archive/troubleshooting/common-issues.md` + `archive/troubleshooting/known-issues.md`
 
 - [ ] 5.0 Testing and Verification
   - [ ] 5.1 Install plugin locally in Claude Code
