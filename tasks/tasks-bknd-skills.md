@@ -58,11 +58,11 @@
   - [x] 2.4 `auth` - Adapt from `archive/reference/auth-module.md` + `archive/how-to-guides/auth/`
   - [x] 2.5 `permissions` - Adapt from `archive/how-to-guides/permissions/public-access-guard.md` + official docs
 
-- [ ] 3.0 Implement Integration Skills (4 skills)
-   - [x] 3.1 `nextjs` - Adapt from `archive/how-to-guides/setup/integrations/nextjs.md`
-  - [ ] 3.2 `vite-react` - Adapt from `archive/how-to-guides/setup/integrations/vite-react.md`
-  - [ ] 3.3 `astro` - Adapt from `archive/how-to-guides/setup/integrations/astro.md`
-  - [ ] 3.4 `database` - Adapt from `archive/reference/configuration.md` + official docs on SQLite/Postgres/Turso/D1
+ - [ ] 3.0 Implement Integration Skills (4 skills)
+    - [x] 3.1 `nextjs` - Adapt from `archive/how-to-guides/setup/integrations/nextjs.md`
+   - [x] 3.2 `vite-react` - Adapt from `archive/how-to-guides/setup/integrations/vite-react.md`
+   - [ ] 3.3 `astro` - Adapt from `archive/how-to-guides/setup/integrations/astro.md`
+   - [ ] 3.4 `database` - Adapt from `archive/reference/configuration.md` + official docs on SQLite/Postgres/Turso/D1
 
 - [ ] 4.0 Implement Advanced Skills (6 skills)
   - [ ] 4.1 `media` - Adapt from `archive/how-to-guides/data/entity-media-relationships.md`
