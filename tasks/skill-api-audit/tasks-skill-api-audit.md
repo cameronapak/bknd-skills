@@ -62,11 +62,11 @@
    - [x] 2.11 Verify role definitions syntax
    - [x] 2.12 Verify policy syntax and row-level security patterns
 
-- [ ] 3.0 Audit Framework Integration Skills (nextjs, vite-react, astro)
-  - [x] 3.1 Read `nextjs/SKILL.md`, list all code examples
-  - [x] 3.2 Verify `getBkndApp()` import and usage
-  - [x] 3.3 Verify `app.getApi()` method (correct - matches official example)
-  - [ ] 3.4 Verify `api.verifyAuth()`, `api.getUser()` patterns
+   - [ ] 3.0 Audit Framework Integration Skills (nextjs, vite-react, astro)
+   - [x] 3.1 Read `nextjs/SKILL.md`, list all code examples
+   - [x] 3.2 Verify `getBkndApp()` import and usage
+   - [x] 3.3 Verify `app.getApi()` method (correct - matches official example)
+   - [x] 3.4 Verify `api.verifyAuth()`, `api.getUser()` patterns (correct)
   - [ ] 3.5 Verify route handler patterns
   - [ ] 3.6 Read `vite-react/SKILL.md`, list all code examples
   - [ ] 3.7 Verify Vite plugin config
