@@ -80,10 +80,12 @@ Update `vite.config.ts`:
 import { devServer } from "bknd/adapter/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
+import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
   plugins: [
     react(),
+    tsconfigPaths(),
     devServer({
       entry: "./server.ts",
     }),
@@ -134,6 +136,42 @@ function App() {
 }
 ```
 
+### Using React Hooks
+
+Bknd provides React hooks for data fetching and mutations:
+
+```typescript
+import { useEntityQuery, useAuth } from "bknd/client";
+
+function TodoList() {
+  const auth = useAuth();
+
+  const { data: todos, create, update, _delete } = useEntityQuery("todos", undefined, {
+    limit: 10,
+    sort: "-id",
+  });
+
+  return (
+    <div>
+      {todos?.map((todo) => (
+        <div key={todo.id}>
+          <span>{todo.title}</span>
+          <button onClick={() => update({ done: !todo.done }, todo.id)}>Toggle</button>
+          <button onClick={() => _delete(todo.id)}>Delete</button>
+        </div>
+      ))}
+      <form action={async (formData) => {
+        const title = formData.get("title") as string;
+        await create({ title });
+      }}>
+        <input name="title" placeholder="New todo" />
+        <button>Add</button>
+      </form>
+    </div>
+  );
+}
+```
+
 ### Generating Types
 
 Generate TypeScript types from your schema:
@@ -165,6 +203,29 @@ export const createItem = async (entity: string, item: any) => {
   const { data } = await api.data.createOne(entity, item);
   return data;
 };
+```
+
+Or use React hooks for simpler data management:
+
+```typescript
+import { useEntityQuery } from "bknd/client";
+
+function TodoList() {
+  const { data: todos, create, update, _delete } = useEntityQuery("todos");
+
+  return (
+    <div>
+      {todos?.map((todo) => (
+        <div key={todo.id}>
+          <span>{todo.title}</span>
+          <button onClick={() => update({ done: !todo.done }, todo.id)}>Toggle</button>
+          <button onClick={() => _delete(todo.id)}>Delete</button>
+        </div>
+      ))}
+      <button onClick={() => create({ title: "New todo" })}>Add</button>
+    </div>
+  );
+}
 ```
 
 ### Pattern 2: Authentication
@@ -225,6 +286,86 @@ const useStore = create<StoreState>((set) => ({
     set((state) => ({ todos: [...state.todos, data] }));
   },
 }));
+```
+
+## Available Client SDK Hooks
+
+Bknd provides the following React hooks from `"bknd/client"`:
+
+### Core Hooks
+
+- `useApi()` - Access the API instance
+- `useBaseUrl()` - Get the current API base URL
+- `useClientContext()` - Access client context
+- `useInvalidate()` - Invalidate SWR cache
+
+### Data Hooks
+
+- `useEntity(entity, id?)` - CRUD operations for a specific entity
+- `useEntityQuery(entity, id?, query?)` - Query entities with SWR
+- `useEntityMutate(entity, id?)` - Mutation operations
+- `useApiQuery(fn, options?)` - Generic API query with SWR
+- `useApiInfiniteQuery(fn, options?)` - Infinite scroll queries
+
+### Auth Hooks
+
+- `useAuth()` - Authentication state and methods
+  - `user`, `token`, `verified` - Auth state
+  - `login()`, `register()`, `logout()`, `verify()` - Auth methods
+
+### Module-Specific Hooks
+
+- `useBkndData()` - Direct data module access
+- `useBkndAuth()` - Direct auth module access
+- `useBkndMedia()` - Media module access
+- `useFlows()` - Workflow operations
+- `useBkndSystem()` - System configuration access
+
+### Example: Using useEntityQuery
+
+```typescript
+import { useEntityQuery } from "bknd/client";
+
+function TodoList() {
+  const {
+    data: todos,
+    create,
+    update,
+    _delete,
+    error,
+    isLoading,
+  } = useEntityQuery("todos", undefined, {
+    limit: 10,
+    sort: "-id",
+  });
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+
+  return (
+    <div>
+      {todos?.map((todo) => (
+        <div key={todo.id}>
+          <input
+            type="checkbox"
+            checked={todo.done}
+            onChange={() => update({ done: !todo.done }, todo.id)}
+          />
+          <span>{todo.title}</span>
+          <button onClick={() => _delete(todo.id)}>Delete</button>
+        </div>
+      ))}
+      <form onSubmit={async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        await create({ title: formData.get("title") });
+      }}>
+        <input name="title" placeholder="New todo" />
+        <button>Add</button>
+      </form>
+    </div>
+  );
+}
 ```
 
 ## Database Configuration

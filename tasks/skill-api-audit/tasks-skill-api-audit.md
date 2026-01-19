@@ -69,9 +69,9 @@
   - [x] 3.4 Verify `api.verifyAuth()`, `api.getUser()` patterns (correct)
   - [x] 3.5 Verify route handler patterns
    - [x] 3.6 Read `vite-react/SKILL.md`, list all code examples (fixed Quick Start command - `npx bknd create -i vite` was incorrect)
-   - [ ] 3.7 Verify Vite plugin config
-   - [ ] 3.8 Verify dev server setup
-   - [ ] 3.9 Verify client SDK hooks (`useQuery`, etc.)
+   - [x] 3.7 Verify Vite plugin config (correct - `devServer()` from `bknd/adapter/vite`)
+   - [x] 3.8 Verify dev server setup (correct - `serve()` with server.ts entry point)
+   - [x] 3.9 Verify client SDK hooks (`useEntityQuery`, `useAuth`, etc.)
   - [ ] 3.10 Read `astro/SKILL.md`, list all code examples
   - [ ] 3.11 Verify Astro integration setup
   - [ ] 3.12 Verify SSR patterns
