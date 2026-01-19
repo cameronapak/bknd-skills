@@ -62,20 +62,20 @@
   - [x] 2.11 Verify role definitions syntax
   - [x] 2.12 Verify policy syntax and row-level security patterns
 
-- [ ] 3.0 Audit Framework Integration Skills (nextjs, vite-react, astro)
-  - [x] 3.1 Read `nextjs/SKILL.md`, list all code examples
-  - [x] 3.2 Verify `getBkndApp()` import and usage
-  - [x] 3.3 Verify `app.getApi()` method (correct - matches official example)
-  - [x] 3.4 Verify `api.verifyAuth()`, `api.getUser()` patterns (correct)
-  - [x] 3.5 Verify route handler patterns
-   - [x] 3.6 Read `vite-react/SKILL.md`, list all code examples (fixed Quick Start command - `npx bknd create -i vite` was incorrect)
-   - [x] 3.7 Verify Vite plugin config (correct - `devServer()` from `bknd/adapter/vite`)
-   - [x] 3.8 Verify dev server setup (correct - `serve()` with server.ts entry point)
-   - [x] 3.9 Verify client SDK hooks (`useEntityQuery`, `useAuth`, etc.)
-  - [ ] 3.10 Read `astro/SKILL.md`, list all code examples
-  - [ ] 3.11 Verify Astro integration setup
-  - [ ] 3.12 Verify SSR patterns
-  - [ ] 3.13 Verify middleware setup
+ - [x] 3.0 Audit Framework Integration Skills (nextjs, vite-react, astro)
+   - [x] 3.1 Read `nextjs/SKILL.md`, list all code examples
+   - [x] 3.2 Verify `getBkndApp()` import and usage
+   - [x] 3.3 Verify `app.getApi()` method (correct - matches official example)
+   - [x] 3.4 Verify `api.verifyAuth()`, `api.getUser()` patterns (correct)
+   - [x] 3.5 Verify route handler patterns
+    - [x] 3.6 Read `vite-react/SKILL.md`, list all code examples (fixed Quick Start command - `npx bknd create -i vite` was incorrect)
+    - [x] 3.7 Verify Vite plugin config (correct - `devServer()` from `bknd/adapter/vite`)
+    - [x] 3.8 Verify dev server setup (correct - `serve()` with server.ts entry point)
+    - [x] 3.9 Verify client SDK hooks (`useEntityQuery`, `useAuth`, etc.)
+   - [x] 3.10 Read `astro/SKILL.md`, list all code examples
+   - [x] 3.11 Verify Astro integration setup (removed invalid `getApi` import - not exported from adapter)
+   - [x] 3.12 Verify SSR patterns (fixed `getApi(Astro, { verify: true })` → `getApi(Astro, { mode: "dynamic", verify: true })`)
+   - [x] 3.13 Verify middleware setup (removed non-existent middleware pattern with registerController)
 
 - [ ] 4.0 Audit Infrastructure Skills (database, media, config-modes)
   - [ ] 4.1 Read `database/SKILL.md`, list all code examples

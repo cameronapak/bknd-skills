@@ -190,87 +190,24 @@ const { data: todos } = await api.data.readMany("todos");
 </ul>
 ```
 
-## Middleware Integration (Advanced)
+## Authentication Middleware
 
-Centralized routing, more control over request handling.
-
-### Update Configuration
-
-Add `onBuilt` handler to `bknd.config.ts`:
-
-```typescript
-import type { AstroBkndConfig } from "bknd/adapter/astro";
-
-export default {
-  app: (env) => ({
-    connection: {
-      url: env.BKND_DB_URL || "file:data.db",
-    },
-  }),
-  onBuilt: async (app) => {
-    await app.server.registerController({
-      path: "/_bknd",
-      handler: app.server.adminController,
-      method: "*",
-    });
-  },
-} satisfies AstroBkndConfig;
-```
-
-### Copy Static Assets
-
-Update `package.json`:
-
-```json
-{
-  "scripts": {
-    "postinstall": "cp -r node_modules/bknd/dist/public public/_bknd"
-  }
-}
-```
-
-### Create Middleware
-
-Create `src/middleware.ts`:
-
-```typescript
-import { getApp } from "../bknd";
-import type { MiddlewareHandler } from "astro";
-
-const app = await getApp();
-
-export const onRequest: MiddlewareHandler = async (context, next) => {
-  const url = new URL(context.request.url);
-
-  if (url.pathname.startsWith("/api/") || url.pathname.startsWith("/admin/")) {
-    return app.server.fetch(context.request);
-  }
-
-  return next();
-};
-```
-
-### Protected Routes
+For protecting routes without the Admin UI, use Astro middleware:
 
 ```typescript
 import { getApi } from "../bknd";
 import type { MiddlewareHandler } from "astro";
 
 export const onRequest: MiddlewareHandler = async (context, next) => {
-  const api = await getApi(context);
+  const api = await getApi(context, { verify: true });
+  const user = api.getUser();
 
-  try {
-    const user = api.getUser();
-
-    if (!user) {
-      return context.redirect("/login");
-    }
-
-    context.locals.user = user;
-    return next();
-  } catch (error) {
+  if (!user) {
     return context.redirect("/login");
   }
+
+  context.locals.user = user;
+  return next();
 };
 ```
 
