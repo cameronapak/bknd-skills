@@ -1,6 +1,6 @@
 ---
 name: data-schema
-description: Use when defining Bknd entities, fields, relationships, and indices. Covers entity definition with em(), field types (text, number, boolean, date, enum, json, jsonschema, primary), field configuration (required, default_value, validation), relationship types (many-to-one, one-to-one, many-to-many, polymorphic), and index creation (simple, composite, unique).
+description: Use when defining Bknd entities, fields, relationships, and indices. Covers entity definition with em(), field types (text, number, boolean, date, enumm, json, jsonschema), field configuration (required, default_value, validation), relationship types (many-to-one, one-to-one, many-to-many, polymorphic), and index creation (simple, composite, unique).
 ---
 
 # Data Schema
