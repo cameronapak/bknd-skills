@@ -14,7 +14,7 @@ I'm going to create [skills](https://agentskills.io) that make it easier to deve
 
 ## Get Started
 
-Easiest and best way to get started is through using Vercel's `[add-skill](https://github.com/vercel-labs/add-skill)` package. 
+Easiest and best way to get started is through using Vercel's [add-skill](https://github.com/vercel-labs/add-skill) package. 
 
 ```bash
 # Local repo installation
