@@ -1,9 +1,0 @@
-{
-  "name": "bknd-skills",
-  "version": "0.0.3",
-  "description": "Skills for working with the bknd backend framework",
-  "author": {
-    "name": "Cameron Pak",
-    "email": "cameronandrewpak@gmail.com"
-  }
-}
