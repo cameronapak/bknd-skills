@@ -1,1 +1,2 @@
 2026-01-20: Task 1.1 - Created `plugins/bknd-skills/references/` directory with .gitkeep
+2026-01-20: Task 1.2 - Created `plugins/bknd-skills/references/schema-modeling.md` - comprehensive reference for entity types, field types (text, number, boolean, date, enumm, json, jsonschema, media), relationships (many-to-one, one-to-one, many-to-many, self-referencing), indices, and naming conventions
