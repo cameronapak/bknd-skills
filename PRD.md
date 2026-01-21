@@ -159,30 +159,6 @@ Each skill should include a decision framework:
 3. Skills should note Bknd version compatibility where relevant
 4. Skills should be testable—a developer should be able to follow instructions and verify success
 
-## Questions
-
-- What is the current state of Bknd documentation? (Need to audit to avoid duplication)
-  - It's usable, but it's not structured well and easy to follow. And there are some missing pieces. 
-- Should there be a bknd-troubleshoot skill for common errors?
-  - Yes
-
----
-
-## Appendix: Full Skill Inventory
-
-Total skills: **42**
-
-| Category | Count | Skills |
-|----------|-------|--------|
-| Schema & Data Modeling | 5 | create-entity, add-field, define-relationship, modify-schema, delete-entity |
-| Data Operations | 8 | seed-data, crud-create, crud-read, crud-update, crud-delete, query-filter, pagination, bulk-operations |
-| Authentication | 7 | create-user, setup-auth, login-flow, registration, password-reset, session-handling, oauth-setup |
-| Authorization | 5 | create-role, assign-permissions, row-level-security, protect-endpoint, public-vs-auth |
-| API Consumption | 5 | api-discovery, client-setup, custom-endpoint, webhooks, realtime |
-| Files & Media | 3 | file-upload, storage-config, serve-files |
-| Development Workflow | 4 | local-setup, env-config, debugging, testing |
-| Deployment | 3 | deploy-hosting, database-provision, production-config |
-
 # Bknd Claude Code Skills - Task List
 
 ## Relevant Files
