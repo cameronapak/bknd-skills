@@ -206,12 +206,12 @@ Each skill should include a decision framework:
   - [x] 1.8 Create `references/dev-workflow.md` - local setup, env vars, debugging
   - [x] 1.9 Create `references/deployment.md` - hosting options, DB provisioning
 
-- [ ] 2.0 Create Schema & Data Modeling Skills (5 skills)
+- [x] 2.0 Create Schema & Data Modeling Skills (5 skills)
   - [x] 2.1 Create `bknd-create-entity/SKILL.md` - create new entity/table
   - [x] 2.2 Create `bknd-add-field/SKILL.md` - add field to existing entity
   - [x] 2.3 Create `bknd-define-relationship/SKILL.md` - 1:1, 1:many, many:many relationships
   - [x] 2.4 Create `bknd-modify-schema/SKILL.md` - rename, change types
-  - [ ] 2.5 Create `bknd-delete-entity/SKILL.md` - safely remove entity + dependencies
+  - [x] 2.5 Create `bknd-delete-entity/SKILL.md` - safely remove entity + dependencies
 
 - [ ] 3.0 Create Data Operations Skills (8 skills)
   - [ ] 3.1 Create `bknd-seed-data/SKILL.md` - populate with initial/test data
