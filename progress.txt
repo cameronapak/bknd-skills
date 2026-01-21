@@ -1,0 +1,1 @@
+2026-01-20: Task 1.1 - Created `plugins/bknd-skills/references/` directory with .gitkeep

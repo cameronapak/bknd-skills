@@ -196,7 +196,7 @@ Each skill should include a decision framework:
 ## Tasks
 
 - [ ] 1.0 Setup Project Structure & References
-  - [ ] 1.1 Create `references/` directory if not exists
+  - [x] 1.1 Create `references/` directory if not exists
   - [ ] 1.2 Create `references/schema-modeling.md` - entity types, field types, relationship patterns
   - [ ] 1.3 Create `references/data-operations.md` - CRUD API, filtering syntax, pagination patterns
   - [ ] 1.4 Create `references/authentication.md` - auth strategies, session management, OAuth providers
