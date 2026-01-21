@@ -251,11 +251,11 @@ Each skill should include a decision framework:
   - [x] 7.2 Create `bknd-storage-config/SKILL.md` - configure storage backend
   - [x] 7.3 Create `bknd-serve-files/SKILL.md` - serve files and CDN config
 
-- [ ] 8.0 Create Development Workflow Skills (4 skills)
+- [x] 8.0 Create Development Workflow Skills (4 skills)
   - [x] 8.1 Create `bknd-local-setup/SKILL.md` - local dev environment setup
   - [x] 8.2 Create `bknd-env-config/SKILL.md` - environment variables config
   - [x] 8.3 Create `bknd-debugging/SKILL.md` - debug common issues
-  - [ ] 8.4 Create `bknd-testing/SKILL.md` - write and run tests
+  - [x] 8.4 Create `bknd-testing/SKILL.md` - write and run tests
 
 - [ ] 9.0 Create Deployment Skills (3 skills)
   - [ ] 9.1 Create `bknd-deploy-hosting/SKILL.md` - deploy to various hosts
