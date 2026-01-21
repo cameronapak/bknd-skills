@@ -216,7 +216,7 @@ Each skill should include a decision framework:
 - [ ] 3.0 Create Data Operations Skills (8 skills)
   - [x] 3.1 Create `bknd-seed-data/SKILL.md` - populate with initial/test data
   - [x] 3.2 Create `bknd-crud-create/SKILL.md` - insert new records
-  - [ ] 3.3 Create `bknd-crud-read/SKILL.md` - query and retrieve with filtering
+  - [x] 3.3 Create `bknd-crud-read/SKILL.md` - query and retrieve with filtering
   - [ ] 3.4 Create `bknd-crud-update/SKILL.md` - update existing records
   - [ ] 3.5 Create `bknd-crud-delete/SKILL.md` - delete records safely
   - [ ] 3.6 Create `bknd-query-filter/SKILL.md` - advanced filtering and querying
