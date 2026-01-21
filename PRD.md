@@ -210,7 +210,7 @@ Each skill should include a decision framework:
   - [x] 2.1 Create `bknd-create-entity/SKILL.md` - create new entity/table
   - [x] 2.2 Create `bknd-add-field/SKILL.md` - add field to existing entity
   - [x] 2.3 Create `bknd-define-relationship/SKILL.md` - 1:1, 1:many, many:many relationships
-  - [ ] 2.4 Create `bknd-modify-schema/SKILL.md` - rename, change types
+  - [x] 2.4 Create `bknd-modify-schema/SKILL.md` - rename, change types
   - [ ] 2.5 Create `bknd-delete-entity/SKILL.md` - safely remove entity + dependencies
 
 - [ ] 3.0 Create Data Operations Skills (8 skills)
