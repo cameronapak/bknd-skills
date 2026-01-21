@@ -220,7 +220,7 @@ Each skill should include a decision framework:
   - [x] 3.4 Create `bknd-crud-update/SKILL.md` - update existing records
   - [x] 3.5 Create `bknd-crud-delete/SKILL.md` - delete records safely
   - [x] 3.6 Create `bknd-query-filter/SKILL.md` - advanced filtering and querying
-  - [ ] 3.7 Create `bknd-pagination/SKILL.md` - paginated data retrieval
+  - [x] 3.7 Create `bknd-pagination/SKILL.md` - paginated data retrieval
   - [ ] 3.8 Create `bknd-bulk-operations/SKILL.md` - bulk insert/update/delete
 
 - [ ] 4.0 Create Authentication Skills (7 skills)
