@@ -236,7 +236,7 @@ Each skill should include a decision framework:
   - [x] 5.1 Create `bknd-create-role/SKILL.md` - define new role
   - [x] 5.2 Create `bknd-assign-permissions/SKILL.md` - assign permissions to roles
   - [x] 5.3 Create `bknd-row-level-security/SKILL.md` - row-level access control
-  - [ ] 5.4 Create `bknd-protect-endpoint/SKILL.md` - secure specific endpoints
+  - [x] 5.4 Create `bknd-protect-endpoint/SKILL.md` - secure specific endpoints
   - [ ] 5.5 Create `bknd-public-vs-auth/SKILL.md` - configure public vs authenticated access
 
 - [ ] 6.0 Create API Consumption Skills (5 skills)
