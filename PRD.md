@@ -239,12 +239,12 @@ Each skill should include a decision framework:
   - [x] 5.4 Create `bknd-protect-endpoint/SKILL.md` - secure specific endpoints
   - [x] 5.5 Create `bknd-public-vs-auth/SKILL.md` - configure public vs authenticated access
 
-- [ ] 6.0 Create API Consumption Skills (5 skills)
+- [x] 6.0 Create API Consumption Skills (5 skills)
   - [x] 6.1 Create `bknd-api-discovery/SKILL.md` - explore auto-generated endpoints
   - [x] 6.2 Create `bknd-client-setup/SKILL.md` - setup SDK/client in frontend
   - [x] 6.3 Create `bknd-custom-endpoint/SKILL.md` - create custom API endpoints
   - [x] 6.4 Create `bknd-webhooks/SKILL.md` - configure webhook integrations
-  - [ ] 6.5 Create `bknd-realtime/SKILL.md` - real-time subscriptions (if supported)
+  - [x] 6.5 Create `bknd-realtime/SKILL.md` - real-time subscriptions (if supported)
 
 - [ ] 7.0 Create Files & Media Skills (3 skills)
   - [ ] 7.1 Create `bknd-file-upload/SKILL.md` - handle file uploads
