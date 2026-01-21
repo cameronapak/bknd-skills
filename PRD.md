@@ -227,7 +227,7 @@ Each skill should include a decision framework:
   - [x] 4.1 Create `bknd-create-user/SKILL.md` - create new user account
   - [x] 4.2 Create `bknd-setup-auth/SKILL.md` - initialize authentication system
   - [x] 4.3 Create `bknd-login-flow/SKILL.md` - login/logout functionality
-  - [ ] 4.4 Create `bknd-registration/SKILL.md` - user registration setup
+  - [x] 4.4 Create `bknd-registration/SKILL.md` - user registration setup
   - [ ] 4.5 Create `bknd-password-reset/SKILL.md` - password reset flow
   - [ ] 4.6 Create `bknd-session-handling/SKILL.md` - manage user sessions
   - [ ] 4.7 Create `bknd-oauth-setup/SKILL.md` - OAuth/social login providers
