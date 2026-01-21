@@ -1,7 +1,6 @@
 {
   "name": "bknd-skills",
   "private": true,
-  "version": "0.0.1",
   "devDependencies": {
     "@types/bun": "latest"
   },
