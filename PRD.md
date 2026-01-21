@@ -241,7 +241,7 @@ Each skill should include a decision framework:
 
 - [ ] 6.0 Create API Consumption Skills (5 skills)
   - [x] 6.1 Create `bknd-api-discovery/SKILL.md` - explore auto-generated endpoints
-  - [ ] 6.2 Create `bknd-client-setup/SKILL.md` - setup SDK/client in frontend
+  - [x] 6.2 Create `bknd-client-setup/SKILL.md` - setup SDK/client in frontend
   - [ ] 6.3 Create `bknd-custom-endpoint/SKILL.md` - create custom API endpoints
   - [ ] 6.4 Create `bknd-webhooks/SKILL.md` - configure webhook integrations
   - [ ] 6.5 Create `bknd-realtime/SKILL.md` - real-time subscriptions (if supported)
