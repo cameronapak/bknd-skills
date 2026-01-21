@@ -1,6 +1,6 @@
 {
   "name": "bknd-skills",
-  "version": "0.0.21",
+  "version": "0.0.3",
   "description": "Bknd framework skills for Claude Code",
   "owner": {
     "name": "Cameron Pak",
@@ -10,12 +10,12 @@
     {
       "name": "bknd-skills",
       "description": "Skills for working with the bknd backend framework",
-      "version": "0.0.2",
+      "version": "0.0.3",
       "author": {
         "name": "Cameron Pak",
         "email": "cameronandrewpak@gmail.com"
       },
-      "source": "./plugins/bknd-skills",
+      "source": "./skills",
       "category": "development"
     }
   ]
