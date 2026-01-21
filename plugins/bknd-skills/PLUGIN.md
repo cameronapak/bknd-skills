@@ -1,6 +1,6 @@
 # Bknd Skills Plugin
 
-Claude Code plugin with 56 skills for the [Bknd](https://bknd.io/) backend framework (v0.20.0).
+Claude Code plugin with 57 skills for the [Bknd](https://bknd.io/) backend framework (v0.20.0).
 
 ## Installation
 
@@ -73,7 +73,7 @@ claude plugins add bknd-skills
 | `bknd-storage-config` | Configure storage backend |
 | `bknd-serve-files` | Serve files and configure CDN |
 
-### Development Workflow (4 skills)
+### Development Workflow (5 skills)
 
 | Skill | Description |
 |-------|-------------|
@@ -81,6 +81,7 @@ claude plugins add bknd-skills
 | `bknd-env-config` | Configure environment variables |
 | `bknd-debugging` | Debug common issues |
 | `bknd-testing` | Write and run tests |
+| `bknd-troubleshoot` | Quick-reference error fixes and common mistakes |
 
 ### Deployment (3 skills)
 
@@ -137,11 +138,11 @@ claude plugins add bknd-skills
 | Authorization | 5 |
 | API Consumption | 5 |
 | Files & Media | 3 |
-| Development Workflow | 4 |
+| Development Workflow | 5 |
 | Deployment | 3 |
 | Legacy/General | 15 |
 | Utility | 1 |
-| **Total** | **56** |
+| **Total** | **57** |
 
 ## Version
 
