@@ -203,7 +203,7 @@ Each skill should include a decision framework:
   - [x] 1.5 Create `references/authorization.md` - roles, permissions, RLS patterns
   - [x] 1.6 Create `references/api-consumption.md` - SDK usage, endpoint patterns, webhooks
   - [x] 1.7 Create `references/files-media.md` - storage adapters, upload patterns
-  - [ ] 1.8 Create `references/dev-workflow.md` - local setup, env vars, debugging
+  - [x] 1.8 Create `references/dev-workflow.md` - local setup, env vars, debugging
   - [ ] 1.9 Create `references/deployment.md` - hosting options, DB provisioning
 
 - [ ] 2.0 Create Schema & Data Modeling Skills (5 skills)
