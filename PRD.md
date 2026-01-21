@@ -207,7 +207,7 @@ Each skill should include a decision framework:
   - [x] 1.9 Create `references/deployment.md` - hosting options, DB provisioning
 
 - [ ] 2.0 Create Schema & Data Modeling Skills (5 skills)
-  - [ ] 2.1 Create `bknd-create-entity/SKILL.md` - create new entity/table
+  - [x] 2.1 Create `bknd-create-entity/SKILL.md` - create new entity/table
   - [ ] 2.2 Create `bknd-add-field/SKILL.md` - add field to existing entity
   - [ ] 2.3 Create `bknd-define-relationship/SKILL.md` - 1:1, 1:many, many:many relationships
   - [ ] 2.4 Create `bknd-modify-schema/SKILL.md` - rename, change types
