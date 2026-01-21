@@ -223,14 +223,14 @@ Each skill should include a decision framework:
   - [x] 3.7 Create `bknd-pagination/SKILL.md` - paginated data retrieval
   - [x] 3.8 Create `bknd-bulk-operations/SKILL.md` - bulk insert/update/delete
 
-- [ ] 4.0 Create Authentication Skills (7 skills)
+- [x] 4.0 Create Authentication Skills (7 skills)
   - [x] 4.1 Create `bknd-create-user/SKILL.md` - create new user account
   - [x] 4.2 Create `bknd-setup-auth/SKILL.md` - initialize authentication system
   - [x] 4.3 Create `bknd-login-flow/SKILL.md` - login/logout functionality
   - [x] 4.4 Create `bknd-registration/SKILL.md` - user registration setup
   - [x] 4.5 Create `bknd-password-reset/SKILL.md` - password reset flow
   - [x] 4.6 Create `bknd-session-handling/SKILL.md` - manage user sessions
-  - [ ] 4.7 Create `bknd-oauth-setup/SKILL.md` - OAuth/social login providers
+  - [x] 4.7 Create `bknd-oauth-setup/SKILL.md` - OAuth/social login providers
 
 - [ ] 5.0 Create Authorization Skills (5 skills)
   - [ ] 5.1 Create `bknd-create-role/SKILL.md` - define new role
