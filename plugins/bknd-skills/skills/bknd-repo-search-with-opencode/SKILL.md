@@ -1,6 +1,6 @@
 ---
-name: btca-bknd-repo-learn
-description: Use btca (Better Context App) to efficiently query and learn from the bknd backend framework. Use when working with bknd for (1) Understanding data module and schema definitions, (2) Implementing authentication and authorization, (3) Setting up media file handling, (4) Configuring adapters (Node, Cloudflare, etc.), (5) Learning from bknd source code and examples, (6) Debugging bknd-specific issues
+name: bknd-repo-search-with-opencode
+description: Use when querying the bknd source repository with btca CLI. Covers setup, configuration, and query patterns for learning bknd internals including data module, authentication, media handling, and adapter configuration.
 compatibility: Requires bun or npm, btca, opencode-ai, and access to the internet
 ---
 

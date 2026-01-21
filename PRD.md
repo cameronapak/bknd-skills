@@ -263,7 +263,7 @@ Each skill should include a decision framework:
   - [x] 9.3 Create `bknd-production-config/SKILL.md` - configure for production
 
 - [ ] 10.0 Validation & Cross-Linking
-  - [ ] 10.1 Run `skills-ref validate` on all skills
+  - [x] 10.1 Run `skills-ref validate` on all skills
   - [ ] 10.2 Verify all "Related Skills" sections link correctly
   - [ ] 10.3 Ensure each skill has UI + code approach sections
   - [ ] 10.4 Update PLUGIN.md to register all 42 skills
