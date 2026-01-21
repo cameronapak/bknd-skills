@@ -257,10 +257,10 @@ Each skill should include a decision framework:
   - [x] 8.3 Create `bknd-debugging/SKILL.md` - debug common issues
   - [x] 8.4 Create `bknd-testing/SKILL.md` - write and run tests
 
-- [ ] 9.0 Create Deployment Skills (3 skills)
+- [x] 9.0 Create Deployment Skills (3 skills)
   - [x] 9.1 Create `bknd-deploy-hosting/SKILL.md` - deploy to various hosts
   - [x] 9.2 Create `bknd-database-provision/SKILL.md` - setup production database
-  - [ ] 9.3 Create `bknd-production-config/SKILL.md` - configure for production
+  - [x] 9.3 Create `bknd-production-config/SKILL.md` - configure for production
 
 - [ ] 10.0 Validation & Cross-Linking
   - [ ] 10.1 Run `skills-ref validate` on all skills
