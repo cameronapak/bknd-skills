@@ -233,7 +233,7 @@ Each skill should include a decision framework:
   - [x] 4.7 Create `bknd-oauth-setup/SKILL.md` - OAuth/social login providers
 
 - [ ] 5.0 Create Authorization Skills (5 skills)
-  - [ ] 5.1 Create `bknd-create-role/SKILL.md` - define new role
+  - [x] 5.1 Create `bknd-create-role/SKILL.md` - define new role
   - [ ] 5.2 Create `bknd-assign-permissions/SKILL.md` - assign permissions to roles
   - [ ] 5.3 Create `bknd-row-level-security/SKILL.md` - row-level access control
   - [ ] 5.4 Create `bknd-protect-endpoint/SKILL.md` - secure specific endpoints
