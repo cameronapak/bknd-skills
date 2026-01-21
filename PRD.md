@@ -247,7 +247,7 @@ Each skill should include a decision framework:
   - [x] 6.5 Create `bknd-realtime/SKILL.md` - real-time subscriptions (if supported)
 
 - [ ] 7.0 Create Files & Media Skills (3 skills)
-  - [ ] 7.1 Create `bknd-file-upload/SKILL.md` - handle file uploads
+  - [x] 7.1 Create `bknd-file-upload/SKILL.md` - handle file uploads
   - [ ] 7.2 Create `bknd-storage-config/SKILL.md` - configure storage backend
   - [ ] 7.3 Create `bknd-serve-files/SKILL.md` - serve files and CDN config
 
