@@ -7,7 +7,7 @@ if [ -z "$1" ]; then
 fi
 
 for ((i=1; i<=$1; i++)); do
-  result=$(docker sandbox run claude --permission-mode acceptEdits -p "@PRD.md @progress.txt \
+  result=$(claude --permission-mode acceptEdits -p "@PRD.md @progress.txt \
   1. Find the highest-priority task and implement it. \
   2. Run your tests and type checks. \
   3. Update the PRD with what was done. \
