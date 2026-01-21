@@ -182,3 +182,126 @@ Total skills: **42**
 | Files & Media | 3 | file-upload, storage-config, serve-files |
 | Development Workflow | 4 | local-setup, env-config, debugging, testing |
 | Deployment | 3 | deploy-hosting, database-provision, production-config |
+
+# Bknd Claude Code Skills - Task List
+
+## Relevant Files
+
+- `plugins/bknd-skills/skills/bknd-*/SKILL.md` - Individual skill files (42 total)
+- `plugins/bknd-skills/references/schema-modeling.md` - Schema & Data Modeling reference
+- `plugins/bknd-skills/references/data-operations.md` - Data Operations reference
+- `plugins/bknd-skills/references/authentication.md` - Authentication reference
+- `plugins/bknd-skills/references/authorization.md` - Authorization reference
+- `plugins/bknd-skills/references/api-consumption.md` - API Consumption reference
+- `plugins/bknd-skills/references/files-media.md` - Files & Media reference
+- `plugins/bknd-skills/references/dev-workflow.md` - Development Workflow reference
+- `plugins/bknd-skills/references/deployment.md` - Deployment reference
+- `plugins/bknd-skills/PLUGIN.md` - Plugin manifest
+- `tasks/LEARNINGS.md` - API findings for reference
+
+### Notes
+
+- Each skill must follow Agent Skills spec (SKILL.md with frontmatter)
+- Skills should be 200-400 lines, atomic (one action per skill)
+- Validate skills with `skills-ref validate`
+- Reference Bknd v0.20.0 API
+- Skill naming: `bknd-<action>` (lowercase, hyphenated)
+
+## Instructions for Completing Tasks
+
+**IMPORTANT:** As you complete each task, check it off by changing `- [ ]` to `- [x]`.
+
+## How you will reference and learn
+
+1. Talk to the Zread MCP server to ask questions and learn about bknd-io/bknd
+2. Use Firecrawl to look at the pre-existing docs for said feature in Bknd https://docs.bknd.io
+3. Pull in the repo locally with `btca` cli and ask questions about the repo
+
+## Tasks
+
+- [ ] 1.0 Setup Project Structure & References
+  - [ ] 1.1 Create `references/` directory if not exists
+  - [ ] 1.2 Create `references/schema-modeling.md` - entity types, field types, relationship patterns
+  - [ ] 1.3 Create `references/data-operations.md` - CRUD API, filtering syntax, pagination patterns
+  - [ ] 1.4 Create `references/authentication.md` - auth strategies, session management, OAuth providers
+  - [ ] 1.5 Create `references/authorization.md` - roles, permissions, RLS patterns
+  - [ ] 1.6 Create `references/api-consumption.md` - SDK usage, endpoint patterns, webhooks
+  - [ ] 1.7 Create `references/files-media.md` - storage adapters, upload patterns
+  - [ ] 1.8 Create `references/dev-workflow.md` - local setup, env vars, debugging
+  - [ ] 1.9 Create `references/deployment.md` - hosting options, DB provisioning
+
+- [ ] 2.0 Create Schema & Data Modeling Skills (5 skills)
+  - [ ] 2.1 Create `bknd-create-entity/SKILL.md` - create new entity/table
+  - [ ] 2.2 Create `bknd-add-field/SKILL.md` - add field to existing entity
+  - [ ] 2.3 Create `bknd-define-relationship/SKILL.md` - 1:1, 1:many, many:many relationships
+  - [ ] 2.4 Create `bknd-modify-schema/SKILL.md` - rename, change types
+  - [ ] 2.5 Create `bknd-delete-entity/SKILL.md` - safely remove entity + dependencies
+
+- [ ] 3.0 Create Data Operations Skills (8 skills)
+  - [ ] 3.1 Create `bknd-seed-data/SKILL.md` - populate with initial/test data
+  - [ ] 3.2 Create `bknd-crud-create/SKILL.md` - insert new records
+  - [ ] 3.3 Create `bknd-crud-read/SKILL.md` - query and retrieve with filtering
+  - [ ] 3.4 Create `bknd-crud-update/SKILL.md` - update existing records
+  - [ ] 3.5 Create `bknd-crud-delete/SKILL.md` - delete records safely
+  - [ ] 3.6 Create `bknd-query-filter/SKILL.md` - advanced filtering and querying
+  - [ ] 3.7 Create `bknd-pagination/SKILL.md` - paginated data retrieval
+  - [ ] 3.8 Create `bknd-bulk-operations/SKILL.md` - bulk insert/update/delete
+
+- [ ] 4.0 Create Authentication Skills (7 skills)
+  - [ ] 4.1 Create `bknd-create-user/SKILL.md` - create new user account
+  - [ ] 4.2 Create `bknd-setup-auth/SKILL.md` - initialize authentication system
+  - [ ] 4.3 Create `bknd-login-flow/SKILL.md` - login/logout functionality
+  - [ ] 4.4 Create `bknd-registration/SKILL.md` - user registration setup
+  - [ ] 4.5 Create `bknd-password-reset/SKILL.md` - password reset flow
+  - [ ] 4.6 Create `bknd-session-handling/SKILL.md` - manage user sessions
+  - [ ] 4.7 Create `bknd-oauth-setup/SKILL.md` - OAuth/social login providers
+
+- [ ] 5.0 Create Authorization Skills (5 skills)
+  - [ ] 5.1 Create `bknd-create-role/SKILL.md` - define new role
+  - [ ] 5.2 Create `bknd-assign-permissions/SKILL.md` - assign permissions to roles
+  - [ ] 5.3 Create `bknd-row-level-security/SKILL.md` - row-level access control
+  - [ ] 5.4 Create `bknd-protect-endpoint/SKILL.md` - secure specific endpoints
+  - [ ] 5.5 Create `bknd-public-vs-auth/SKILL.md` - configure public vs authenticated access
+
+- [ ] 6.0 Create API Consumption Skills (5 skills)
+  - [ ] 6.1 Create `bknd-api-discovery/SKILL.md` - explore auto-generated endpoints
+  - [ ] 6.2 Create `bknd-client-setup/SKILL.md` - setup SDK/client in frontend
+  - [ ] 6.3 Create `bknd-custom-endpoint/SKILL.md` - create custom API endpoints
+  - [ ] 6.4 Create `bknd-webhooks/SKILL.md` - configure webhook integrations
+  - [ ] 6.5 Create `bknd-realtime/SKILL.md` - real-time subscriptions (if supported)
+
+- [ ] 7.0 Create Files & Media Skills (3 skills)
+  - [ ] 7.1 Create `bknd-file-upload/SKILL.md` - handle file uploads
+  - [ ] 7.2 Create `bknd-storage-config/SKILL.md` - configure storage backend
+  - [ ] 7.3 Create `bknd-serve-files/SKILL.md` - serve files and CDN config
+
+- [ ] 8.0 Create Development Workflow Skills (4 skills)
+  - [ ] 8.1 Create `bknd-local-setup/SKILL.md` - local dev environment setup
+  - [ ] 8.2 Create `bknd-env-config/SKILL.md` - environment variables config
+  - [ ] 8.3 Create `bknd-debugging/SKILL.md` - debug common issues
+  - [ ] 8.4 Create `bknd-testing/SKILL.md` - write and run tests
+
+- [ ] 9.0 Create Deployment Skills (3 skills)
+  - [ ] 9.1 Create `bknd-deploy-hosting/SKILL.md` - deploy to various hosts
+  - [ ] 9.2 Create `bknd-database-provision/SKILL.md` - setup production database
+  - [ ] 9.3 Create `bknd-production-config/SKILL.md` - configure for production
+
+- [ ] 10.0 Validation & Cross-Linking
+  - [ ] 10.1 Run `skills-ref validate` on all skills
+  - [ ] 10.2 Verify all "Related Skills" sections link correctly
+  - [ ] 10.3 Ensure each skill has UI + code approach sections
+  - [ ] 10.4 Update PLUGIN.md to register all 42 skills
+  - [ ] 10.5 Add `bknd-troubleshoot/SKILL.md` for common errors (per PRD Q&A)
+
+---
+
+## Skill Template Checklist
+
+Each SKILL.md must include:
+- [ ] Frontmatter with `name` and `description` (starts with "Use when...")
+- [ ] Prerequisites section
+- [ ] When to use UI mode vs code mode
+- [ ] Step-by-step: UI approach
+- [ ] Step-by-step: Code approach
+- [ ] Common pitfalls / troubleshooting
+- [ ] Related skills section
