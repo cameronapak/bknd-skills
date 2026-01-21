@@ -224,7 +224,7 @@ Each skill should include a decision framework:
   - [x] 3.8 Create `bknd-bulk-operations/SKILL.md` - bulk insert/update/delete
 
 - [ ] 4.0 Create Authentication Skills (7 skills)
-  - [ ] 4.1 Create `bknd-create-user/SKILL.md` - create new user account
+  - [x] 4.1 Create `bknd-create-user/SKILL.md` - create new user account
   - [ ] 4.2 Create `bknd-setup-auth/SKILL.md` - initialize authentication system
   - [ ] 4.3 Create `bknd-login-flow/SKILL.md` - login/logout functionality
   - [ ] 4.4 Create `bknd-registration/SKILL.md` - user registration setup
