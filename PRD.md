@@ -246,10 +246,10 @@ Each skill should include a decision framework:
   - [x] 6.4 Create `bknd-webhooks/SKILL.md` - configure webhook integrations
   - [x] 6.5 Create `bknd-realtime/SKILL.md` - real-time subscriptions (if supported)
 
-- [ ] 7.0 Create Files & Media Skills (3 skills)
+- [x] 7.0 Create Files & Media Skills (3 skills)
   - [x] 7.1 Create `bknd-file-upload/SKILL.md` - handle file uploads
   - [x] 7.2 Create `bknd-storage-config/SKILL.md` - configure storage backend
-  - [ ] 7.3 Create `bknd-serve-files/SKILL.md` - serve files and CDN config
+  - [x] 7.3 Create `bknd-serve-files/SKILL.md` - serve files and CDN config
 
 - [ ] 8.0 Create Development Workflow Skills (4 skills)
   - [ ] 8.1 Create `bknd-local-setup/SKILL.md` - local dev environment setup
