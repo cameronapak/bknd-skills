@@ -213,7 +213,7 @@ Each skill should include a decision framework:
   - [x] 2.4 Create `bknd-modify-schema/SKILL.md` - rename, change types
   - [x] 2.5 Create `bknd-delete-entity/SKILL.md` - safely remove entity + dependencies
 
-- [ ] 3.0 Create Data Operations Skills (8 skills)
+- [x] 3.0 Create Data Operations Skills (8 skills)
   - [x] 3.1 Create `bknd-seed-data/SKILL.md` - populate with initial/test data
   - [x] 3.2 Create `bknd-crud-create/SKILL.md` - insert new records
   - [x] 3.3 Create `bknd-crud-read/SKILL.md` - query and retrieve with filtering
@@ -221,7 +221,7 @@ Each skill should include a decision framework:
   - [x] 3.5 Create `bknd-crud-delete/SKILL.md` - delete records safely
   - [x] 3.6 Create `bknd-query-filter/SKILL.md` - advanced filtering and querying
   - [x] 3.7 Create `bknd-pagination/SKILL.md` - paginated data retrieval
-  - [ ] 3.8 Create `bknd-bulk-operations/SKILL.md` - bulk insert/update/delete
+  - [x] 3.8 Create `bknd-bulk-operations/SKILL.md` - bulk insert/update/delete
 
 - [ ] 4.0 Create Authentication Skills (7 skills)
   - [ ] 4.1 Create `bknd-create-user/SKILL.md` - create new user account
