@@ -202,7 +202,7 @@ Each skill should include a decision framework:
   - [x] 1.4 Create `references/authentication.md` - auth strategies, session management, OAuth providers
   - [x] 1.5 Create `references/authorization.md` - roles, permissions, RLS patterns
   - [x] 1.6 Create `references/api-consumption.md` - SDK usage, endpoint patterns, webhooks
-  - [ ] 1.7 Create `references/files-media.md` - storage adapters, upload patterns
+  - [x] 1.7 Create `references/files-media.md` - storage adapters, upload patterns
   - [ ] 1.8 Create `references/dev-workflow.md` - local setup, env vars, debugging
   - [ ] 1.9 Create `references/deployment.md` - hosting options, DB provisioning
 
