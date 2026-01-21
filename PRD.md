@@ -266,7 +266,7 @@ Each skill should include a decision framework:
   - [x] 10.1 Run `skills-ref validate` on all skills
   - [x] 10.2 Verify all "Related Skills" sections link correctly
   - [x] 10.3 Ensure each skill has UI + code approach sections
-  - [ ] 10.4 Update PLUGIN.md to register all 42 skills
+  - [x] 10.4 Update PLUGIN.md to register all 42 skills
   - [ ] 10.5 Add `bknd-troubleshoot/SKILL.md` for common errors (per PRD Q&A)
 
 ---
