@@ -199,7 +199,7 @@ Each skill should include a decision framework:
   - [x] 1.1 Create `references/` directory if not exists
   - [x] 1.2 Create `references/schema-modeling.md` - entity types, field types, relationship patterns
   - [x] 1.3 Create `references/data-operations.md` - CRUD API, filtering syntax, pagination patterns
-  - [ ] 1.4 Create `references/authentication.md` - auth strategies, session management, OAuth providers
+  - [x] 1.4 Create `references/authentication.md` - auth strategies, session management, OAuth providers
   - [ ] 1.5 Create `references/authorization.md` - roles, permissions, RLS patterns
   - [ ] 1.6 Create `references/api-consumption.md` - SDK usage, endpoint patterns, webhooks
   - [ ] 1.7 Create `references/files-media.md` - storage adapters, upload patterns
