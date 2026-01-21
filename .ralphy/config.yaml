@@ -6,7 +6,7 @@ project:
   name: 'bknd-skills'
   language: 'TypeScript'
   framework: 'skills'
-  description: 'Make it easy for AI to use Bknd backend framework through Skills https://agentskills.io/specification' # Add a brief description
+  description: 'Make it easy for AI to use Bknd backend framework through Skills' # Add a brief description
 
 # Commands (auto-detected from package.json/pyproject.toml)
 commands:
@@ -30,8 +30,7 @@ rules:
 
 # Boundaries - files/folders the AI should not modify
 boundaries:
-  never_touch:
-    ['plugins/bknd-skills/**']
+  never_touch: []
     # Examples:
     # - "src/legacy/**"
     # - "migrations/**"
