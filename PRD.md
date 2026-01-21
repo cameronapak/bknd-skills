@@ -243,7 +243,7 @@ Each skill should include a decision framework:
   - [x] 6.1 Create `bknd-api-discovery/SKILL.md` - explore auto-generated endpoints
   - [x] 6.2 Create `bknd-client-setup/SKILL.md` - setup SDK/client in frontend
   - [x] 6.3 Create `bknd-custom-endpoint/SKILL.md` - create custom API endpoints
-  - [ ] 6.4 Create `bknd-webhooks/SKILL.md` - configure webhook integrations
+  - [x] 6.4 Create `bknd-webhooks/SKILL.md` - configure webhook integrations
   - [ ] 6.5 Create `bknd-realtime/SKILL.md` - real-time subscriptions (if supported)
 
 - [ ] 7.0 Create Files & Media Skills (3 skills)
