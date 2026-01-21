@@ -248,7 +248,7 @@ Each skill should include a decision framework:
 
 - [ ] 7.0 Create Files & Media Skills (3 skills)
   - [x] 7.1 Create `bknd-file-upload/SKILL.md` - handle file uploads
-  - [ ] 7.2 Create `bknd-storage-config/SKILL.md` - configure storage backend
+  - [x] 7.2 Create `bknd-storage-config/SKILL.md` - configure storage backend
   - [ ] 7.3 Create `bknd-serve-files/SKILL.md` - serve files and CDN config
 
 - [ ] 8.0 Create Development Workflow Skills (4 skills)
